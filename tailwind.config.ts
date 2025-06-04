@@ -53,7 +53,24 @@ const config = {
           DEFAULT: "hsl(var(--card))",
           foreground: "hsl(var(--card-foreground))",
         },
-        // Enhanced vibrant colors
+        // Enhanced vibrant colors with new red primary
+        red: {
+          50: "#fff1f2",
+          100: "#ffe4e6",
+          200: "#fecdd3",
+          300: "#fda4af",
+          400: "#fb7185",
+          500: "#f43f5e",
+          600: "#e11d48",
+          700: "#be123c",
+          800: "#9f1239",
+          900: "#881337",
+        },
+        // Gradient colors for AI-Driven Guide
+        guide: {
+          start: "#f06292", // Pink/red start of gradient
+          end: "#ff7043", // Orange end of gradient
+        },
         emerald: {
           50: "#ecfdf5",
           100: "#d1fae5",
@@ -89,18 +106,6 @@ const config = {
           700: "#6d28d9",
           800: "#5b21b6",
           900: "#4c1d95",
-        },
-        rose: {
-          50: "#fff1f2",
-          100: "#ffe4e6",
-          200: "#fecdd3",
-          300: "#fda4af",
-          400: "#fb7185",
-          500: "#f43f5e",
-          600: "#e11d48",
-          700: "#be123c",
-          800: "#9f1239",
-          900: "#881337",
         },
         amber: {
           50: "#fffbeb",

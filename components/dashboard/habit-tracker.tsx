@@ -34,32 +34,32 @@ export default function HabitTracker({ isDarkMode = false }: HabitTrackerProps) 
     if (isDarkMode) {
       switch (category) {
         case "Mindfulness":
-          return "bg-violet-500/20 text-violet-300 border border-violet-400/30"
+          return "bg-red-600/20 text-red-300 border border-red-500/30"
         case "Learning":
-          return "bg-sky-500/20 text-sky-300 border border-sky-400/30"
+          return "bg-gray-600/20 text-gray-300 border border-gray-500/30"
         case "Fitness":
-          return "bg-emerald-500/20 text-emerald-300 border border-emerald-400/30"
+          return "bg-red-500/20 text-red-400 border border-red-400/30"
         case "Health":
-          return "bg-rose-500/20 text-rose-300 border border-rose-400/30"
+          return "bg-gray-700/20 text-gray-400 border border-gray-600/30"
         case "Reflection":
-          return "bg-amber-500/20 text-amber-300 border border-amber-400/30"
+          return "bg-red-700/20 text-red-300 border border-red-600/30"
         default:
-          return "bg-slate-500/20 text-slate-300 border border-slate-400/30"
+          return "bg-gray-500/20 text-gray-300 border border-gray-400/30"
       }
     } else {
       switch (category) {
         case "Mindfulness":
-          return "bg-violet-100 text-violet-900 border border-violet-300"
+          return "bg-red-100 text-red-900 border border-red-300"
         case "Learning":
-          return "bg-sky-100 text-sky-900 border border-sky-300"
+          return "bg-gray-100 text-gray-900 border border-gray-300"
         case "Fitness":
-          return "bg-emerald-100 text-emerald-900 border border-emerald-300"
+          return "bg-red-50 text-red-800 border border-red-200"
         case "Health":
-          return "bg-rose-100 text-rose-900 border border-rose-300"
+          return "bg-gray-50 text-gray-800 border border-gray-200"
         case "Reflection":
-          return "bg-amber-100 text-amber-900 border border-amber-300"
+          return "bg-red-200 text-red-900 border border-red-400"
         default:
-          return "bg-slate-100 text-slate-900 border border-slate-300"
+          return "bg-gray-100 text-gray-900 border border-gray-300"
       }
     }
   }
@@ -74,11 +74,11 @@ export default function HabitTracker({ isDarkMode = false }: HabitTrackerProps) 
             ${
               habit.completed
                 ? isDarkMode
-                  ? "bg-gradient-to-br from-emerald-500/20 to-emerald-600/20 border-emerald-400/40 shadow-[3px_3px_0px_0px_rgba(52,211,153,0.2)] sm:shadow-[4px_4px_0px_0px_rgba(52,211,153,0.2)]"
-                  : "bg-gradient-to-br from-emerald-50 to-emerald-100 border-slate-900 shadow-[3px_3px_0px_0px_rgba(16,185,129,0.3)] sm:shadow-[4px_4px_0px_0px_rgba(16,185,129,0.3)]"
+                  ? "bg-gradient-to-br from-red-600/20 to-red-700/20 border-red-500/40 shadow-[3px_3px_0px_0px_rgba(220,38,38,0.3)] sm:shadow-[4px_4px_0px_0px_rgba(220,38,38,0.3)]"
+                  : "bg-gradient-to-br from-red-50 to-red-100 border-black shadow-[3px_3px_0px_0px_rgba(220,38,38,0.3)] sm:shadow-[4px_4px_0px_0px_rgba(220,38,38,0.3)]"
                 : isDarkMode
-                  ? "bg-slate-700/50 border-slate-600 shadow-[3px_3px_0px_0px_rgba(71,85,105,0.3)] sm:shadow-[4px_4px_0px_0px_rgba(71,85,105,0.3)] hover:shadow-[4px_4px_0px_0px_rgba(71,85,105,0.4)] sm:hover:shadow-[6px_6px_0px_0px_rgba(71,85,105,0.4)]"
-                  : "bg-white border-slate-900 shadow-[3px_3px_0px_0px_rgba(15,23,42,1)] sm:shadow-[4px_4px_0px_0px_rgba(15,23,42,1)] hover:shadow-[4px_4px_0px_0px_rgba(15,23,42,1)] sm:hover:shadow-[6px_6px_0px_0px_rgba(15,23,42,1)]"
+                  ? "bg-black/50 border-red-600 shadow-[3px_3px_0px_0px_rgba(220,38,38,0.2)] sm:shadow-[4px_4px_0px_0px_rgba(220,38,38,0.2)] hover:shadow-[4px_4px_0px_0px_rgba(220,38,38,0.3)] sm:hover:shadow-[6px_6px_0px_0px_rgba(220,38,38,0.3)]"
+                  : "bg-white border-black shadow-[3px_3px_0px_0px_rgba(0,0,0,1)] sm:shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] hover:shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] sm:hover:shadow-[6px_6px_0px_0px_rgba(0,0,0,1)]"
             }
           `}
         >
@@ -91,11 +91,11 @@ export default function HabitTracker({ isDarkMode = false }: HabitTrackerProps) 
                 onClick={() => toggleHabit(habit.id)}
               >
                 {habit.completed ? (
-                  <CheckCircle2 className="h-7 w-7 sm:h-8 sm:w-8 text-emerald-500" />
+                  <CheckCircle2 className="h-7 w-7 sm:h-8 sm:w-8 text-red-500" />
                 ) : (
                   <div
-                    className={`h-7 w-7 sm:h-8 sm:w-8 border-3 rounded-full hover:border-emerald-500 transition-colors ${
-                      isDarkMode ? "border-slate-500" : "border-slate-400"
+                    className={`h-7 w-7 sm:h-8 sm:w-8 border-3 rounded-full hover:border-red-500 transition-colors ${
+                      isDarkMode ? "border-red-600" : "border-gray-400"
                     }`}
                   />
                 )}
@@ -106,11 +106,11 @@ export default function HabitTracker({ isDarkMode = false }: HabitTrackerProps) 
                   className={`font-bold text-sm sm:text-base leading-tight ${
                     habit.completed
                       ? isDarkMode
-                        ? "line-through text-slate-400"
-                        : "line-through text-slate-600"
+                        ? "line-through text-gray-400"
+                        : "line-through text-gray-600"
                       : isDarkMode
-                        ? "text-slate-200"
-                        : "text-slate-900"
+                        ? "text-white"
+                        : "text-black"
                   }`}
                 >
                   {habit.name}
@@ -124,7 +124,7 @@ export default function HabitTracker({ isDarkMode = false }: HabitTrackerProps) 
                   {habit.target && (
                     <span
                       className={`text-xs flex items-center font-medium ${
-                        isDarkMode ? "text-slate-400" : "text-slate-600"
+                        isDarkMode ? "text-gray-400" : "text-gray-600"
                       }`}
                     >
                       <Target className="h-3 w-3 mr-1" />
@@ -136,21 +136,19 @@ export default function HabitTracker({ isDarkMode = false }: HabitTrackerProps) 
             </div>
 
             <div className="text-right ml-2">
-              <div className={`text-sm sm:text-base font-bold ${isDarkMode ? "text-slate-200" : "text-slate-900"}`}>
+              <div className={`text-sm sm:text-base font-bold ${isDarkMode ? "text-white" : "text-black"}`}>
                 {habit.streak}
               </div>
-              <div className={`text-xs font-medium ${isDarkMode ? "text-slate-400" : "text-slate-600"}`}>
-                day streak
-              </div>
+              <div className={`text-xs font-medium ${isDarkMode ? "text-gray-400" : "text-gray-600"}`}>day streak</div>
               <div
                 className={`text-xs mt-1 ${
                   habit.completed
                     ? isDarkMode
-                      ? "text-emerald-400"
-                      : "text-emerald-600"
+                      ? "text-red-400"
+                      : "text-red-600"
                     : isDarkMode
-                      ? "text-slate-500"
-                      : "text-slate-500"
+                      ? "text-gray-500"
+                      : "text-gray-500"
                 }`}
               >
                 {habit.completed ? "✓ Done" : "Pending"}

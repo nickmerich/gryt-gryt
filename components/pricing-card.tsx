@@ -10,54 +10,62 @@ interface PricingCardProps {
   features: string[]
   buttonText: string
   buttonLink: string
-  highlighted: boolean
+  highlighted?: boolean
+  isDark?: boolean
 }
 
 export default function PricingCard({
   title,
   price,
-  period = "",
+  period,
   description,
   features,
   buttonText,
   buttonLink,
-  highlighted,
+  highlighted = false,
+  isDark = false,
 }: PricingCardProps) {
   return (
     <div
-      className={`
-      border-4 border-black rounded-xl overflow-hidden
-      shadow-[8px_8px_0px_0px_rgba(0,0,0,1)]
-      ${highlighted ? "bg-gradient-to-br from-purple-50 to-blue-50" : "bg-white"}
-    `}
+      className={`border-4 rounded-xl p-8 transition-all duration-300 hover:translate-y-[-4px] ${
+        highlighted
+          ? "border-red-600 bg-black text-white shadow-[8px_8px_0px_0px_rgba(220,38,38,1)] hover:shadow-[12px_12px_0px_0px_rgba(220,38,38,1)]"
+          : "border-black bg-white text-black shadow-[8px_8px_0px_0px_rgba(0,0,0,1)] hover:shadow-[12px_12px_0px_0px_rgba(0,0,0,1)]"
+      }`}
     >
-      <div className="p-6 border-b-4 border-black">
-        <h3 className="text-2xl font-black mb-2">{title}</h3>
-        <div className="flex items-end mb-4">
-          <span className="text-4xl font-black">{price}</span>
-          {period && <span className="text-gray-600 ml-1">{period}</span>}
+      {highlighted && (
+        <div className="bg-red-600 text-white text-center py-2 px-4 rounded-lg mb-6 font-bold">Most Popular</div>
+      )}
+
+      <div className="text-center mb-8">
+        <h3 className={`text-2xl font-bold mb-2 ${highlighted ? "text-white" : "text-black"}`}>{title}</h3>
+        <div className="mb-4">
+          <span className={`text-5xl font-black ${highlighted ? "text-white" : "text-black"}`}>{price}</span>
+          {period && <span className={`text-lg ${highlighted ? "text-gray-300" : "text-gray-600"}`}>{period}</span>}
         </div>
-        <p className="text-gray-700">{description}</p>
+        <p className={`${highlighted ? "text-gray-300" : "text-gray-600"} text-lg`}>{description}</p>
       </div>
-      <div className="p-6">
-        <ul className="space-y-3 mb-6">
-          {features.map((feature, index) => (
-            <li key={index} className="flex items-start">
-              <Check className="h-5 w-5 text-green-500 mr-2 mt-0.5" />
-              <span>{feature}</span>
-            </li>
-          ))}
-        </ul>
-        <Link href={buttonLink}>
-          <Button
-            className={`w-full font-bold py-6 h-auto text-lg rounded-xl border-2 border-black shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] ${
-              highlighted ? "bg-black hover:bg-black/80 text-white" : "bg-white hover:bg-gray-100 text-black"
-            }`}
-          >
-            {buttonText}
-          </Button>
-        </Link>
-      </div>
+
+      <ul className="space-y-4 mb-8">
+        {features.map((feature, index) => (
+          <li key={index} className="flex items-start gap-3">
+            <Check className={`h-5 w-5 mt-0.5 flex-shrink-0 ${highlighted ? "text-red-400" : "text-red-600"}`} />
+            <span className={`${highlighted ? "text-gray-200" : "text-gray-700"} leading-relaxed`}>{feature}</span>
+          </li>
+        ))}
+      </ul>
+
+      <Link href={buttonLink}>
+        <Button
+          className={`w-full rounded-xl border-2 font-bold text-lg py-6 h-auto transition-all duration-300 ${
+            highlighted
+              ? "bg-red-600 hover:bg-red-700 text-white border-red-600 shadow-[4px_4px_0px_0px_rgba(220,38,38,0.5)]"
+              : "bg-black hover:bg-gray-800 text-white border-black shadow-[4px_4px_0px_0px_rgba(0,0,0,1)]"
+          }`}
+        >
+          {buttonText}
+        </Button>
+      </Link>
     </div>
   )
 }

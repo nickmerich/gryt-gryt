@@ -122,9 +122,9 @@ export default function JournalPage() {
   return (
     <div className="space-y-6 pb-8">
       <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
-        <h1 className="text-2xl sm:text-3xl font-black">Journal</h1>
+        <h1 className="text-2xl sm:text-3xl font-black text-black">Journal</h1>
         <Link href="/dashboard/journal/new">
-          <Button className="bg-black hover:bg-black/80 text-white rounded-xl border-2 border-black font-bold shadow-[4px_4px_0px_0px_rgba(0,0,0,1)]">
+          <Button className="bg-red-500 hover:bg-red-600 text-white rounded-xl border-2 border-black font-bold shadow-[4px_4px_0px_0px_rgba(0,0,0,1)]">
             <Plus className="h-4 w-4 mr-2" /> New Entry
           </Button>
         </Link>
@@ -141,7 +141,7 @@ export default function JournalPage() {
               onChange={(e) => setSearchQuery(e.target.value)}
             />
           </div>
-          <Button variant="outline" className="rounded-xl border-2 border-black font-bold">
+          <Button variant="outline" className="rounded-xl border-2 border-black font-bold hover:bg-red-50">
             <Filter className="h-4 w-4 mr-2" /> Filter
           </Button>
         </div>
@@ -150,19 +150,19 @@ export default function JournalPage() {
           <TabsList className="bg-white/50 border-2 border-black rounded-xl p-1 mb-4">
             <TabsTrigger
               value="all"
-              className="rounded-lg data-[state=active]:bg-black data-[state=active]:text-white font-bold"
+              className="rounded-lg data-[state=active]:bg-red-500 data-[state=active]:text-white font-bold"
             >
               All Entries
             </TabsTrigger>
             <TabsTrigger
               value="moods"
-              className="rounded-lg data-[state=active]:bg-black data-[state=active]:text-white font-bold"
+              className="rounded-lg data-[state=active]:bg-red-500 data-[state=active]:text-white font-bold"
             >
               By Mood
             </TabsTrigger>
             <TabsTrigger
               value="tags"
-              className="rounded-lg data-[state=active]:bg-black data-[state=active]:text-white font-bold"
+              className="rounded-lg data-[state=active]:bg-red-500 data-[state=active]:text-white font-bold"
             >
               By Tag
             </TabsTrigger>
@@ -172,7 +172,7 @@ export default function JournalPage() {
             {Object.keys(groupedJournals).length > 0 ? (
               Object.entries(groupedJournals).map(([monthYear, entries]) => (
                 <div key={monthYear} className="mb-8">
-                  <h2 className="text-xl font-bold mb-4">{monthYear}</h2>
+                  <h2 className="text-xl font-bold mb-4 text-black">{monthYear}</h2>
                   <div className="space-y-4">
                     {entries.map((journal) => (
                       <JournalCard key={journal.id} journal={journal} />
@@ -191,7 +191,7 @@ export default function JournalPage() {
                 <Button
                   key={mood}
                   variant="outline"
-                  className="border-2 border-black rounded-xl font-bold h-auto py-3 justify-center"
+                  className="border-2 border-black rounded-xl font-bold h-auto py-3 justify-center hover:bg-red-50"
                 >
                   <span className="text-2xl mr-2">{getMoodEmoji(mood)}</span>
                   <span className="capitalize">{mood}</span>
@@ -214,7 +214,12 @@ export default function JournalPage() {
               {Array.from(new Set(journals.flatMap((j) => j.tags)))
                 .slice(0, 10)
                 .map((tag) => (
-                  <Button key={tag} variant="outline" size="sm" className="border-2 border-black rounded-xl font-bold">
+                  <Button
+                    key={tag}
+                    variant="outline"
+                    size="sm"
+                    className="border-2 border-black rounded-xl font-bold hover:bg-red-50"
+                  >
                     <Tag className="h-3 w-3 mr-1" /> {tag}
                   </Button>
                 ))}
@@ -233,17 +238,17 @@ export default function JournalPage() {
 
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
         <Card className="border-4 border-black rounded-xl overflow-hidden shadow-[8px_8px_0px_0px_rgba(0,0,0,1)]">
-          <div className="bg-gradient-to-r from-yellow-500 to-amber-500 p-4 text-white">
+          <div className="bg-gradient-to-r from-red-500 to-red-600 p-4 text-white">
             <h2 className="text-lg font-bold">Journal Stats</h2>
           </div>
           <div className="p-4">
             <div className="grid grid-cols-2 gap-4">
               <div className="border-2 border-black rounded-xl p-4 text-center">
-                <div className="text-3xl font-bold">{journals.length}</div>
+                <div className="text-3xl font-bold text-black">{journals.length}</div>
                 <div className="text-sm text-gray-500">Total Entries</div>
               </div>
               <div className="border-2 border-black rounded-xl p-4 text-center">
-                <div className="text-3xl font-bold">12</div>
+                <div className="text-3xl font-bold text-black">12</div>
                 <div className="text-sm text-gray-500">Days Journaled</div>
               </div>
               <div className="border-2 border-black rounded-xl p-4 text-center">
@@ -251,7 +256,7 @@ export default function JournalPage() {
                 <div className="text-sm text-gray-500">Most Common Mood</div>
               </div>
               <div className="border-2 border-black rounded-xl p-4 text-center">
-                <div className="text-3xl font-bold">3</div>
+                <div className="text-3xl font-bold text-black">3</div>
                 <div className="text-sm text-gray-500">Current Streak</div>
               </div>
             </div>
@@ -259,7 +264,7 @@ export default function JournalPage() {
         </Card>
 
         <Card className="border-4 border-black rounded-xl overflow-hidden shadow-[8px_8px_0px_0px_rgba(0,0,0,1)]">
-          <div className="bg-gradient-to-r from-purple-500 to-pink-500 p-4 text-white">
+          <div className="bg-gradient-to-r from-black to-gray-800 p-4 text-white">
             <h2 className="text-lg font-bold">Mood Tracker</h2>
           </div>
           <div className="p-4">
@@ -274,14 +279,14 @@ export default function JournalPage() {
                       <div
                         className={`w-12 rounded-t-lg ${
                           mood === "happy"
-                            ? "bg-green-400"
+                            ? "bg-red-400"
                             : mood === "excited"
-                              ? "bg-yellow-400"
+                              ? "bg-red-300"
                               : mood === "neutral"
-                                ? "bg-blue-400"
+                                ? "bg-gray-400"
                                 : mood === "tired"
-                                  ? "bg-purple-400"
-                                  : "bg-red-400"
+                                  ? "bg-gray-500"
+                                  : "bg-red-500"
                         }`}
                         style={{ height: `${height}%` }}
                       />
@@ -323,11 +328,11 @@ function JournalCard({ journal }: { journal: JournalEntry }) {
   }
 
   return (
-    <div className="border-2 border-black rounded-xl p-4 hover:bg-gray-50 transition-colors">
+    <div className="border-2 border-black rounded-xl p-4 hover:bg-red-50 transition-colors">
       <div className="flex justify-between items-start mb-3">
         <div className="flex-1">
           <Link href={`/dashboard/journal/${journal.id}`}>
-            <h3 className="font-bold text-lg hover:text-purple-600 transition-colors">{journal.title}</h3>
+            <h3 className="font-bold text-lg hover:text-red-600 transition-colors text-black">{journal.title}</h3>
           </Link>
           <div className="flex items-center gap-2 mt-1">
             <div className="flex items-center gap-1 text-sm text-gray-500">
@@ -360,7 +365,7 @@ function JournalCard({ journal }: { journal: JournalEntry }) {
       <div className="flex items-center justify-between">
         <div className="flex flex-wrap gap-1">
           {journal.tags.slice(0, 3).map((tag) => (
-            <span key={tag} className="text-xs bg-gray-100 px-2 py-1 rounded-full">
+            <span key={tag} className="text-xs bg-red-100 px-2 py-1 rounded-full text-red-800">
               {tag}
             </span>
           ))}
@@ -368,7 +373,7 @@ function JournalCard({ journal }: { journal: JournalEntry }) {
         </div>
 
         <Link href={`/dashboard/journal/${journal.id}`}>
-          <Button variant="link" size="sm" className="p-0 h-auto text-purple-600">
+          <Button variant="link" size="sm" className="p-0 h-auto text-red-600">
             Read more <ArrowRight className="h-3 w-3 ml-1" />
           </Button>
         </Link>
@@ -386,7 +391,7 @@ function EmptyState({ query }: { query: string }) {
         <p className="text-gray-500 mb-4">No journal entries match your search for "{query}"</p>
         <Button
           variant="outline"
-          className="rounded-xl border-2 border-black font-bold"
+          className="rounded-xl border-2 border-black font-bold hover:bg-red-50"
           onClick={() => window.location.reload()}
         >
           Clear search
@@ -401,7 +406,7 @@ function EmptyState({ query }: { query: string }) {
       <h3 className="font-bold text-gray-500 mb-2">No journal entries yet</h3>
       <p className="text-gray-500 mb-4">Start documenting your journey and reflections</p>
       <Link href="/dashboard/journal/new">
-        <Button className="bg-black hover:bg-black/80 text-white rounded-xl border-2 border-black font-bold">
+        <Button className="bg-red-500 hover:bg-red-600 text-white rounded-xl border-2 border-black font-bold">
           <Plus className="h-4 w-4 mr-2" /> Write First Entry
         </Button>
       </Link>

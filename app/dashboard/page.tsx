@@ -26,7 +26,7 @@ import Link from "next/link"
 import { useState, useEffect } from "react"
 
 export default function DashboardPage() {
-  const [isDarkMode, setIsDarkMode] = useState(true)
+  const [isDarkMode, setIsDarkMode] = useState(false)
   const [isTransitioning, setIsTransitioning] = useState(false)
 
   // Check for saved theme preference or system preference on initial load
@@ -34,8 +34,8 @@ export default function DashboardPage() {
     const savedTheme = localStorage.getItem("theme")
     const prefersDark = window.matchMedia("(prefers-color-scheme: dark)").matches
 
-    if (savedTheme === "light" || (!savedTheme && !prefersDark)) {
-      setIsDarkMode(false)
+    if (savedTheme === "dark" || (!savedTheme && prefersDark)) {
+      setIsDarkMode(true)
     }
   }, [])
 
@@ -58,8 +58,8 @@ export default function DashboardPage() {
     <div
       className={`min-h-screen transition-colors duration-500 ease-in-out ${
         isDarkMode
-          ? "bg-gradient-to-br from-slate-900 via-slate-800 to-indigo-900/20"
-          : "bg-gradient-to-br from-slate-50 via-white to-sky-50/30"
+          ? "bg-gradient-to-br from-black via-gray-900 to-red-950/20"
+          : "bg-gradient-to-br from-gray-50 via-white to-red-50/30"
       }`}
     >
       <div className="space-y-6 sm:space-y-8 pb-8 px-4 sm:px-0">
@@ -71,8 +71,8 @@ export default function DashboardPage() {
             size="sm"
             className={`rounded-xl border-2 font-bold min-h-[44px] px-4 transition-all duration-300 ease-in-out transform hover:scale-105 active:scale-95 ${
               isDarkMode
-                ? "bg-slate-800/50 border-slate-600 text-slate-200 hover:bg-slate-700/50"
-                : "bg-white border-slate-900 text-slate-900 hover:bg-slate-50"
+                ? "bg-black/50 border-red-600 text-red-400 hover:bg-red-950/50"
+                : "bg-white border-black text-black hover:bg-red-50"
             }`}
           >
             <span className="transition-transform duration-500 ease-in-out">
@@ -86,37 +86,37 @@ export default function DashboardPage() {
           </Button>
         </div>
 
-        {/* Welcome Section - Enhanced Transitions */}
+        {/* Welcome Section - Enhanced with Black/Red Theme */}
         <div
           className={`relative overflow-hidden transition-transform duration-500 ease-in-out ${isTransitioning ? "scale-[0.98]" : "scale-100"}`}
         >
           <div
             className={`absolute inset-0 rounded-2xl sm:rounded-3xl transition-all duration-700 ease-in-out ${
               isDarkMode
-                ? "bg-gradient-to-r from-emerald-500/20 via-sky-500/20 to-violet-500/20"
-                : "bg-gradient-to-r from-emerald-500/10 via-sky-500/10 to-violet-500/10"
+                ? "bg-gradient-to-r from-red-600/20 via-black/20 to-red-800/20"
+                : "bg-gradient-to-r from-red-500/10 via-black/10 to-red-600/10"
             }`}
           ></div>
           <div
             className={`relative backdrop-blur-sm border-3 sm:border-4 rounded-2xl sm:rounded-3xl p-4 sm:p-6 lg:p-8 transition-all duration-500 ease-in-out ${
               isDarkMode
-                ? "bg-slate-800/80 border-slate-600 shadow-[8px_8px_0px_0px_rgba(71,85,105,0.5)]"
-                : "bg-white/90 border-slate-900 shadow-[8px_8px_0px_0px_rgba(15,23,42,1)]"
+                ? "bg-black/80 border-red-600 shadow-[8px_8px_0px_0px_rgba(220,38,38,0.5)]"
+                : "bg-white/90 border-black shadow-[8px_8px_0px_0px_rgba(0,0,0,1)]"
             } ${isTransitioning ? "translate-y-1" : "translate-y-0"}`}
           >
             <div className="flex flex-col gap-4 sm:gap-6">
               <div>
                 <div className="flex items-center gap-2 sm:gap-3 mb-3 sm:mb-4">
-                  <div className="bg-gradient-to-r from-emerald-400 to-sky-400 p-2 sm:p-3 rounded-xl sm:rounded-2xl transition-all duration-500 ease-in-out">
+                  <div className="bg-gradient-to-r from-red-500 to-red-600 p-2 sm:p-3 rounded-xl sm:rounded-2xl transition-all duration-500 ease-in-out">
                     <Sparkles className="h-5 w-5 sm:h-6 sm:w-6 text-white" />
                   </div>
                   <h1
                     className={`text-xl sm:text-2xl lg:text-4xl font-black leading-tight transition-colors duration-500 ease-in-out ${
-                      isDarkMode ? "text-slate-100" : "text-slate-900"
+                      isDarkMode ? "text-white" : "text-black"
                     }`}
                   >
                     Welcome back,{" "}
-                    <span className="bg-gradient-to-r from-emerald-400 to-sky-400 bg-clip-text text-transparent transition-all duration-500 ease-in-out">
+                    <span className="bg-gradient-to-r from-red-500 to-red-600 bg-clip-text text-transparent transition-all duration-500 ease-in-out">
                       Alex
                     </span>
                     !
@@ -124,15 +124,15 @@ export default function DashboardPage() {
                 </div>
                 <p
                   className={`text-base sm:text-lg font-medium leading-relaxed transition-colors duration-500 ease-in-out ${
-                    isDarkMode ? "text-slate-300" : "text-slate-700"
+                    isDarkMode ? "text-gray-300" : "text-gray-700"
                   }`}
                 >
                   You're on a{" "}
                   <span
                     className={`font-bold px-2 py-1 rounded-lg transition-all duration-500 ease-in-out ${
                       isDarkMode
-                        ? "text-emerald-300 bg-emerald-500/20 border border-emerald-400/30"
-                        : "text-emerald-700 bg-emerald-50"
+                        ? "text-red-300 bg-red-600/20 border border-red-500/30"
+                        : "text-red-700 bg-red-50 border border-red-200"
                     }`}
                   >
                     12-day streak
@@ -143,7 +143,7 @@ export default function DashboardPage() {
               <div className="flex flex-col sm:flex-row gap-3">
                 <Link href="/dashboard/habits/new" className="flex-1 sm:flex-none">
                   <Button
-                    className={`w-full sm:w-auto bg-gradient-to-r from-emerald-500 to-emerald-600 hover:from-emerald-600 hover:to-emerald-700 text-white rounded-xl sm:rounded-2xl border-3 border-emerald-400 font-bold px-4 sm:px-6 py-3 text-sm sm:text-base transition-all duration-500 ease-in-out hover:shadow-lg min-h-[44px] ${isTransitioning ? "translate-y-1 opacity-90" : "translate-y-0 opacity-100"}`}
+                    className={`w-full sm:w-auto bg-gradient-to-r from-red-500 to-red-600 hover:from-red-600 hover:to-red-700 text-white rounded-xl sm:rounded-2xl border-3 border-red-400 font-bold px-4 sm:px-6 py-3 text-sm sm:text-base transition-all duration-500 ease-in-out hover:shadow-lg min-h-[44px] shadow-[4px_4px_0px_0px_rgba(220,38,38,0.5)] ${isTransitioning ? "translate-y-1 opacity-90" : "translate-y-0 opacity-100"}`}
                   >
                     <Target className="h-4 w-4 sm:h-5 sm:w-5 mr-2" /> Add New Habit
                   </Button>
@@ -153,8 +153,8 @@ export default function DashboardPage() {
                     variant="outline"
                     className={`w-full sm:w-auto border-3 rounded-xl sm:rounded-2xl font-bold px-4 sm:px-6 py-3 text-sm sm:text-base transition-all duration-500 ease-in-out min-h-[44px] ${
                       isDarkMode
-                        ? "bg-slate-700/50 hover:bg-slate-600/50 border-slate-500 text-slate-200"
-                        : "bg-white hover:bg-slate-50 border-slate-900 text-slate-900"
+                        ? "bg-black/50 hover:bg-red-950/50 border-red-600 text-red-400"
+                        : "bg-white hover:bg-red-50 border-black text-black"
                     } ${isTransitioning ? "translate-y-1 opacity-90" : "translate-y-0 opacity-100"}`}
                   >
                     <BookOpen className="h-4 w-4 sm:h-5 sm:w-5 mr-2" /> Quick Journal
@@ -165,7 +165,7 @@ export default function DashboardPage() {
           </div>
         </div>
 
-        {/* Stats Overview - Enhanced Transitions */}
+        {/* Stats Overview - Black/Red Theme */}
         <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4 lg:gap-6">
           {[
             {
@@ -173,7 +173,7 @@ export default function DashboardPage() {
               value: "7",
               label: "Active Habits",
               badge: "+2 today",
-              color: "emerald",
+              color: "red",
               delay: 100,
             },
             {
@@ -181,7 +181,7 @@ export default function DashboardPage() {
               value: "12",
               label: "Day Streak",
               badge: "85%",
-              color: "sky",
+              color: "black",
               delay: 150,
             },
             {
@@ -189,7 +189,7 @@ export default function DashboardPage() {
               value: "1,247",
               label: "Achievement Points",
               badge: "Level 3",
-              color: "violet",
+              color: "red",
               delay: 200,
             },
             {
@@ -197,7 +197,7 @@ export default function DashboardPage() {
               value: "2h 15m",
               label: "Time Invested",
               badge: "Today",
-              color: "amber",
+              color: "black",
               delay: 250,
             },
           ].map((stat, index) => (
@@ -205,43 +205,57 @@ export default function DashboardPage() {
               key={index}
               className={`border-3 sm:border-4 rounded-xl sm:rounded-2xl overflow-hidden transition-all duration-500 ease-in-out ${
                 isDarkMode
-                  ? "bg-gradient-to-br from-slate-800/80 to-slate-700/80 border-slate-600"
-                  : `bg-gradient-to-br from-${stat.color}-50 to-${stat.color}-100 border-slate-900`
+                  ? "bg-gradient-to-br from-black/80 to-gray-900/80 border-red-600"
+                  : stat.color === "red"
+                    ? "bg-gradient-to-br from-red-50 to-red-100 border-black"
+                    : "bg-gradient-to-br from-gray-50 to-gray-100 border-black"
               } ${isTransitioning ? "translate-y-1 opacity-90 scale-[0.98]" : "translate-y-0 opacity-100 scale-100"}`}
               style={{ transitionDelay: `${stat.delay}ms` }}
             >
               <div className="p-3 sm:p-4 lg:p-6">
                 <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between mb-2 sm:mb-4">
                   <div
-                    className={`bg-gradient-to-r from-${stat.color}-500 to-${stat.color}-600 p-2 sm:p-3 rounded-lg sm:rounded-xl mb-2 sm:mb-0 w-fit transition-all duration-500 ease-in-out`}
+                    className={`p-2 sm:p-3 rounded-lg sm:rounded-xl mb-2 sm:mb-0 w-fit transition-all duration-500 ease-in-out ${
+                      stat.color === "red"
+                        ? "bg-gradient-to-r from-red-500 to-red-600"
+                        : "bg-gradient-to-r from-black to-gray-800"
+                    }`}
                   >
                     {stat.icon}
                   </div>
                   <div
                     className={`px-2 py-1 rounded-full text-xs font-bold hidden sm:block transition-all duration-500 ease-in-out ${
                       isDarkMode
-                        ? `bg-${stat.color}-500/20 text-${stat.color}-300 border border-${stat.color}-400/30`
-                        : `bg-${stat.color}-200 text-${stat.color}-900`
+                        ? stat.color === "red"
+                          ? "bg-red-600/20 text-red-300 border border-red-500/30"
+                          : "bg-gray-600/20 text-gray-300 border border-gray-500/30"
+                        : stat.color === "red"
+                          ? "bg-red-100 text-red-800 border border-red-200"
+                          : "bg-gray-100 text-gray-800 border border-gray-200"
                     }`}
                   >
                     {stat.badge}
                   </div>
                 </div>
                 <div
-                  className={`text-2xl sm:text-3xl font-black mb-1 transition-colors duration-500 ease-in-out ${isDarkMode ? "text-slate-100" : "text-slate-900"}`}
+                  className={`text-2xl sm:text-3xl font-black mb-1 transition-colors duration-500 ease-in-out ${isDarkMode ? "text-white" : "text-black"}`}
                 >
                   {stat.value}
                 </div>
                 <div
-                  className={`font-semibold text-xs sm:text-sm transition-colors duration-500 ease-in-out ${isDarkMode ? "text-slate-300" : "text-slate-700"}`}
+                  className={`font-semibold text-xs sm:text-sm transition-colors duration-500 ease-in-out ${isDarkMode ? "text-gray-300" : "text-gray-700"}`}
                 >
                   {stat.label}
                 </div>
                 <div
                   className={`px-2 py-1 rounded-full text-xs font-bold mt-2 sm:hidden w-fit transition-all duration-500 ease-in-out ${
                     isDarkMode
-                      ? `bg-${stat.color}-500/20 text-${stat.color}-300 border border-${stat.color}-400/30`
-                      : `bg-${stat.color}-200 text-${stat.color}-900`
+                      ? stat.color === "red"
+                        ? "bg-red-600/20 text-red-300 border border-red-500/30"
+                        : "bg-gray-600/20 text-gray-300 border border-gray-500/30"
+                      : stat.color === "red"
+                        ? "bg-red-100 text-red-800 border border-red-200"
+                        : "bg-gray-100 text-gray-800 border border-gray-200"
                   }`}
                 >
                   {stat.badge}
@@ -251,18 +265,18 @@ export default function DashboardPage() {
           ))}
         </div>
 
-        {/* Main Content Grid - Enhanced Transitions */}
+        {/* Main Content Grid - Black/Red Theme */}
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 lg:gap-8">
           {/* Left Column */}
           <div className="lg:col-span-2 space-y-6 lg:space-y-8">
             {/* Today's Habits */}
             <Card
               className={`backdrop-blur-sm border-3 sm:border-4 rounded-xl sm:rounded-2xl overflow-hidden transition-all duration-500 ease-in-out ${
-                isDarkMode ? "bg-slate-800/90 border-slate-600" : "bg-white/95 border-slate-900"
+                isDarkMode ? "bg-black/90 border-red-600" : "bg-white/95 border-black"
               } ${isTransitioning ? "translate-y-1 opacity-95 scale-[0.99]" : "translate-y-0 opacity-100 scale-100"}`}
               style={{ transitionDelay: "150ms" }}
             >
-              <div className="bg-gradient-to-r from-emerald-500 via-sky-500 to-violet-500 p-4 sm:p-6 text-white transition-all duration-700 ease-in-out">
+              <div className="bg-gradient-to-r from-red-500 via-red-600 to-black p-4 sm:p-6 text-white transition-all duration-700 ease-in-out">
                 <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
                   <div className="flex items-center gap-2 sm:gap-3">
                     <CheckCircle2 className="h-5 w-5 sm:h-6 sm:w-6" />
@@ -286,11 +300,11 @@ export default function DashboardPage() {
             {/* Progress Chart */}
             <Card
               className={`backdrop-blur-sm border-3 sm:border-4 rounded-xl sm:rounded-2xl overflow-hidden transition-all duration-500 ease-in-out ${
-                isDarkMode ? "bg-slate-800/90 border-slate-600" : "bg-white/95 border-slate-900"
+                isDarkMode ? "bg-black/90 border-red-600" : "bg-white/95 border-black"
               } ${isTransitioning ? "translate-y-1 opacity-95 scale-[0.99]" : "translate-y-0 opacity-100 scale-100"}`}
               style={{ transitionDelay: "200ms" }}
             >
-              <div className="bg-gradient-to-r from-sky-500 to-violet-500 p-4 sm:p-6 text-white transition-all duration-700 ease-in-out">
+              <div className="bg-gradient-to-r from-black to-red-600 p-4 sm:p-6 text-white transition-all duration-700 ease-in-out">
                 <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
                   <div className="flex items-center gap-2 sm:gap-3">
                     <BarChart3 className="h-5 w-5 sm:h-6 sm:w-6" />
@@ -325,7 +339,7 @@ export default function DashboardPage() {
             {/* AI Guide */}
             <div
               className={`backdrop-blur-sm border-3 sm:border-4 rounded-xl sm:rounded-2xl overflow-hidden transition-all duration-500 ease-in-out ${
-                isDarkMode ? "bg-slate-800/90 border-slate-600" : "bg-white/95 border-slate-900"
+                isDarkMode ? "bg-black/90 border-red-600" : "bg-white/95 border-black"
               } ${isTransitioning ? "translate-y-1 opacity-95 scale-[0.99]" : "translate-y-0 opacity-100 scale-100"}`}
               style={{ transitionDelay: "250ms" }}
             >
@@ -335,7 +349,7 @@ export default function DashboardPage() {
             {/* Integration Status */}
             <div
               className={`backdrop-blur-sm border-3 sm:border-4 rounded-xl sm:rounded-2xl overflow-hidden transition-all duration-500 ease-in-out ${
-                isDarkMode ? "bg-slate-800/90 border-slate-600" : "bg-white/95 border-slate-900"
+                isDarkMode ? "bg-black/90 border-red-600" : "bg-white/95 border-black"
               } ${isTransitioning ? "translate-y-1 opacity-95 scale-[0.99]" : "translate-y-0 opacity-100 scale-100"}`}
               style={{ transitionDelay: "300ms" }}
             >
@@ -346,12 +360,12 @@ export default function DashboardPage() {
             <Card
               className={`border-3 sm:border-4 rounded-xl sm:rounded-2xl overflow-hidden transition-all duration-500 ease-in-out ${
                 isDarkMode
-                  ? "bg-gradient-to-br from-slate-800/80 to-slate-700/80 border-slate-600"
-                  : "bg-gradient-to-br from-rose-50 to-rose-100 border-slate-900"
+                  ? "bg-gradient-to-br from-black/80 to-gray-900/80 border-red-600"
+                  : "bg-gradient-to-br from-red-50 to-red-100 border-black"
               } ${isTransitioning ? "translate-y-1 opacity-95 scale-[0.99]" : "translate-y-0 opacity-100 scale-100"}`}
               style={{ transitionDelay: "350ms" }}
             >
-              <div className="bg-gradient-to-r from-rose-500 to-rose-600 p-4 text-white transition-all duration-700 ease-in-out">
+              <div className="bg-gradient-to-r from-red-500 to-red-600 p-4 text-white transition-all duration-700 ease-in-out">
                 <h2 className="text-lg font-bold flex items-center gap-2">
                   <Zap className="h-5 w-5" />
                   Quick Actions
@@ -373,8 +387,8 @@ export default function DashboardPage() {
                       variant="outline"
                       className={`w-full justify-start gap-3 rounded-xl border-2 font-bold min-h-[44px] text-sm transition-all duration-500 ease-in-out ${
                         isDarkMode
-                          ? "border-slate-600 hover:bg-slate-700/50 text-slate-200 bg-slate-800/50"
-                          : "border-slate-900 hover:bg-rose-50 text-slate-900"
+                          ? "border-red-600 hover:bg-red-950/50 text-red-400 bg-black/50"
+                          : "border-black hover:bg-red-50 text-black"
                       } ${isTransitioning ? "translate-y-1 opacity-90" : "translate-y-0 opacity-100"}`}
                       style={{ transitionDelay: `${400 + index * 50}ms` }}
                     >

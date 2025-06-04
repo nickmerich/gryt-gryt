@@ -12,15 +12,19 @@ import {
   Filter,
   CheckCircle2,
   Target,
-  Calendar,
   Clock,
   BarChart2,
   ArrowRight,
   Trash2,
   Edit,
   MoreHorizontal,
+  Trophy,
+  Flame,
+  CalendarDays,
 } from "lucide-react"
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "@/components/ui/dropdown-menu"
+import HabitCalendar from "@/components/dashboard/habit-calendar"
+import GamificationDashboard from "@/components/dashboard/gamification-dashboard"
 
 interface Habit {
   id: number
@@ -36,6 +40,7 @@ interface Habit {
 
 export default function HabitsPage() {
   const [searchQuery, setSearchQuery] = useState("")
+  const [activeView, setActiveView] = useState<"list" | "calendar" | "gamification">("list")
   const [habits, setHabits] = useState<Habit[]>([
     {
       id: 1,
@@ -114,35 +119,30 @@ export default function HabitsPage() {
     },
   ])
 
+  const toggleHabit = (id: number) => {
+    setHabits(
+      habits.map((habit) =>
+        habit.id === id ? { ...habit, completed: !habit.completed, progress: habit.completed ? 0 : 100 } : habit,
+      ),
+    )
+  }
+
   const getCategoryColor = (category: string) => {
     switch (category) {
       case "Mindfulness":
-        return "bg-purple-100 text-purple-800"
-      case "Learning":
-        return "bg-blue-100 text-blue-800"
-      case "Fitness":
-        return "bg-green-100 text-green-800"
-      case "Health":
         return "bg-red-100 text-red-800"
+      case "Learning":
+        return "bg-gray-100 text-gray-800"
+      case "Fitness":
+        return "bg-red-50 text-red-700"
+      case "Health":
+        return "bg-gray-50 text-gray-700"
       case "Reflection":
-        return "bg-yellow-100 text-yellow-800"
+        return "bg-red-200 text-red-900"
       case "Productivity":
-        return "bg-indigo-100 text-indigo-800"
+        return "bg-gray-200 text-gray-900"
       default:
         return "bg-gray-100 text-gray-800"
-    }
-  }
-
-  const getFrequencyIcon = (frequency: string) => {
-    switch (frequency) {
-      case "daily":
-        return <Calendar className="h-3 w-3 mr-1" />
-      case "weekly":
-        return <Calendar className="h-3 w-3 mr-1" />
-      case "monthly":
-        return <Calendar className="h-3 w-3 mr-1" />
-      default:
-        return <Calendar className="h-3 w-3 mr-1" />
     }
   }
 
@@ -156,255 +156,282 @@ export default function HabitsPage() {
   const weeklyHabits = filteredHabits.filter((habit) => habit.frequency === "weekly")
   const monthlyHabits = filteredHabits.filter((habit) => habit.frequency === "monthly")
 
+  const completedToday = habits.filter((h) => h.completed).length
+  const totalHabits = habits.length
+  const completionRate = totalHabits > 0 ? (completedToday / totalHabits) * 100 : 0
+
   return (
     <div className="space-y-6 pb-8">
       <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
-        <h1 className="text-2xl sm:text-3xl font-black">Habit Tracker</h1>
+        <div>
+          <h1 className="text-2xl sm:text-3xl font-black text-black">Habit Tracker</h1>
+          <p className="text-gray-600 mt-1">
+            {completedToday} of {totalHabits} habits completed today ({completionRate.toFixed(0)}%)
+          </p>
+        </div>
         <Link href="/dashboard/habits/new">
-          <Button className="bg-black hover:bg-black/80 text-white rounded-xl border-2 border-black font-bold shadow-[4px_4px_0px_0px_rgba(0,0,0,1)]">
+          <Button className="bg-red-500 hover:bg-red-600 text-white rounded-xl border-2 border-black font-bold shadow-[4px_4px_0px_0px_rgba(0,0,0,1)]">
             <Plus className="h-4 w-4 mr-2" /> Add New Habit
           </Button>
         </Link>
       </div>
 
+      {/* View Toggle */}
       <Card className="border-4 border-black rounded-xl p-4 shadow-[4px_4px_0px_0px_rgba(0,0,0,1)]">
-        <div className="flex flex-col sm:flex-row gap-4 mb-6">
-          <div className="relative flex-1">
-            <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-gray-400" />
-            <Input
-              placeholder="Search habits..."
-              className="pl-9 border-2 border-black rounded-xl"
-              value={searchQuery}
-              onChange={(e) => setSearchQuery(e.target.value)}
-            />
-          </div>
-          <Button variant="outline" className="rounded-xl border-2 border-black font-bold">
-            <Filter className="h-4 w-4 mr-2" /> Filter
+        <div className="flex flex-wrap gap-2">
+          <Button
+            variant={activeView === "list" ? "default" : "outline"}
+            onClick={() => setActiveView("list")}
+            className={`rounded-xl border-2 border-black font-bold ${
+              activeView === "list" ? "bg-red-500 hover:bg-red-600 text-white" : "bg-white hover:bg-red-50 text-black"
+            }`}
+          >
+            <Target className="h-4 w-4 mr-2" />
+            Habits List
+          </Button>
+          <Button
+            variant={activeView === "calendar" ? "default" : "outline"}
+            onClick={() => setActiveView("calendar")}
+            className={`rounded-xl border-2 border-black font-bold ${
+              activeView === "calendar"
+                ? "bg-red-500 hover:bg-red-600 text-white"
+                : "bg-white hover:bg-red-50 text-black"
+            }`}
+          >
+            <CalendarDays className="h-4 w-4 mr-2" />
+            Calendar View
+          </Button>
+          <Button
+            variant={activeView === "gamification" ? "default" : "outline"}
+            onClick={() => setActiveView("gamification")}
+            className={`rounded-xl border-2 border-black font-bold ${
+              activeView === "gamification"
+                ? "bg-red-500 hover:bg-red-600 text-white"
+                : "bg-white hover:bg-red-50 text-black"
+            }`}
+          >
+            <Trophy className="h-4 w-4 mr-2" />
+            Achievements
           </Button>
         </div>
-
-        <Tabs defaultValue="all">
-          <TabsList className="bg-white/50 border-2 border-black rounded-xl p-1 mb-4">
-            <TabsTrigger
-              value="all"
-              className="rounded-lg data-[state=active]:bg-black data-[state=active]:text-white font-bold"
-            >
-              All Habits
-            </TabsTrigger>
-            <TabsTrigger
-              value="daily"
-              className="rounded-lg data-[state=active]:bg-black data-[state=active]:text-white font-bold"
-            >
-              Daily
-            </TabsTrigger>
-            <TabsTrigger
-              value="weekly"
-              className="rounded-lg data-[state=active]:bg-black data-[state=active]:text-white font-bold"
-            >
-              Weekly
-            </TabsTrigger>
-            <TabsTrigger
-              value="monthly"
-              className="rounded-lg data-[state=active]:bg-black data-[state=active]:text-white font-bold"
-            >
-              Monthly
-            </TabsTrigger>
-          </TabsList>
-
-          <TabsContent value="all" className="space-y-4">
-            {filteredHabits.length > 0 ? (
-              filteredHabits.map((habit) => <HabitCard key={habit.id} habit={habit} />)
-            ) : (
-              <EmptyState query={searchQuery} />
-            )}
-          </TabsContent>
-
-          <TabsContent value="daily" className="space-y-4">
-            {dailyHabits.length > 0 ? (
-              dailyHabits.map((habit) => <HabitCard key={habit.id} habit={habit} />)
-            ) : (
-              <EmptyState frequency="daily" query={searchQuery} />
-            )}
-          </TabsContent>
-
-          <TabsContent value="weekly" className="space-y-4">
-            {weeklyHabits.length > 0 ? (
-              weeklyHabits.map((habit) => <HabitCard key={habit.id} habit={habit} />)
-            ) : (
-              <EmptyState frequency="weekly" query={searchQuery} />
-            )}
-          </TabsContent>
-
-          <TabsContent value="monthly" className="space-y-4">
-            {monthlyHabits.length > 0 ? (
-              monthlyHabits.map((habit) => <HabitCard key={habit.id} habit={habit} />)
-            ) : (
-              <EmptyState frequency="monthly" query={searchQuery} />
-            )}
-          </TabsContent>
-        </Tabs>
       </Card>
 
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-        <Card className="border-4 border-black rounded-xl overflow-hidden shadow-[8px_8px_0px_0px_rgba(0,0,0,1)]">
-          <div className="bg-gradient-to-r from-purple-500 to-blue-500 p-4 text-white">
-            <h2 className="text-lg font-bold">Habit Streaks</h2>
-          </div>
-          <div className="p-4">
-            <div className="space-y-3">
-              {habits
-                .sort((a, b) => b.streak - a.streak)
-                .slice(0, 3)
-                .map((habit) => (
-                  <div
-                    key={habit.id}
-                    className="flex items-center justify-between border-2 border-black rounded-xl p-3"
-                  >
-                    <div className="flex items-center gap-3">
-                      <div className="bg-amber-100 p-2 rounded-full">
-                        <Target className="h-4 w-4 text-amber-600" />
-                      </div>
-                      <span className="font-bold">{habit.name}</span>
-                    </div>
-                    <div className="flex items-center gap-1 bg-amber-100 px-3 py-1 rounded-full text-amber-800 font-bold">
-                      <span>{habit.streak}</span>
-                      <span className="text-xs">days</span>
-                    </div>
-                  </div>
-                ))}
+      {activeView === "list" && (
+        <>
+          <Card className="border-4 border-black rounded-xl p-4 shadow-[4px_4px_0px_0px_rgba(0,0,0,1)]">
+            <div className="flex flex-col sm:flex-row gap-4 mb-6">
+              <div className="relative flex-1">
+                <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-gray-400" />
+                <Input
+                  placeholder="Search habits..."
+                  className="pl-9 border-2 border-black rounded-xl"
+                  value={searchQuery}
+                  onChange={(e) => setSearchQuery(e.target.value)}
+                />
+              </div>
+              <Button variant="outline" className="rounded-xl border-2 border-black font-bold hover:bg-red-50">
+                <Filter className="h-4 w-4 mr-2" /> Filter
+              </Button>
             </div>
-            <div className="mt-4 text-center">
-              <Link href="/dashboard/analytics">
-                <Button variant="link" className="text-purple-600">
-                  View detailed analytics <ArrowRight className="h-4 w-4 ml-1" />
-                </Button>
-              </Link>
-            </div>
-          </div>
-        </Card>
 
-        <Card className="border-4 border-black rounded-xl overflow-hidden shadow-[8px_8px_0px_0px_rgba(0,0,0,1)]">
-          <div className="bg-gradient-to-r from-green-500 to-teal-500 p-4 text-white">
-            <h2 className="text-lg font-bold">Completion Rate</h2>
-          </div>
-          <div className="p-4">
-            <div className="flex items-center justify-center h-40">
-              <div className="relative w-32 h-32">
-                <svg className="w-full h-full" viewBox="0 0 100 100">
-                  <circle
-                    className="text-gray-200"
-                    strokeWidth="10"
-                    stroke="currentColor"
-                    fill="transparent"
-                    r="40"
-                    cx="50"
-                    cy="50"
-                  />
-                  <circle
-                    className="text-green-500"
-                    strokeWidth="10"
-                    strokeDasharray={`${(3 / 5) * 251.2} 251.2`}
-                    strokeLinecap="round"
-                    stroke="currentColor"
-                    fill="transparent"
-                    r="40"
-                    cx="50"
-                    cy="50"
-                  />
-                </svg>
-                <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 text-center">
-                  <div className="text-3xl font-bold">60%</div>
-                  <div className="text-xs text-gray-500">Today</div>
+            <Tabs defaultValue="all">
+              <TabsList className="bg-white/50 border-2 border-black rounded-xl p-1 mb-4">
+                <TabsTrigger
+                  value="all"
+                  className="rounded-lg data-[state=active]:bg-red-500 data-[state=active]:text-white font-bold"
+                >
+                  All Habits
+                </TabsTrigger>
+                <TabsTrigger
+                  value="daily"
+                  className="rounded-lg data-[state=active]:bg-red-500 data-[state=active]:text-white font-bold"
+                >
+                  Daily
+                </TabsTrigger>
+                <TabsTrigger
+                  value="weekly"
+                  className="rounded-lg data-[state=active]:bg-red-500 data-[state=active]:text-white font-bold"
+                >
+                  Weekly
+                </TabsTrigger>
+                <TabsTrigger
+                  value="monthly"
+                  className="rounded-lg data-[state=active]:bg-red-500 data-[state=active]:text-white font-bold"
+                >
+                  Monthly
+                </TabsTrigger>
+              </TabsList>
+
+              <TabsContent value="all" className="space-y-4">
+                {filteredHabits.length > 0 ? (
+                  filteredHabits.map((habit) => <HabitCard key={habit.id} habit={habit} onToggle={toggleHabit} />)
+                ) : (
+                  <EmptyState query={searchQuery} />
+                )}
+              </TabsContent>
+
+              <TabsContent value="daily" className="space-y-4">
+                {dailyHabits.length > 0 ? (
+                  dailyHabits.map((habit) => <HabitCard key={habit.id} habit={habit} onToggle={toggleHabit} />)
+                ) : (
+                  <EmptyState frequency="daily" query={searchQuery} />
+                )}
+              </TabsContent>
+
+              <TabsContent value="weekly" className="space-y-4">
+                {weeklyHabits.length > 0 ? (
+                  weeklyHabits.map((habit) => <HabitCard key={habit.id} habit={habit} onToggle={toggleHabit} />)
+                ) : (
+                  <EmptyState frequency="weekly" query={searchQuery} />
+                )}
+              </TabsContent>
+
+              <TabsContent value="monthly" className="space-y-4">
+                {monthlyHabits.length > 0 ? (
+                  monthlyHabits.map((habit) => <HabitCard key={habit.id} habit={habit} onToggle={toggleHabit} />)
+                ) : (
+                  <EmptyState frequency="monthly" query={searchQuery} />
+                )}
+              </TabsContent>
+            </Tabs>
+          </Card>
+
+          {/* Stats Cards */}
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+            <Card className="border-4 border-black rounded-xl overflow-hidden shadow-[8px_8px_0px_0px_rgba(0,0,0,1)]">
+              <div className="bg-gradient-to-r from-red-500 to-red-600 p-4 text-white">
+                <h2 className="text-lg font-bold">Habit Streaks</h2>
+              </div>
+              <div className="p-4">
+                <div className="space-y-3">
+                  {habits
+                    .sort((a, b) => b.streak - a.streak)
+                    .slice(0, 3)
+                    .map((habit) => (
+                      <div
+                        key={habit.id}
+                        className="flex items-center justify-between border-2 border-black rounded-xl p-3"
+                      >
+                        <div className="flex items-center gap-3">
+                          <div className="bg-red-100 p-2 rounded-full">
+                            <Flame className="h-4 w-4 text-red-600" />
+                          </div>
+                          <span className="font-bold">{habit.name}</span>
+                        </div>
+                        <div className="flex items-center gap-1 bg-red-100 px-3 py-1 rounded-full text-red-800 font-bold">
+                          <span>{habit.streak}</span>
+                          <span className="text-xs">days</span>
+                        </div>
+                      </div>
+                    ))}
+                </div>
+                <div className="mt-4 text-center">
+                  <Button variant="link" className="text-red-600" onClick={() => setActiveView("gamification")}>
+                    View achievements <ArrowRight className="h-4 w-4 ml-1" />
+                  </Button>
                 </div>
               </div>
-            </div>
-            <div className="text-center mt-4">
-              <p className="text-sm text-gray-600 mb-2">3 of 5 habits completed today</p>
-              <Link href="/dashboard/analytics">
-                <Button variant="link" className="text-green-600">
-                  View history <ArrowRight className="h-4 w-4 ml-1" />
-                </Button>
-              </Link>
-            </div>
+            </Card>
+
+            <Card className="border-4 border-black rounded-xl overflow-hidden shadow-[8px_8px_0px_0px_rgba(0,0,0,1)]">
+              <div className="bg-gradient-to-r from-black to-gray-800 p-4 text-white">
+                <h2 className="text-lg font-bold">Completion Rate</h2>
+              </div>
+              <div className="p-4">
+                <div className="flex items-center justify-center h-40">
+                  <div className="relative w-32 h-32">
+                    <svg className="w-full h-full" viewBox="0 0 100 100">
+                      <circle
+                        className="text-gray-200"
+                        strokeWidth="10"
+                        stroke="currentColor"
+                        fill="transparent"
+                        r="40"
+                        cx="50"
+                        cy="50"
+                      />
+                      <circle
+                        className="text-red-500"
+                        strokeWidth="10"
+                        strokeDasharray={`${(completedToday / totalHabits) * 251.2} 251.2`}
+                        strokeLinecap="round"
+                        stroke="currentColor"
+                        fill="transparent"
+                        r="40"
+                        cx="50"
+                        cy="50"
+                      />
+                    </svg>
+                    <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 text-center">
+                      <div className="text-3xl font-bold">{completionRate.toFixed(0)}%</div>
+                      <div className="text-xs text-gray-500">Today</div>
+                    </div>
+                  </div>
+                </div>
+                <div className="text-center mt-4">
+                  <p className="text-sm text-gray-600 mb-2">
+                    {completedToday} of {totalHabits} habits completed today
+                  </p>
+                  <Button variant="link" className="text-red-600" onClick={() => setActiveView("calendar")}>
+                    View calendar <ArrowRight className="h-4 w-4 ml-1" />
+                  </Button>
+                </div>
+              </div>
+            </Card>
+
+            <Card className="border-4 border-black rounded-xl overflow-hidden shadow-[8px_8px_0px_0px_rgba(0,0,0,1)]">
+              <div className="bg-gradient-to-r from-red-500 to-red-600 p-4 text-white">
+                <h2 className="text-lg font-bold">Habit Categories</h2>
+              </div>
+              <div className="p-4">
+                <div className="space-y-3">
+                  {["Mindfulness", "Learning", "Fitness", "Health", "Reflection", "Productivity"].map((category) => {
+                    const categoryHabits = habits.filter((h) => h.category === category)
+                    const percentage = (categoryHabits.length / habits.length) * 100
+
+                    return (
+                      <div key={category}>
+                        <div className="flex items-center justify-between">
+                          <span className="font-bold text-sm">{category}</span>
+                          <span className="text-sm">
+                            {categoryHabits.length} habit{categoryHabits.length !== 1 ? "s" : ""}
+                          </span>
+                        </div>
+                        <div className="w-full bg-gray-200 rounded-full h-2">
+                          <div className="bg-red-500 h-2 rounded-full" style={{ width: `${percentage}%` }}></div>
+                        </div>
+                      </div>
+                    )
+                  })}
+                </div>
+              </div>
+            </Card>
           </div>
-        </Card>
+        </>
+      )}
 
-        <Card className="border-4 border-black rounded-xl overflow-hidden shadow-[8px_8px_0px_0px_rgba(0,0,0,1)]">
-          <div className="bg-gradient-to-r from-blue-500 to-indigo-500 p-4 text-white">
-            <h2 className="text-lg font-bold">Habit Categories</h2>
-          </div>
-          <div className="p-4">
-            <div className="space-y-3">
-              <div className="flex items-center justify-between">
-                <span className="font-bold text-sm">Mindfulness</span>
-                <span className="text-sm">1 habit</span>
-              </div>
-              <div className="w-full bg-gray-200 rounded-full h-2">
-                <div className="bg-purple-500 h-2 rounded-full" style={{ width: "14%" }}></div>
-              </div>
+      {activeView === "calendar" && <HabitCalendar habits={habits} />}
 
-              <div className="flex items-center justify-between">
-                <span className="font-bold text-sm">Learning</span>
-                <span className="text-sm">2 habits</span>
-              </div>
-              <div className="w-full bg-gray-200 rounded-full h-2">
-                <div className="bg-blue-500 h-2 rounded-full" style={{ width: "29%" }}></div>
-              </div>
-
-              <div className="flex items-center justify-between">
-                <span className="font-bold text-sm">Fitness</span>
-                <span className="text-sm">1 habit</span>
-              </div>
-              <div className="w-full bg-gray-200 rounded-full h-2">
-                <div className="bg-green-500 h-2 rounded-full" style={{ width: "14%" }}></div>
-              </div>
-
-              <div className="flex items-center justify-between">
-                <span className="font-bold text-sm">Health</span>
-                <span className="text-sm">1 habit</span>
-              </div>
-              <div className="w-full bg-gray-200 rounded-full h-2">
-                <div className="bg-red-500 h-2 rounded-full" style={{ width: "14%" }}></div>
-              </div>
-
-              <div className="flex items-center justify-between">
-                <span className="font-bold text-sm">Reflection</span>
-                <span className="text-sm">1 habit</span>
-              </div>
-              <div className="w-full bg-gray-200 rounded-full h-2">
-                <div className="bg-yellow-500 h-2 rounded-full" style={{ width: "14%" }}></div>
-              </div>
-
-              <div className="flex items-center justify-between">
-                <span className="font-bold text-sm">Productivity</span>
-                <span className="text-sm">1 habit</span>
-              </div>
-              <div className="w-full bg-gray-200 rounded-full h-2">
-                <div className="bg-indigo-500 h-2 rounded-full" style={{ width: "14%" }}></div>
-              </div>
-            </div>
-          </div>
-        </Card>
-      </div>
+      {activeView === "gamification" && <GamificationDashboard />}
     </div>
   )
 }
 
-function HabitCard({ habit }: { habit: Habit }) {
+function HabitCard({ habit, onToggle }: { habit: Habit; onToggle: (id: number) => void }) {
   const getCategoryColor = (category: string) => {
     switch (category) {
       case "Mindfulness":
-        return "bg-purple-100 text-purple-800"
-      case "Learning":
-        return "bg-blue-100 text-blue-800"
-      case "Fitness":
-        return "bg-green-100 text-green-800"
-      case "Health":
         return "bg-red-100 text-red-800"
+      case "Learning":
+        return "bg-gray-100 text-gray-800"
+      case "Fitness":
+        return "bg-red-50 text-red-700"
+      case "Health":
+        return "bg-gray-50 text-gray-700"
       case "Reflection":
-        return "bg-yellow-100 text-yellow-800"
+        return "bg-red-200 text-red-900"
       case "Productivity":
-        return "bg-indigo-100 text-indigo-800"
+        return "bg-gray-200 text-gray-900"
       default:
         return "bg-gray-100 text-gray-800"
     }
@@ -413,22 +440,29 @@ function HabitCard({ habit }: { habit: Habit }) {
   return (
     <div
       className={`
-      border-2 border-black rounded-xl p-4 transition-all
-      ${habit.completed ? "bg-green-50" : "bg-white"}
+      border-2 border-black rounded-xl p-4 transition-all hover:shadow-[4px_4px_0px_0px_rgba(0,0,0,1)]
+      ${habit.completed ? "bg-red-50" : "bg-white"}
     `}
     >
       <div className="flex items-center justify-between">
         <div className="flex items-center space-x-3">
-          <Button variant="ghost" size="sm" className="p-0 h-auto">
+          <Button
+            variant="ghost"
+            size="sm"
+            className="p-0 h-auto min-w-[44px] min-h-[44px] flex items-center justify-center"
+            onClick={() => onToggle(habit.id)}
+          >
             {habit.completed ? (
-              <CheckCircle2 className="h-6 w-6 text-green-500" />
+              <CheckCircle2 className="h-6 w-6 text-red-500" />
             ) : (
-              <div className="h-6 w-6 border-2 border-gray-300 rounded-full" />
+              <div className="h-6 w-6 border-2 border-gray-300 rounded-full hover:border-red-500 transition-colors" />
             )}
           </Button>
 
           <div>
-            <h3 className={`font-bold ${habit.completed ? "line-through text-gray-500" : ""}`}>{habit.name}</h3>
+            <h3 className={`font-bold ${habit.completed ? "line-through text-gray-500" : "text-black"}`}>
+              {habit.name}
+            </h3>
             <div className="flex items-center gap-2 mt-1">
               <span className={`text-xs px-2 py-1 rounded-full ${getCategoryColor(habit.category)}`}>
                 {habit.category}
@@ -451,7 +485,10 @@ function HabitCard({ habit }: { habit: Habit }) {
 
         <div className="flex items-center gap-3">
           <div className="text-right">
-            <div className="text-sm font-bold">{habit.streak} day streak</div>
+            <div className="text-sm font-bold flex items-center gap-1">
+              <Flame className="h-4 w-4 text-red-500" />
+              {habit.streak} day streak
+            </div>
             <div className="text-xs text-gray-500">{habit.completed ? "Completed" : "Pending"}</div>
           </div>
 
@@ -483,7 +520,7 @@ function HabitCard({ habit }: { habit: Habit }) {
             <span>{habit.progress}%</span>
           </div>
           <div className="w-full bg-gray-200 rounded-full h-2">
-            <div className="bg-blue-500 h-2 rounded-full" style={{ width: `${habit.progress}%` }}></div>
+            <div className="bg-red-500 h-2 rounded-full" style={{ width: `${habit.progress}%` }}></div>
           </div>
         </div>
       )}
@@ -500,7 +537,7 @@ function EmptyState({ frequency, query }: { frequency?: string; query: string })
         <p className="text-gray-500 mb-4">No habits match your search for "{query}"</p>
         <Button
           variant="outline"
-          className="rounded-xl border-2 border-black font-bold"
+          className="rounded-xl border-2 border-black font-bold hover:bg-red-50"
           onClick={() => window.location.reload()}
         >
           Clear search
@@ -515,7 +552,7 @@ function EmptyState({ frequency, query }: { frequency?: string; query: string })
       <h3 className="font-bold text-gray-500 mb-2">No {frequency} habits yet</h3>
       <p className="text-gray-500 mb-4">Create your first {frequency} habit to start tracking</p>
       <Link href="/dashboard/habits/new">
-        <Button className="bg-black hover:bg-black/80 text-white rounded-xl border-2 border-black font-bold">
+        <Button className="bg-red-500 hover:bg-red-600 text-white rounded-xl border-2 border-black font-bold">
           <Plus className="h-4 w-4 mr-2" /> Add New Habit
         </Button>
       </Link>

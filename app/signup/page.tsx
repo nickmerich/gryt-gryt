@@ -80,7 +80,6 @@ export default function SignupPage() {
                   <span className="text-xs mt-1">{i === 1 ? "Account" : i === 2 ? "Profile" : "Goals"}</span>
                 </div>
               ))}
-              <div className="h-1 bg-black absolute w-1/3 left-1/3 z-0" style={{ top: "calc(50% - 0.5px)" }}></div>
             </div>
           </div>
 

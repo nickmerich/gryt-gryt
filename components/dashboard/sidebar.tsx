@@ -20,9 +20,9 @@ export default function Sidebar() {
   const isActive = (path: string) => pathname === path
 
   return (
-    <div className="hidden md:flex md:flex-col md:w-64 bg-white border-r-4 border-black">
-      <div className="p-4 border-b-4 border-black flex justify-center">
-        <Link href="/" className="text-xl font-black">
+    <div className="hidden md:flex md:flex-col md:w-64 bg-black border-r-4 border-red-600">
+      <div className="p-6 border-b-4 border-red-600 flex justify-center">
+        <Link href="/" className="text-2xl font-black text-white">
           GRYT
         </Link>
       </div>
@@ -33,8 +33,10 @@ export default function Sidebar() {
             <Link key={item.name} href={item.href}>
               <Button
                 variant={isActive(item.href) ? "default" : "ghost"}
-                className={`w-full justify-start gap-2 rounded-xl font-bold ${
-                  isActive(item.href) ? "bg-black hover:bg-black/80 text-white" : "hover:bg-gray-100"
+                className={`w-full justify-start gap-3 rounded-xl font-bold text-base py-3 transition-all duration-300 ${
+                  isActive(item.href)
+                    ? "bg-red-600 hover:bg-red-700 text-white shadow-[4px_4px_0px_0px_rgba(0,0,0,0.3)]"
+                    : "text-gray-300 hover:bg-gray-800 hover:text-white"
                 }`}
               >
                 <item.icon className="h-5 w-5" />
@@ -45,12 +47,14 @@ export default function Sidebar() {
         </nav>
       </div>
 
-      <div className="p-4 border-t-4 border-black">
+      <div className="p-4 border-t-4 border-red-600">
         <Link href="/dashboard/settings">
           <Button
             variant={isActive("/dashboard/settings") ? "default" : "ghost"}
-            className={`w-full justify-start gap-2 rounded-xl font-bold mb-2 ${
-              isActive("/dashboard/settings") ? "bg-black hover:bg-black/80 text-white" : "hover:bg-gray-100"
+            className={`w-full justify-start gap-3 rounded-xl font-bold mb-3 text-base py-3 transition-all duration-300 ${
+              isActive("/dashboard/settings")
+                ? "bg-red-600 hover:bg-red-700 text-white shadow-[4px_4px_0px_0px_rgba(0,0,0,0.3)]"
+                : "text-gray-300 hover:bg-gray-800 hover:text-white"
             }`}
           >
             <Settings className="h-5 w-5" />
@@ -60,7 +64,7 @@ export default function Sidebar() {
         <Link href="/">
           <Button
             variant="ghost"
-            className="w-full justify-start gap-2 rounded-xl font-bold text-red-600 hover:bg-red-50 hover:text-red-700"
+            className="w-full justify-start gap-3 rounded-xl font-bold text-red-400 hover:bg-red-900 hover:text-red-300 text-base py-3 transition-all duration-300"
           >
             <LogOut className="h-5 w-5" />
             Log Out

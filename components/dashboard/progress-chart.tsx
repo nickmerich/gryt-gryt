@@ -46,10 +46,10 @@ export default function ProgressChart({ period, isDarkMode = false }: ProgressCh
   return (
     <div className="space-y-4">
       <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center gap-2">
-        <h3 className={`font-bold text-sm sm:text-base ${isDarkMode ? "text-slate-200" : "text-slate-900"}`}>
+        <h3 className={`font-bold text-sm sm:text-base ${isDarkMode ? "text-white" : "text-black"}`}>
           Habit Completion Rate
         </h3>
-        <span className={`text-sm font-medium ${isDarkMode ? "text-slate-400" : "text-slate-600"}`}>
+        <span className={`text-sm font-medium ${isDarkMode ? "text-gray-400" : "text-gray-600"}`}>
           {period === "week" ? "This Week" : period === "month" ? "This Month" : "This Year"}
         </span>
       </div>
@@ -60,13 +60,13 @@ export default function ProgressChart({ period, isDarkMode = false }: ProgressCh
             <div
               className={`w-full rounded-t-lg sm:rounded-t-xl relative border-2 ${
                 isDarkMode
-                  ? "bg-gradient-to-t from-slate-700 to-slate-600 border-slate-500"
-                  : "bg-gradient-to-t from-slate-200 to-slate-300 border-slate-400"
+                  ? "bg-gradient-to-t from-gray-800 to-gray-700 border-red-600"
+                  : "bg-gradient-to-t from-gray-200 to-gray-300 border-black"
               }`}
               style={{ height: "120px" }}
             >
               <div
-                className="bg-gradient-to-t from-emerald-400 via-sky-400 to-violet-400 rounded-t-lg sm:rounded-t-xl transition-all duration-500 ease-out shadow-inner"
+                className="bg-gradient-to-t from-red-500 via-red-400 to-red-300 rounded-t-lg sm:rounded-t-xl transition-all duration-500 ease-out shadow-inner"
                 style={{
                   height: `${(item.value / maxValue) * 100}%`,
                   position: "absolute",
@@ -79,7 +79,7 @@ export default function ProgressChart({ period, isDarkMode = false }: ProgressCh
                 {item.value}%
               </div>
             </div>
-            <span className={`text-xs font-semibold mt-2 ${isDarkMode ? "text-slate-300" : "text-slate-700"}`}>
+            <span className={`text-xs font-semibold mt-2 ${isDarkMode ? "text-gray-300" : "text-gray-700"}`}>
               {item.label}
             </span>
           </div>
@@ -87,7 +87,7 @@ export default function ProgressChart({ period, isDarkMode = false }: ProgressCh
       </div>
 
       <div className="text-center">
-        <p className={`text-sm font-medium ${isDarkMode ? "text-slate-300" : "text-slate-700"}`}>
+        <p className={`text-sm font-medium ${isDarkMode ? "text-gray-300" : "text-gray-700"}`}>
           Average completion rate: {Math.round(data.reduce((acc, item) => acc + item.value, 0) / data.length)}%
         </p>
       </div>
