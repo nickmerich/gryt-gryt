@@ -1,0 +1,150 @@
+"use client"
+
+import { useState } from "react"
+import { Button } from "@/components/ui/button"
+import { Sparkles, TrendingUp, AlertCircle, Lightbulb, X } from "lucide-react"
+
+interface Insight {
+  id: number
+  type: "tip" | "warning" | "achievement" | "suggestion"
+  title: string
+  message: string
+  action?: string
+}
+
+interface AiGuideProps {
+  isDarkMode?: boolean
+}
+
+export default function AiGuide({ isDarkMode = false }: AiGuideProps) {
+  const [insights, setInsights] = useState<Insight[]>([
+    {
+      id: 1,
+      type: "achievement",
+      title: "Great streak!",
+      message: "You've maintained your meditation habit for 12 days straight. Keep it up!",
+    },
+    {
+      id: 2,
+      type: "suggestion",
+      title: "Optimize your routine",
+      message: "Consider moving your exercise to the morning for better consistency.",
+      action: "Reschedule",
+    },
+    {
+      id: 3,
+      type: "warning",
+      title: "Hydration reminder",
+      message: "You've missed your water intake goal 3 times this week.",
+      action: "Set reminder",
+    },
+  ])
+
+  const dismissInsight = (id: number) => {
+    setInsights(insights.filter((insight) => insight.id !== id))
+  }
+
+  const getInsightIcon = (type: string) => {
+    switch (type) {
+      case "achievement":
+        return <TrendingUp className="h-5 w-5 text-emerald-500" />
+      case "warning":
+        return <AlertCircle className="h-5 w-5 text-rose-500" />
+      case "suggestion":
+        return <Lightbulb className="h-5 w-5 text-amber-500" />
+      default:
+        return <Sparkles className="h-5 w-5 text-violet-500" />
+    }
+  }
+
+  const getInsightColor = (type: string) => {
+    if (isDarkMode) {
+      switch (type) {
+        case "achievement":
+          return "border-2 border-emerald-400/40 bg-gradient-to-br from-emerald-500/20 to-emerald-600/20"
+        case "warning":
+          return "border-2 border-rose-400/40 bg-gradient-to-br from-rose-500/20 to-rose-600/20"
+        case "suggestion":
+          return "border-2 border-amber-400/40 bg-gradient-to-br from-amber-500/20 to-amber-600/20"
+        default:
+          return "border-2 border-violet-400/40 bg-gradient-to-br from-violet-500/20 to-violet-600/20"
+      }
+    } else {
+      switch (type) {
+        case "achievement":
+          return "border-2 border-emerald-400 bg-gradient-to-br from-emerald-50 to-emerald-100"
+        case "warning":
+          return "border-2 border-rose-400 bg-gradient-to-br from-rose-50 to-rose-100"
+        case "suggestion":
+          return "border-2 border-amber-400 bg-gradient-to-br from-amber-50 to-amber-100"
+        default:
+          return "border-2 border-violet-400 bg-gradient-to-br from-violet-50 to-violet-100"
+      }
+    }
+  }
+
+  return (
+    <>
+      <div className="bg-gradient-to-r from-violet-500 via-purple-500 to-pink-500 p-4 text-white">
+        <div className="flex items-center gap-2">
+          <Sparkles className="h-5 w-5" />
+          <h2 className="text-lg font-bold">AI Guide</h2>
+        </div>
+      </div>
+      <div className="p-4">
+        {insights.length > 0 ? (
+          <div className="space-y-3">
+            {insights.map((insight) => (
+              <div key={insight.id} className={`border-2 rounded-xl p-3 ${getInsightColor(insight.type)}`}>
+                <div className="flex items-start justify-between">
+                  <div className="flex items-start gap-2 flex-1">
+                    <div className="mt-0.5">{getInsightIcon(insight.type)}</div>
+                    <div className="flex-1 min-w-0">
+                      <h3
+                        className={`font-bold text-sm leading-tight ${
+                          isDarkMode ? "text-slate-200" : "text-slate-900"
+                        }`}
+                      >
+                        {insight.title}
+                      </h3>
+                      <p className={`text-sm mt-1 leading-relaxed ${isDarkMode ? "text-slate-300" : "text-slate-800"}`}>
+                        {insight.message}
+                      </p>
+                      {insight.action && (
+                        <Button
+                          size="sm"
+                          className={`mt-3 rounded-xl border-2 font-bold text-xs min-h-[36px] px-3 transition-all ${
+                            isDarkMode
+                              ? "bg-gradient-to-r from-slate-700 to-slate-800 hover:from-slate-600 hover:to-slate-700 text-slate-200 border-slate-600 shadow-[2px_2px_0px_0px_rgba(71,85,105,0.3)]"
+                              : "bg-gradient-to-r from-slate-800 to-slate-900 hover:from-slate-900 hover:to-slate-800 text-white border-slate-900 shadow-[2px_2px_0px_0px_rgba(15,23,42,1)]"
+                          }`}
+                        >
+                          {insight.action}
+                        </Button>
+                      )}
+                    </div>
+                  </div>
+                  <Button
+                    variant="ghost"
+                    size="sm"
+                    className="p-1 h-auto min-w-[36px] min-h-[36px] flex items-center justify-center ml-2"
+                    onClick={() => dismissInsight(insight.id)}
+                  >
+                    <X className={`h-4 w-4 ${isDarkMode ? "text-slate-400" : "text-slate-600"}`} />
+                  </Button>
+                </div>
+              </div>
+            ))}
+          </div>
+        ) : (
+          <div className="text-center py-6">
+            <Sparkles className={`h-12 w-12 mx-auto mb-2 ${isDarkMode ? "text-slate-500" : "text-slate-400"}`} />
+            <p className={`font-medium ${isDarkMode ? "text-slate-400" : "text-slate-600"}`}>
+              No new insights yet. Keep tracking your habits!
+            </p>
+          </div>
+        )}
+      </div>
+    </>
+  )
+}
