@@ -13,8 +13,8 @@
     --popover: 0 0% 100%;
     --popover-foreground: 0 0% 3.9%;
 
-    --primary: 0 84% 60%;
-    --primary-foreground: 0 0% 98%;
+    --primary: 142 76% 36%;
+    --primary-foreground: 0 0% 100%;
 
     --secondary: 0 0% 96.1%;
     --secondary-foreground: 0 0% 9%;
@@ -22,47 +22,65 @@
     --muted: 0 0% 96.1%;
     --muted-foreground: 0 0% 45.1%;
 
-    --accent: 0 0% 96.1%;
-    --accent-foreground: 0 0% 9%;
+    --accent: 142 76% 36%;
+    --accent-foreground: 0 0% 100%;
 
     --destructive: 0 84.2% 60.2%;
     --destructive-foreground: 0 0% 98%;
 
     --border: 0 0% 89.8%;
     --input: 0 0% 89.8%;
-    --ring: 0 84% 60%;
+    --ring: 142 76% 36%;
 
     --radius: 0.5rem;
+
+    /* Performance-optimized shadow system */
+    --shadow-brutal-light: 0 0 0 2px rgba(0, 0, 0, 1);
+    --shadow-brutal-medium: 0 0 0 4px rgba(0, 0, 0, 1);
+    --shadow-brutal-heavy: 0 0 0 6px rgba(0, 0, 0, 1);
+    --shadow-brutal-green: 0 0 0 4px rgba(34, 197, 94, 1);
+
+    /* New GRYT color values - White/Black/Vibrant Green theme */
+    --gryt-black: 0 0% 0%;
+    --gryt-green: 142 76% 36%;
+    --gryt-white: 0 0% 100%;
+    --gryt-gray-50: 0 0% 98%;
+    --gryt-gray-100: 0 0% 96%;
+    --gryt-gray-200: 0 0% 93%;
+    --gryt-gray-300: 0 0% 83%;
+    --gryt-gray-400: 0 0% 64%;
+    --gryt-gray-500: 0 0% 45%;
+    --gryt-gray-600: 0 0% 32%;
+    --gryt-gray-700: 0 0% 25%;
+    --gryt-gray-800: 0 0% 15%;
+    --gryt-gray-900: 0 0% 9%;
+
+    /* Performance flags for conditional rendering */
+    --enable-shadows: 1;
+    --enable-transforms: 1;
+    --enable-animations: 1;
   }
 
   .dark {
     --background: 0 0% 3.9%;
     --foreground: 0 0% 98%;
-
     --card: 0 0% 3.9%;
     --card-foreground: 0 0% 98%;
-
     --popover: 0 0% 3.9%;
     --popover-foreground: 0 0% 98%;
-
-    --primary: 0 84% 60%;
-    --primary-foreground: 0 0% 98%;
-
+    --primary: 142 76% 36%;
+    --primary-foreground: 0 0% 100%;
     --secondary: 0 0% 14.9%;
     --secondary-foreground: 0 0% 98%;
-
     --muted: 0 0% 14.9%;
     --muted-foreground: 0 0% 63.9%;
-
-    --accent: 0 0% 14.9%;
-    --accent-foreground: 0 0% 98%;
-
+    --accent: 142 76% 36%;
+    --accent-foreground: 0 0% 100%;
     --destructive: 0 62.8% 30.6%;
     --destructive-foreground: 0 0% 98%;
-
     --border: 0 0% 14.9%;
     --input: 0 0% 14.9%;
-    --ring: 0 84% 60%;
+    --ring: 142 76% 36%;
   }
 }
 
@@ -70,18 +88,41 @@
   * {
     @apply border-border;
   }
+
   body {
     @apply bg-background text-foreground;
+    /* Enable hardware acceleration globally */
+    transform: translateZ(0);
+    backface-visibility: hidden;
+  }
+
+  /* Performance optimization base classes */
+  .gpu-layer {
+    transform: translateZ(0);
+    backface-visibility: hidden;
+    perspective: 1000px;
+  }
+
+  .will-change-transform {
+    will-change: transform;
+  }
+
+  .will-change-opacity {
+    will-change: opacity;
+  }
+
+  .contain-layout {
+    contain: layout style paint;
   }
 }
 
-/* Custom animations for theme switching */
+/* Performance-optimized animations */
 @keyframes spin-slow {
   0% {
-    transform: rotate(0deg);
+    transform: rotate(0deg) translateZ(0);
   }
   100% {
-    transform: rotate(360deg);
+    transform: rotate(360deg) translateZ(0);
   }
 }
 
@@ -95,6 +136,34 @@
   }
 }
 
+@keyframes brutal-hover {
+  0% {
+    transform: translateZ(0) translateY(0);
+  }
+  100% {
+    transform: translateZ(0) translateY(-2px);
+  }
+}
+
+@keyframes brutal-active {
+  0% {
+    transform: translateZ(0) translateY(-2px);
+  }
+  100% {
+    transform: translateZ(0) translateY(0);
+  }
+}
+
+@keyframes glow {
+  0%,
+  100% {
+    box-shadow: 0 0 5px hsl(var(--gryt-green));
+  }
+  50% {
+    box-shadow: 0 0 20px hsl(var(--gryt-green)), 0 0 30px hsl(var(--gryt-green));
+  }
+}
+
 .animate-spin-slow {
   animation: spin-slow 1s linear;
 }
@@ -103,53 +172,275 @@
   animation: pulse-slow 1.5s ease-in-out;
 }
 
-/* Smooth transition for all color changes */
-* {
-  transition-property: color, background-color, border-color, text-decoration-color, fill, stroke;
+.animate-glow {
+  animation: glow 2s ease-in-out infinite;
+}
+
+/* Optimized transition system */
+.transition-brutal {
+  transition-property: transform, box-shadow, background-color;
+  transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
+  transition-duration: 200ms;
+}
+
+.transition-brutal-slow {
+  transition-property: transform, box-shadow, background-color;
   transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
   transition-duration: 300ms;
 }
 
-/* Hardware acceleration for smoother transitions */
-.transition-all,
-.transition-colors,
-.transition-opacity,
-.transition-shadow,
-.transition-transform {
-  backface-visibility: hidden;
+/* Performance-optimized brutal design system */
+@layer utilities {
+  /* Optimized shadow utilities using box-shadow instead of multiple shadows */
+  .shadow-brutal {
+    box-shadow: 4px 4px 0px 0px hsl(var(--gryt-black));
+  }
+
+  .shadow-brutal-lg {
+    box-shadow: 6px 6px 0px 0px hsl(var(--gryt-black));
+  }
+
+  .shadow-brutal-xl {
+    box-shadow: 8px 8px 0px 0px hsl(var(--gryt-black));
+  }
+
+  .shadow-brutal-green {
+    box-shadow: 4px 4px 0px 0px hsl(var(--gryt-green));
+  }
+
+  .shadow-brutal-green-lg {
+    box-shadow: 6px 6px 0px 0px hsl(var(--gryt-green));
+  }
+
+  .shadow-glow-green {
+    box-shadow: 0 0 20px hsl(var(--gryt-green));
+  }
+
+  .shadow-glow-green-lg {
+    box-shadow: 0 0 30px hsl(var(--gryt-green)), 0 0 40px hsl(var(--gryt-green));
+  }
+
+  /* Transform utilities with GPU acceleration */
+  .translate-y-brutal {
+    transform: translateZ(0) translateY(-2px);
+  }
+
+  .translate-y-0 {
+    transform: translateZ(0) translateY(0);
+  }
+
+  /* Hover states with GPU acceleration */
+  .hover\:shadow-brutal-xl:hover {
+    box-shadow: 8px 8px 0px 0px hsl(var(--gryt-black));
+  }
+
+  .hover\:shadow-brutal-green-lg:hover {
+    box-shadow: 6px 6px 0px 0px hsl(var(--gryt-green));
+  }
+
+  .hover\:translate-y-brutal:hover {
+    transform: translateZ(0) translateY(-2px);
+  }
+
+  .active\:translate-y-0:active {
+    transform: translateZ(0) translateY(0);
+  }
+
+  /* Optimized color utilities */
+  .bg-gryt-black {
+    background-color: hsl(var(--gryt-black));
+  }
+
+  .bg-gryt-green {
+    background-color: hsl(var(--gryt-green));
+  }
+
+  .bg-gryt-white {
+    background-color: hsl(var(--gryt-white));
+  }
+
+  .text-gryt-black {
+    color: hsl(var(--gryt-black));
+  }
+
+  .text-gryt-green {
+    color: hsl(var(--gryt-green));
+  }
+
+  .text-gryt-white {
+    color: hsl(var(--gryt-white));
+  }
+
+  .border-gryt-black {
+    border-color: hsl(var(--gryt-black));
+  }
+
+  .border-gryt-green {
+    border-color: hsl(var(--gryt-green));
+  }
+
+  /* Performance-conscious hover states */
+  .hover\:bg-gryt-green:hover {
+    background-color: hsl(var(--gryt-green));
+  }
+
+  .hover\:bg-gryt-black:hover {
+    background-color: hsl(var(--gryt-black));
+  }
+
+  .hover\:bg-gryt-gray-800:hover {
+    background-color: hsl(var(--gryt-gray-800));
+  }
+
+  /* Mobile-optimized classes */
+  @media (max-width: 640px) {
+    .shadow-brutal {
+      box-shadow: 2px 2px 0px 0px hsl(var(--gryt-black));
+    }
+
+    .shadow-brutal-lg {
+      box-shadow: 3px 3px 0px 0px hsl(var(--gryt-black));
+    }
+
+    .shadow-brutal-xl {
+      box-shadow: 4px 4px 0px 0px hsl(var(--gryt-black));
+    }
+
+    .hover\:-translate-y-0\.5:hover {
+      transform: translateZ(0) translateY(-1px);
+    }
+
+    /* Disable complex animations on mobile */
+    .animate-spin-slow,
+    .animate-pulse-slow,
+    .animate-glow {
+      animation: none;
+    }
+  }
+
+  /* Low-end device optimizations */
+  @media (max-width: 640px) and (max-height: 800px) {
+    .shadow-brutal,
+    .shadow-brutal-lg,
+    .shadow-brutal-xl,
+    .shadow-brutal-green,
+    .shadow-brutal-green-lg {
+      box-shadow: none;
+      border: 2px solid hsl(var(--gryt-black));
+    }
+
+    .hover\:-translate-y-0\.5:hover {
+      transform: none;
+    }
+  }
+
+  /* Reduced motion preferences */
+  @media (prefers-reduced-motion: reduce) {
+    .transition-brutal,
+    .transition-brutal-slow {
+      transition: none;
+    }
+
+    .hover\:-translate-y-0\.5:hover {
+      transform: none;
+    }
+
+    .animate-spin-slow,
+    .animate-pulse-slow,
+    .animate-glow {
+      animation: none;
+    }
+  }
+
+  /* High contrast mode */
+  @media (prefers-contrast: high) {
+    .shadow-brutal,
+    .shadow-brutal-lg,
+    .shadow-brutal-xl {
+      box-shadow: none;
+      border: 3px solid hsl(var(--gryt-black));
+    }
+  }
+}
+
+/* Component-specific optimizations */
+.brutal-button {
+  @apply gpu-layer will-change-transform contain-layout;
+  @apply bg-gryt-green text-gryt-white border-4 border-gryt-black rounded-xl;
+  @apply shadow-brutal transition-brutal;
+  @apply hover:shadow-brutal-xl hover:-translate-y-0.5;
+  @apply active:translate-y-0;
+
+  /* Ensure minimum touch target */
+  min-height: 44px;
+  min-width: 44px;
+  touch-action: manipulation;
+}
+
+.brutal-button-outline {
+  @apply gpu-layer will-change-transform contain-layout;
+  @apply bg-transparent text-gryt-black border-4 border-gryt-black rounded-xl;
+  @apply shadow-brutal transition-brutal;
+  @apply hover:bg-gryt-green hover:text-gryt-white hover:shadow-brutal-xl hover:-translate-y-0.5;
+  @apply active:translate-y-0;
+
+  min-height: 44px;
+  min-width: 44px;
+  touch-action: manipulation;
+}
+
+.brutal-button-black {
+  @apply gpu-layer will-change-transform contain-layout;
+  @apply bg-gryt-black text-gryt-white border-4 border-gryt-black rounded-xl;
+  @apply shadow-brutal transition-brutal;
+  @apply hover:shadow-brutal-xl hover:-translate-y-0.5;
+  @apply active:translate-y-0;
+
+  min-height: 44px;
+  min-width: 44px;
+  touch-action: manipulation;
+}
+
+.brutal-card {
+  @apply gpu-layer will-change-transform contain-layout;
+  @apply bg-gryt-white border-4 border-gryt-black rounded-xl;
+  @apply shadow-brutal transition-brutal;
+  @apply hover:shadow-brutal-lg hover:-translate-y-0.5;
+}
+
+/* Typography optimizations */
+.text-brutal-hero {
+  font-size: clamp(2.5rem, 8vw, 4.5rem);
+  line-height: 1.1;
+  font-weight: 900;
+  letter-spacing: -0.02em;
+}
+
+.text-brutal-title {
+  font-size: clamp(1.5rem, 5vw, 2.5rem);
+  line-height: 1.2;
+  font-weight: 800;
+  letter-spacing: -0.01em;
+}
+
+.text-brutal-body {
+  font-size: clamp(1rem, 2.5vw, 1.25rem);
+  line-height: 1.6;
+  font-weight: 400;
+}
+
+/* Performance monitoring utilities */
+@supports (content-visibility: auto) {
+  .lazy-content {
+    content-visibility: auto;
+    contain-intrinsic-size: 200px;
+  }
+}
+
+/* Force hardware acceleration for critical elements */
+.critical-performance {
   transform: translateZ(0);
-  will-change: transform, opacity;
-}
-
-/* Black and Red Theme Utilities */
-.bg-gryt-black {
-  background-color: #000000;
-}
-
-.bg-gryt-red {
-  background-color: #dc2626;
-}
-
-.text-gryt-black {
-  color: #000000;
-}
-
-.text-gryt-red {
-  color: #dc2626;
-}
-
-.border-gryt-black {
-  border-color: #000000;
-}
-
-.border-gryt-red {
-  border-color: #dc2626;
-}
-
-.hover\:bg-gryt-red:hover {
-  background-color: #dc2626;
-}
-
-.hover\:bg-gryt-black:hover {
-  background-color: #000000;
+  backface-visibility: hidden;
+  will-change: transform;
+  contain: layout style paint;
 }

@@ -5,29 +5,20 @@ import { Button } from "@/components/ui/button"
 import HabitTracker from "@/components/dashboard/habit-tracker"
 import AiGuide from "@/components/dashboard/ai-guide"
 import ProgressChart from "@/components/dashboard/progress-chart"
-import IntegrationStatus from "@/components/dashboard/integration-status"
-import {
-  Target,
-  Calendar,
-  BarChart3,
-  Users,
-  BookOpen,
-  Zap,
-  TrendingUp,
-  Award,
-  Clock,
-  CheckCircle2,
-  ArrowRight,
-  Sparkles,
-  Moon,
-  Sun,
-} from "lucide-react"
+import GamificationStats from "@/components/gamification/gamification-stats"
+import AchievementNotifications from "@/components/gamification/achievement-notifications"
+import ProgressRings from "@/components/gamification/progress-rings"
+import StreakTracker from "@/components/gamification/streak-tracker"
+import { Target, BarChart3, BookOpen, Zap, CheckCircle2, ArrowRight, Moon, Sun, Trophy, Star } from "lucide-react"
 import Link from "next/link"
 import { useState, useEffect } from "react"
 
 export default function DashboardPage() {
   const [isDarkMode, setIsDarkMode] = useState(false)
   const [isTransitioning, setIsTransitioning] = useState(false)
+  const [userLevel, setUserLevel] = useState(12)
+  const [userGP, setUserGP] = useState(1240)
+  const [nextLevelGP] = useState(1500)
 
   // Check for saved theme preference or system preference on initial load
   useEffect(() => {
@@ -58,8 +49,8 @@ export default function DashboardPage() {
     <div
       className={`min-h-screen transition-colors duration-500 ease-in-out ${
         isDarkMode
-          ? "bg-gradient-to-br from-black via-gray-900 to-red-950/20"
-          : "bg-gradient-to-br from-gray-50 via-white to-red-50/30"
+          ? "bg-gradient-to-br from-black via-gray-900 to-green-950/20"
+          : "bg-gradient-to-br from-gray-50 via-white to-green-50/30"
       }`}
     >
       <div className="space-y-6 sm:space-y-8 pb-8 px-4 sm:px-0">
@@ -71,8 +62,8 @@ export default function DashboardPage() {
             size="sm"
             className={`rounded-xl border-2 font-bold min-h-[44px] px-4 transition-all duration-300 ease-in-out transform hover:scale-105 active:scale-95 ${
               isDarkMode
-                ? "bg-black/50 border-red-600 text-red-400 hover:bg-red-950/50"
-                : "bg-white border-black text-black hover:bg-red-50"
+                ? "bg-black/50 border-green-600 text-green-400 hover:bg-green-950/50"
+                : "bg-white border-black text-black hover:bg-green-50"
             }`}
           >
             <span className="transition-transform duration-500 ease-in-out">
@@ -86,64 +77,89 @@ export default function DashboardPage() {
           </Button>
         </div>
 
-        {/* Welcome Section - Enhanced with Black/Red Theme */}
+        {/* Achievement Notifications */}
+        <AchievementNotifications isDarkMode={isDarkMode} />
+
+        {/* Welcome Section with Level Progress */}
         <div
           className={`relative overflow-hidden transition-transform duration-500 ease-in-out ${isTransitioning ? "scale-[0.98]" : "scale-100"}`}
         >
           <div
             className={`absolute inset-0 rounded-2xl sm:rounded-3xl transition-all duration-700 ease-in-out ${
               isDarkMode
-                ? "bg-gradient-to-r from-red-600/20 via-black/20 to-red-800/20"
-                : "bg-gradient-to-r from-red-500/10 via-black/10 to-red-600/10"
+                ? "bg-gradient-to-r from-green-600/20 via-black/20 to-green-800/20"
+                : "bg-gradient-to-r from-green-500/10 via-black/10 to-green-600/10"
             }`}
           ></div>
           <div
             className={`relative backdrop-blur-sm border-3 sm:border-4 rounded-2xl sm:rounded-3xl p-4 sm:p-6 lg:p-8 transition-all duration-500 ease-in-out ${
               isDarkMode
-                ? "bg-black/80 border-red-600 shadow-[8px_8px_0px_0px_rgba(220,38,38,0.5)]"
+                ? "bg-black/80 border-green-600 shadow-[8px_8px_0px_0px_rgba(34,197,94,0.5)]"
                 : "bg-white/90 border-black shadow-[8px_8px_0px_0px_rgba(0,0,0,1)]"
             } ${isTransitioning ? "translate-y-1" : "translate-y-0"}`}
           >
             <div className="flex flex-col gap-4 sm:gap-6">
-              <div>
-                <div className="flex items-center gap-2 sm:gap-3 mb-3 sm:mb-4">
-                  <div className="bg-gradient-to-r from-red-500 to-red-600 p-2 sm:p-3 rounded-xl sm:rounded-2xl transition-all duration-500 ease-in-out">
-                    <Sparkles className="h-5 w-5 sm:h-6 sm:w-6 text-white" />
+              <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-4">
+                <div>
+                  <div className="flex items-center gap-2 sm:gap-3 mb-3 sm:mb-4">
+                    <div className="bg-gradient-to-r from-green-500 to-green-600 p-2 sm:p-3 rounded-xl sm:rounded-2xl transition-all duration-500 ease-in-out shadow-glow-green">
+                      <Trophy className="h-5 w-5 sm:h-6 sm:w-6 text-white" />
+                    </div>
+                    <div>
+                      <h1
+                        className={`text-xl sm:text-2xl lg:text-4xl font-black leading-tight transition-colors duration-500 ease-in-out ${
+                          isDarkMode ? "text-white" : "text-black"
+                        }`}
+                      >
+                        Level {userLevel}{" "}
+                        <span className="bg-gradient-to-r from-green-500 to-green-600 bg-clip-text text-transparent transition-all duration-500 ease-in-out">
+                          Champion
+                        </span>
+                        !
+                      </h1>
+                      <p
+                        className={`text-sm sm:text-base font-medium transition-colors duration-500 ease-in-out ${
+                          isDarkMode ? "text-gray-300" : "text-gray-700"
+                        }`}
+                      >
+                        {userGP} / {nextLevelGP} GP to Level {userLevel + 1}
+                      </p>
+                    </div>
                   </div>
-                  <h1
-                    className={`text-xl sm:text-2xl lg:text-4xl font-black leading-tight transition-colors duration-500 ease-in-out ${
-                      isDarkMode ? "text-white" : "text-black"
+                  <p
+                    className={`text-base sm:text-lg font-medium leading-relaxed transition-colors duration-500 ease-in-out ${
+                      isDarkMode ? "text-gray-300" : "text-gray-700"
                     }`}
                   >
-                    Welcome back,{" "}
-                    <span className="bg-gradient-to-r from-red-500 to-red-600 bg-clip-text text-transparent transition-all duration-500 ease-in-out">
-                      Alex
-                    </span>
-                    !
-                  </h1>
+                    You're on a{" "}
+                    <span
+                      className={`font-bold px-2 py-1 rounded-lg transition-all duration-500 ease-in-out ${
+                        isDarkMode
+                          ? "text-green-300 bg-green-600/20 border border-green-500/30"
+                          : "text-green-700 bg-green-50 border border-green-200"
+                      }`}
+                    >
+                      12-day streak
+                    </span>{" "}
+                    with meditation. Keep building those life-changing habits! 🚀
+                  </p>
                 </div>
-                <p
-                  className={`text-base sm:text-lg font-medium leading-relaxed transition-colors duration-500 ease-in-out ${
-                    isDarkMode ? "text-gray-300" : "text-gray-700"
-                  }`}
-                >
-                  You're on a{" "}
-                  <span
-                    className={`font-bold px-2 py-1 rounded-lg transition-all duration-500 ease-in-out ${
-                      isDarkMode
-                        ? "text-red-300 bg-red-600/20 border border-red-500/30"
-                        : "text-red-700 bg-red-50 border border-red-200"
-                    }`}
-                  >
-                    12-day streak
-                  </span>{" "}
-                  with meditation. Keep building those life-changing habits! 🚀
-                </p>
+
+                {/* Level Progress Ring */}
+                <div className="flex-shrink-0">
+                  <ProgressRings
+                    level={userLevel}
+                    currentGP={userGP}
+                    nextLevelGP={nextLevelGP}
+                    isDarkMode={isDarkMode}
+                  />
+                </div>
               </div>
+
               <div className="flex flex-col sm:flex-row gap-3">
                 <Link href="/dashboard/habits/new" className="flex-1 sm:flex-none">
                   <Button
-                    className={`w-full sm:w-auto bg-gradient-to-r from-red-500 to-red-600 hover:from-red-600 hover:to-red-700 text-white rounded-xl sm:rounded-2xl border-3 border-red-400 font-bold px-4 sm:px-6 py-3 text-sm sm:text-base transition-all duration-500 ease-in-out hover:shadow-lg min-h-[44px] shadow-[4px_4px_0px_0px_rgba(220,38,38,0.5)] ${isTransitioning ? "translate-y-1 opacity-90" : "translate-y-0 opacity-100"}`}
+                    className={`w-full sm:w-auto bg-gradient-to-r from-green-500 to-green-600 hover:from-green-600 hover:to-green-700 text-white rounded-xl sm:rounded-2xl border-3 border-green-400 font-bold px-4 sm:px-6 py-3 text-sm sm:text-base transition-all duration-500 ease-in-out hover:shadow-lg min-h-[44px] shadow-[4px_4px_0px_0px_rgba(34,197,94,0.5)] hover:shadow-glow-green ${isTransitioning ? "translate-y-1 opacity-90" : "translate-y-0 opacity-100"}`}
                   >
                     <Target className="h-4 w-4 sm:h-5 sm:w-5 mr-2" /> Add New Habit
                   </Button>
@@ -153,8 +169,8 @@ export default function DashboardPage() {
                     variant="outline"
                     className={`w-full sm:w-auto border-3 rounded-xl sm:rounded-2xl font-bold px-4 sm:px-6 py-3 text-sm sm:text-base transition-all duration-500 ease-in-out min-h-[44px] ${
                       isDarkMode
-                        ? "bg-black/50 hover:bg-red-950/50 border-red-600 text-red-400"
-                        : "bg-white hover:bg-red-50 border-black text-black"
+                        ? "bg-black/50 hover:bg-green-950/50 border-green-600 text-green-400"
+                        : "bg-white hover:bg-green-50 border-black text-black"
                     } ${isTransitioning ? "translate-y-1 opacity-90" : "translate-y-0 opacity-100"}`}
                   >
                     <BookOpen className="h-4 w-4 sm:h-5 sm:w-5 mr-2" /> Quick Journal
@@ -165,118 +181,21 @@ export default function DashboardPage() {
           </div>
         </div>
 
-        {/* Stats Overview - Black/Red Theme */}
-        <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4 lg:gap-6">
-          {[
-            {
-              icon: <Target className="h-4 w-4 sm:h-5 sm:w-5 lg:h-6 lg:w-6 text-white" />,
-              value: "7",
-              label: "Active Habits",
-              badge: "+2 today",
-              color: "red",
-              delay: 100,
-            },
-            {
-              icon: <TrendingUp className="h-4 w-4 sm:h-5 sm:w-5 lg:h-6 lg:w-6 text-white" />,
-              value: "12",
-              label: "Day Streak",
-              badge: "85%",
-              color: "black",
-              delay: 150,
-            },
-            {
-              icon: <Award className="h-4 w-4 sm:h-5 sm:w-5 lg:h-6 lg:w-6 text-white" />,
-              value: "1,247",
-              label: "Achievement Points",
-              badge: "Level 3",
-              color: "red",
-              delay: 200,
-            },
-            {
-              icon: <Clock className="h-4 w-4 sm:h-5 sm:w-5 lg:h-6 lg:w-6 text-white" />,
-              value: "2h 15m",
-              label: "Time Invested",
-              badge: "Today",
-              color: "black",
-              delay: 250,
-            },
-          ].map((stat, index) => (
-            <Card
-              key={index}
-              className={`border-3 sm:border-4 rounded-xl sm:rounded-2xl overflow-hidden transition-all duration-500 ease-in-out ${
-                isDarkMode
-                  ? "bg-gradient-to-br from-black/80 to-gray-900/80 border-red-600"
-                  : stat.color === "red"
-                    ? "bg-gradient-to-br from-red-50 to-red-100 border-black"
-                    : "bg-gradient-to-br from-gray-50 to-gray-100 border-black"
-              } ${isTransitioning ? "translate-y-1 opacity-90 scale-[0.98]" : "translate-y-0 opacity-100 scale-100"}`}
-              style={{ transitionDelay: `${stat.delay}ms` }}
-            >
-              <div className="p-3 sm:p-4 lg:p-6">
-                <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between mb-2 sm:mb-4">
-                  <div
-                    className={`p-2 sm:p-3 rounded-lg sm:rounded-xl mb-2 sm:mb-0 w-fit transition-all duration-500 ease-in-out ${
-                      stat.color === "red"
-                        ? "bg-gradient-to-r from-red-500 to-red-600"
-                        : "bg-gradient-to-r from-black to-gray-800"
-                    }`}
-                  >
-                    {stat.icon}
-                  </div>
-                  <div
-                    className={`px-2 py-1 rounded-full text-xs font-bold hidden sm:block transition-all duration-500 ease-in-out ${
-                      isDarkMode
-                        ? stat.color === "red"
-                          ? "bg-red-600/20 text-red-300 border border-red-500/30"
-                          : "bg-gray-600/20 text-gray-300 border border-gray-500/30"
-                        : stat.color === "red"
-                          ? "bg-red-100 text-red-800 border border-red-200"
-                          : "bg-gray-100 text-gray-800 border border-gray-200"
-                    }`}
-                  >
-                    {stat.badge}
-                  </div>
-                </div>
-                <div
-                  className={`text-2xl sm:text-3xl font-black mb-1 transition-colors duration-500 ease-in-out ${isDarkMode ? "text-white" : "text-black"}`}
-                >
-                  {stat.value}
-                </div>
-                <div
-                  className={`font-semibold text-xs sm:text-sm transition-colors duration-500 ease-in-out ${isDarkMode ? "text-gray-300" : "text-gray-700"}`}
-                >
-                  {stat.label}
-                </div>
-                <div
-                  className={`px-2 py-1 rounded-full text-xs font-bold mt-2 sm:hidden w-fit transition-all duration-500 ease-in-out ${
-                    isDarkMode
-                      ? stat.color === "red"
-                        ? "bg-red-600/20 text-red-300 border border-red-500/30"
-                        : "bg-gray-600/20 text-gray-300 border border-gray-500/30"
-                      : stat.color === "red"
-                        ? "bg-red-100 text-red-800 border border-red-200"
-                        : "bg-gray-100 text-gray-800 border border-gray-200"
-                  }`}
-                >
-                  {stat.badge}
-                </div>
-              </div>
-            </Card>
-          ))}
-        </div>
+        {/* Gamification Stats Overview */}
+        <GamificationStats isDarkMode={isDarkMode} isTransitioning={isTransitioning} />
 
-        {/* Main Content Grid - Black/Red Theme */}
+        {/* Main Content Grid */}
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 lg:gap-8">
           {/* Left Column */}
           <div className="lg:col-span-2 space-y-6 lg:space-y-8">
             {/* Today's Habits */}
             <Card
               className={`backdrop-blur-sm border-3 sm:border-4 rounded-xl sm:rounded-2xl overflow-hidden transition-all duration-500 ease-in-out ${
-                isDarkMode ? "bg-black/90 border-red-600" : "bg-white/95 border-black"
+                isDarkMode ? "bg-black/90 border-green-600" : "bg-white/95 border-black"
               } ${isTransitioning ? "translate-y-1 opacity-95 scale-[0.99]" : "translate-y-0 opacity-100 scale-100"}`}
               style={{ transitionDelay: "150ms" }}
             >
-              <div className="bg-gradient-to-r from-red-500 via-red-600 to-black p-4 sm:p-6 text-white transition-all duration-700 ease-in-out">
+              <div className="bg-gradient-to-r from-green-500 via-green-600 to-black p-4 sm:p-6 text-white transition-all duration-700 ease-in-out">
                 <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
                   <div className="flex items-center gap-2 sm:gap-3">
                     <CheckCircle2 className="h-5 w-5 sm:h-6 sm:w-6" />
@@ -300,11 +219,11 @@ export default function DashboardPage() {
             {/* Progress Chart */}
             <Card
               className={`backdrop-blur-sm border-3 sm:border-4 rounded-xl sm:rounded-2xl overflow-hidden transition-all duration-500 ease-in-out ${
-                isDarkMode ? "bg-black/90 border-red-600" : "bg-white/95 border-black"
+                isDarkMode ? "bg-black/90 border-green-600" : "bg-white/95 border-black"
               } ${isTransitioning ? "translate-y-1 opacity-95 scale-[0.99]" : "translate-y-0 opacity-100 scale-100"}`}
               style={{ transitionDelay: "200ms" }}
             >
-              <div className="bg-gradient-to-r from-black to-red-600 p-4 sm:p-6 text-white transition-all duration-700 ease-in-out">
+              <div className="bg-gradient-to-r from-black to-green-600 p-4 sm:p-6 text-white transition-all duration-700 ease-in-out">
                 <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
                   <div className="flex items-center gap-2 sm:gap-3">
                     <BarChart3 className="h-5 w-5 sm:h-6 sm:w-6" />
@@ -336,36 +255,36 @@ export default function DashboardPage() {
 
           {/* Right Column */}
           <div className="space-y-6 lg:space-y-8">
-            {/* AI Guide */}
+            {/* Streak Tracker */}
             <div
               className={`backdrop-blur-sm border-3 sm:border-4 rounded-xl sm:rounded-2xl overflow-hidden transition-all duration-500 ease-in-out ${
-                isDarkMode ? "bg-black/90 border-red-600" : "bg-white/95 border-black"
+                isDarkMode ? "bg-black/90 border-green-600" : "bg-white/95 border-black"
               } ${isTransitioning ? "translate-y-1 opacity-95 scale-[0.99]" : "translate-y-0 opacity-100 scale-100"}`}
               style={{ transitionDelay: "250ms" }}
             >
-              <AiGuide isDarkMode={isDarkMode} />
+              <StreakTracker isDarkMode={isDarkMode} />
             </div>
 
-            {/* Integration Status */}
+            {/* AI Guide */}
             <div
               className={`backdrop-blur-sm border-3 sm:border-4 rounded-xl sm:rounded-2xl overflow-hidden transition-all duration-500 ease-in-out ${
-                isDarkMode ? "bg-black/90 border-red-600" : "bg-white/95 border-black"
+                isDarkMode ? "bg-black/90 border-green-600" : "bg-white/95 border-black"
               } ${isTransitioning ? "translate-y-1 opacity-95 scale-[0.99]" : "translate-y-0 opacity-100 scale-100"}`}
               style={{ transitionDelay: "300ms" }}
             >
-              <IntegrationStatus isDarkMode={isDarkMode} />
+              <AiGuide isDarkMode={isDarkMode} />
             </div>
 
             {/* Quick Actions */}
             <Card
               className={`border-3 sm:border-4 rounded-xl sm:rounded-2xl overflow-hidden transition-all duration-500 ease-in-out ${
                 isDarkMode
-                  ? "bg-gradient-to-br from-black/80 to-gray-900/80 border-red-600"
-                  : "bg-gradient-to-br from-red-50 to-red-100 border-black"
+                  ? "bg-gradient-to-br from-black/80 to-gray-900/80 border-green-600"
+                  : "bg-gradient-to-br from-green-50 to-green-100 border-black"
               } ${isTransitioning ? "translate-y-1 opacity-95 scale-[0.99]" : "translate-y-0 opacity-100 scale-100"}`}
               style={{ transitionDelay: "350ms" }}
             >
-              <div className="bg-gradient-to-r from-red-500 to-red-600 p-4 text-white transition-all duration-700 ease-in-out">
+              <div className="bg-gradient-to-r from-green-500 to-green-600 p-4 text-white transition-all duration-700 ease-in-out">
                 <h2 className="text-lg font-bold flex items-center gap-2">
                   <Zap className="h-5 w-5" />
                   Quick Actions
@@ -379,16 +298,16 @@ export default function DashboardPage() {
                     label: "Analytics Dashboard",
                     href: "/dashboard/analytics",
                   },
-                  { icon: <Users className="h-4 w-4" />, label: "Join Community", href: "/dashboard/community" },
-                  { icon: <Calendar className="h-4 w-4" />, label: "Calendar View", href: "/dashboard/calendar" },
+                  { icon: <Trophy className="h-4 w-4" />, label: "View Achievements", href: "/dashboard/achievements" },
+                  { icon: <Star className="h-4 w-4" />, label: "Personal Leaderboard", href: "/dashboard/leaderboard" },
                 ].map((action, index) => (
                   <Link href={action.href} key={index}>
                     <Button
                       variant="outline"
                       className={`w-full justify-start gap-3 rounded-xl border-2 font-bold min-h-[44px] text-sm transition-all duration-500 ease-in-out ${
                         isDarkMode
-                          ? "border-red-600 hover:bg-red-950/50 text-red-400 bg-black/50"
-                          : "border-black hover:bg-red-50 text-black"
+                          ? "border-green-600 hover:bg-green-950/50 text-green-400 bg-black/50"
+                          : "border-black hover:bg-green-50 text-black"
                       } ${isTransitioning ? "translate-y-1 opacity-90" : "translate-y-0 opacity-100"}`}
                       style={{ transitionDelay: `${400 + index * 50}ms` }}
                     >

@@ -1,0 +1,34 @@
+{
+  "budgets": {
+    "mobile": {
+      "maxBundleSize": 500,
+      "maxImageSize": 100,
+      "maxFCP": 1500,
+      "maxLCP": 2500,
+      "maxCLS": 0.1,
+      "maxFID": 100
+    },
+    "desktop": {
+      "maxBundleSize": 1000,
+      "maxImageSize": 300,
+      "maxFCP": 1000,
+      "maxLCP": 2000,
+      "maxCLS": 0.1,
+      "maxFID": 50
+    }
+  },
+  "optimizations": {
+    "enableCodeSplitting": true,
+    "enableLazyLoading": true,
+    "enableImageOptimization": true,
+    "enableServiceWorker": true,
+    "enableGzipCompression": true,
+    "enableBrotliCompression": true
+  },
+  "monitoring": {
+    "enableRUM": true,
+    "enableLighthouse": true,
+    "enableWebVitals": true,
+    "reportingEndpoint": "/api/performance-metrics"
+  }
+}

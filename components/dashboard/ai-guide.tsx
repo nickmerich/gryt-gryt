@@ -47,13 +47,13 @@ export default function AiGuide({ isDarkMode = false }: AiGuideProps) {
   const getInsightIcon = (type: string) => {
     switch (type) {
       case "achievement":
-        return <TrendingUp className="h-5 w-5 text-red-500" />
+        return <TrendingUp className="h-5 w-5 text-green-600" />
       case "warning":
-        return <AlertCircle className="h-5 w-5 text-red-500" />
+        return <AlertCircle className="h-5 w-5 text-green-600" />
       case "suggestion":
-        return <Lightbulb className="h-5 w-5 text-red-500" />
+        return <Lightbulb className="h-5 w-5 text-green-600" />
       default:
-        return <Sparkles className="h-5 w-5 text-red-500" />
+        return <Sparkles className="h-5 w-5 text-green-600" />
     }
   }
 
@@ -61,31 +61,31 @@ export default function AiGuide({ isDarkMode = false }: AiGuideProps) {
     if (isDarkMode) {
       switch (type) {
         case "achievement":
-          return "border-2 border-red-500/40 bg-gradient-to-br from-red-600/20 to-red-700/20"
+          return "border-2 border-green-500/40 bg-gradient-to-br from-green-600/20 to-green-700/20"
         case "warning":
-          return "border-2 border-red-600/40 bg-gradient-to-br from-red-700/20 to-red-800/20"
+          return "border-2 border-green-600/40 bg-gradient-to-br from-green-700/20 to-green-800/20"
         case "suggestion":
-          return "border-2 border-red-400/40 bg-gradient-to-br from-red-500/20 to-red-600/20"
+          return "border-2 border-green-400/40 bg-gradient-to-br from-green-500/20 to-green-600/20"
         default:
-          return "border-2 border-red-400/40 bg-gradient-to-br from-red-500/20 to-red-600/20"
+          return "border-2 border-green-400/40 bg-gradient-to-br from-green-500/20 to-green-600/20"
       }
     } else {
       switch (type) {
         case "achievement":
-          return "border-2 border-red-400 bg-gradient-to-br from-red-50 to-red-100"
+          return "border-2 border-green-400 bg-gradient-to-br from-green-50 to-green-100"
         case "warning":
-          return "border-2 border-red-500 bg-gradient-to-br from-red-100 to-red-200"
+          return "border-2 border-green-500 bg-gradient-to-br from-green-100 to-green-200"
         case "suggestion":
-          return "border-2 border-red-300 bg-gradient-to-br from-red-25 to-red-75"
+          return "border-2 border-green-300 bg-gradient-to-br from-green-25 to-green-75"
         default:
-          return "border-2 border-red-400 bg-gradient-to-br from-red-50 to-red-100"
+          return "border-2 border-green-400 bg-gradient-to-br from-green-50 to-green-100"
       }
     }
   }
 
   return (
     <>
-      <div className="bg-gradient-to-r from-red-500 to-red-600 p-4 text-white">
+      <div className="bg-gradient-to-r from-green-500 to-green-600 p-4 text-white">
         <div className="flex items-center gap-2">
           <Sparkles className="h-5 w-5" />
           <h2 className="text-lg font-bold">AI Guide</h2>
@@ -111,8 +111,8 @@ export default function AiGuide({ isDarkMode = false }: AiGuideProps) {
                           size="sm"
                           className={`mt-3 rounded-xl border-2 font-bold text-xs min-h-[36px] px-3 transition-all ${
                             isDarkMode
-                              ? "bg-gradient-to-r from-red-600 to-red-700 hover:from-red-700 hover:to-red-800 text-white border-red-500 shadow-[2px_2px_0px_0px_rgba(220,38,38,0.3)]"
-                              : "bg-gradient-to-r from-red-500 to-red-600 hover:from-red-600 hover:to-red-700 text-white border-red-400 shadow-[2px_2px_0px_0px_rgba(220,38,38,1)]"
+                              ? "bg-gradient-to-r from-green-600 to-green-700 hover:from-green-700 hover:to-green-800 text-white border-green-500 shadow-[2px_2px_0px_0px_rgba(34,197,94,0.3)]"
+                              : "bg-gradient-to-r from-green-500 to-green-600 hover:from-green-600 hover:to-green-700 text-white border-green-400 shadow-[2px_2px_0px_0px_rgba(34,197,94,1)]"
                           }`}
                         >
                           {insight.action}
@@ -134,7 +134,7 @@ export default function AiGuide({ isDarkMode = false }: AiGuideProps) {
           </div>
         ) : (
           <div className="text-center py-6">
-            <Sparkles className={`h-12 w-12 mx-auto mb-2 ${isDarkMode ? "text-red-500" : "text-red-400"}`} />
+            <Sparkles className={`h-12 w-12 mx-auto mb-2 ${isDarkMode ? "text-green-500" : "text-green-400"}`} />
             <p className={`font-medium ${isDarkMode ? "text-gray-400" : "text-gray-600"}`}>
               No new insights yet. Keep tracking your habits!
             </p>

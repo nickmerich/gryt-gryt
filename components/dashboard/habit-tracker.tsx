@@ -34,30 +34,30 @@ export default function HabitTracker({ isDarkMode = false }: HabitTrackerProps) 
     if (isDarkMode) {
       switch (category) {
         case "Mindfulness":
-          return "bg-red-600/20 text-red-300 border border-red-500/30"
+          return "bg-green-600/20 text-green-300 border border-green-500/30"
         case "Learning":
           return "bg-gray-600/20 text-gray-300 border border-gray-500/30"
         case "Fitness":
-          return "bg-red-500/20 text-red-400 border border-red-400/30"
+          return "bg-green-500/20 text-green-400 border border-green-400/30"
         case "Health":
           return "bg-gray-700/20 text-gray-400 border border-gray-600/30"
         case "Reflection":
-          return "bg-red-700/20 text-red-300 border border-red-600/30"
+          return "bg-green-700/20 text-green-300 border border-green-600/30"
         default:
           return "bg-gray-500/20 text-gray-300 border border-gray-400/30"
       }
     } else {
       switch (category) {
         case "Mindfulness":
-          return "bg-red-100 text-red-900 border border-red-300"
+          return "bg-green-100 text-green-900 border border-green-300"
         case "Learning":
           return "bg-gray-100 text-gray-900 border border-gray-300"
         case "Fitness":
-          return "bg-red-50 text-red-800 border border-red-200"
+          return "bg-green-50 text-green-800 border border-green-200"
         case "Health":
           return "bg-gray-50 text-gray-800 border border-gray-200"
         case "Reflection":
-          return "bg-red-200 text-red-900 border border-red-400"
+          return "bg-green-200 text-green-900 border border-green-400"
         default:
           return "bg-gray-100 text-gray-900 border border-gray-300"
       }
@@ -74,10 +74,10 @@ export default function HabitTracker({ isDarkMode = false }: HabitTrackerProps) 
             ${
               habit.completed
                 ? isDarkMode
-                  ? "bg-gradient-to-br from-red-600/20 to-red-700/20 border-red-500/40 shadow-[3px_3px_0px_0px_rgba(220,38,38,0.3)] sm:shadow-[4px_4px_0px_0px_rgba(220,38,38,0.3)]"
-                  : "bg-gradient-to-br from-red-50 to-red-100 border-black shadow-[3px_3px_0px_0px_rgba(220,38,38,0.3)] sm:shadow-[4px_4px_0px_0px_rgba(220,38,38,0.3)]"
+                  ? "bg-gradient-to-br from-green-600/20 to-green-700/20 border-green-500/40 shadow-[3px_3px_0px_0px_rgba(34,197,94,0.3)] sm:shadow-[4px_4px_0px_0px_rgba(34,197,94,0.3)]"
+                  : "bg-gradient-to-br from-green-50 to-green-100 border-black shadow-[3px_3px_0px_0px_rgba(34,197,94,0.3)] sm:shadow-[4px_4px_0px_0px_rgba(34,197,94,0.3)]"
                 : isDarkMode
-                  ? "bg-black/50 border-red-600 shadow-[3px_3px_0px_0px_rgba(220,38,38,0.2)] sm:shadow-[4px_4px_0px_0px_rgba(220,38,38,0.2)] hover:shadow-[4px_4px_0px_0px_rgba(220,38,38,0.3)] sm:hover:shadow-[6px_6px_0px_0px_rgba(220,38,38,0.3)]"
+                  ? "bg-black/50 border-green-600 shadow-[3px_3px_0px_0px_rgba(34,197,94,0.2)] sm:shadow-[4px_4px_0px_0px_rgba(34,197,94,0.2)] hover:shadow-[4px_4px_0px_0px_rgba(34,197,94,0.3)] sm:hover:shadow-[6px_6px_0px_0px_rgba(34,197,94,0.3)]"
                   : "bg-white border-black shadow-[3px_3px_0px_0px_rgba(0,0,0,1)] sm:shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] hover:shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] sm:hover:shadow-[6px_6px_0px_0px_rgba(0,0,0,1)]"
             }
           `}
@@ -91,11 +91,11 @@ export default function HabitTracker({ isDarkMode = false }: HabitTrackerProps) 
                 onClick={() => toggleHabit(habit.id)}
               >
                 {habit.completed ? (
-                  <CheckCircle2 className="h-7 w-7 sm:h-8 sm:w-8 text-red-500" />
+                  <CheckCircle2 className="h-7 w-7 sm:h-8 sm:w-8 text-green-500 animate-glow" />
                 ) : (
                   <div
-                    className={`h-7 w-7 sm:h-8 sm:w-8 border-3 rounded-full hover:border-red-500 transition-colors ${
-                      isDarkMode ? "border-red-600" : "border-gray-400"
+                    className={`h-7 w-7 sm:h-8 sm:w-8 border-3 rounded-full hover:border-green-500 transition-colors ${
+                      isDarkMode ? "border-green-600" : "border-gray-400"
                     }`}
                   />
                 )}
@@ -144,8 +144,8 @@ export default function HabitTracker({ isDarkMode = false }: HabitTrackerProps) 
                 className={`text-xs mt-1 ${
                   habit.completed
                     ? isDarkMode
-                      ? "text-red-400"
-                      : "text-red-600"
+                      ? "text-green-400"
+                      : "text-green-600"
                     : isDarkMode
                       ? "text-gray-500"
                       : "text-gray-500"
