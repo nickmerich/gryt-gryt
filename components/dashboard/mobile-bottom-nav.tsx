@@ -26,8 +26,8 @@ export default function MobileBottomNav() {
               href={item.href}
               className={`flex flex-col items-center justify-center min-w-[60px] py-2 px-1 rounded-xl transition-all ${
                 isActive
-                  ? "bg-red-500 text-white shadow-[2px_2px_0px_0px_rgba(0,0,0,0.3)]"
-                  : "text-gray-600 hover:bg-red-50 hover:text-black"
+                  ? "bg-gryt-green text-white shadow-[2px_2px_0px_0px_rgba(0,0,0,0.3)]"
+                  : "text-gray-600 hover:bg-green-50 hover:text-black"
               }`}
             >
               <item.icon className="h-5 w-5 mb-1" />

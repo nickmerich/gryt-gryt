@@ -47,7 +47,7 @@ export default function MobileHabitTracker({ habits, onToggle }: MobileHabitTrac
   return (
     <div className="space-y-4">
       {/* Mobile Progress Header */}
-      <Card className="border-3 border-black rounded-2xl p-4 bg-gradient-to-r from-red-50 to-red-100 shadow-[4px_4px_0px_0px_rgba(0,0,0,1)]">
+      <Card className="border-3 border-black rounded-2xl p-4 bg-gradient-to-r from-green-50 to-green-100 shadow-[4px_4px_0px_0px_rgba(0,0,0,1)]">
         <div className="flex items-center justify-between mb-3">
           <div>
             <h3 className="font-bold text-lg text-black">Today's Progress</h3>
@@ -56,7 +56,7 @@ export default function MobileHabitTracker({ habits, onToggle }: MobileHabitTrac
             </p>
           </div>
           <div className="text-right">
-            <div className="text-3xl font-black text-red-600">{Math.round(completionRate)}%</div>
+            <div className="text-3xl font-black text-gryt-green">{Math.round(completionRate)}%</div>
             <div className="text-xs text-gray-500">completion</div>
           </div>
         </div>
@@ -64,7 +64,7 @@ export default function MobileHabitTracker({ habits, onToggle }: MobileHabitTrac
         {/* Progress Bar */}
         <div className="w-full bg-white border-2 border-black rounded-full h-4 overflow-hidden">
           <div
-            className="h-full bg-gradient-to-r from-red-500 to-red-600 transition-all duration-500 ease-out"
+            className="h-full bg-gradient-to-r from-gryt-green to-green-600 transition-all duration-500 ease-out"
             style={{ width: `${completionRate}%` }}
           />
         </div>
@@ -77,7 +77,7 @@ export default function MobileHabitTracker({ habits, onToggle }: MobileHabitTrac
             key={habit.id}
             className={`border-3 rounded-2xl transition-all duration-300 ${
               habit.completed
-                ? "bg-gradient-to-r from-red-50 to-red-100 border-red-400 shadow-[3px_3px_0px_0px_rgba(220,38,38,0.3)]"
+                ? "bg-gradient-to-r from-green-50 to-green-100 border-green-400 shadow-[3px_3px_0px_0px_rgba(34,197,94,0.3)]"
                 : "bg-white border-black shadow-[3px_3px_0px_0px_rgba(0,0,0,1)] active:shadow-[1px_1px_0px_0px_rgba(0,0,0,1)]"
             }`}
           >
@@ -88,13 +88,13 @@ export default function MobileHabitTracker({ habits, onToggle }: MobileHabitTrac
                 <Button
                   variant="ghost"
                   size="icon"
-                  className="min-w-[56px] min-h-[56px] p-0 rounded-2xl hover:bg-red-50 active:bg-red-100 transition-all duration-200"
+                  className="min-w-[56px] min-h-[56px] p-0 rounded-2xl hover:bg-green-50 active:bg-green-100 transition-all duration-200"
                   onClick={() => onToggle(habit.id)}
                 >
                   {habit.completed ? (
-                    <CheckCircle2 className="h-8 w-8 text-red-500" />
+                    <CheckCircle2 className="h-8 w-8 text-gryt-green" />
                   ) : (
-                    <div className="h-8 w-8 border-3 border-gray-300 rounded-full hover:border-red-500 transition-colors" />
+                    <div className="h-8 w-8 border-3 border-gray-300 rounded-full hover:border-gryt-green transition-colors" />
                   )}
                 </Button>
 
@@ -125,7 +125,7 @@ export default function MobileHabitTracker({ habits, onToggle }: MobileHabitTrac
 
                 {/* Streak Display */}
                 <div className="text-right">
-                  <div className="flex items-center gap-1 text-red-600">
+                  <div className="flex items-center gap-1 text-gryt-green">
                     <Flame className="h-5 w-5" />
                     <span className="font-bold text-lg">{habit.streak}</span>
                   </div>
@@ -141,17 +141,14 @@ export default function MobileHabitTracker({ habits, onToggle }: MobileHabitTrac
                     <span className="font-bold text-red-600">{habit.progress}%</span>
                   </div>
                   <div className="w-full bg-gray-200 border border-black rounded-full h-3">
-                    <div
-                      className="bg-gradient-to-r from-red-500 to-red-600 h-full rounded-full transition-all duration-500"
-                      style={{ width: `${habit.progress}%` }}
-                    />
+                    <div className="bg-gradient-to-r from-gryt-green to-green-600 h-full rounded-full transition-all duration-500" />
                   </div>
                 </div>
               )}
 
               {/* Completion Status */}
               <div
-                className={`mt-3 text-center text-sm font-medium ${habit.completed ? "text-red-600" : "text-gray-500"}`}
+                className={`mt-3 text-center text-sm font-medium ${habit.completed ? "text-gryt-green" : "text-gray-500"}`}
               >
                 {habit.completed ? "✓ Completed today" : "Tap to complete"}
               </div>
@@ -161,7 +158,7 @@ export default function MobileHabitTracker({ habits, onToggle }: MobileHabitTrac
       </div>
 
       {/* Add New Habit Button */}
-      <Button className="w-full min-h-[56px] bg-red-500 hover:bg-red-600 text-white rounded-2xl border-3 border-black font-bold text-lg shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] active:shadow-[2px_2px_0px_0px_rgba(0,0,0,1)] active:translate-x-[2px] active:translate-y-[2px] transition-all duration-200">
+      <Button className="w-full min-h-[56px] bg-gryt-green hover:bg-green-600 text-white rounded-2xl border-3 border-black font-bold text-lg shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] active:shadow-[2px_2px_0px_0px_rgba(0,0,0,1)] active:translate-x-[2px] active:translate-y-[2px] transition-all duration-200">
         <Plus className="h-6 w-6 mr-2" />
         Add New Habit
       </Button>

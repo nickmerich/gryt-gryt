@@ -47,7 +47,7 @@ export default function MobileHeader() {
             <Button
               variant="outline"
               size="icon"
-              className="rounded-xl border-3 border-black min-w-[48px] min-h-[48px] bg-white hover:bg-red-50 active:bg-red-100 transition-all duration-200 shadow-[3px_3px_0px_0px_rgba(0,0,0,1)] active:shadow-[1px_1px_0px_0px_rgba(0,0,0,1)] active:translate-x-[2px] active:translate-y-[2px]"
+              className="rounded-xl border-3 border-black min-w-[48px] min-h-[48px] bg-white hover:bg-green-50 active:bg-green-100 transition-all duration-200 shadow-[3px_3px_0px_0px_rgba(0,0,0,1)] active:shadow-[1px_1px_0px_0px_rgba(0,0,0,1)] active:translate-x-[2px] active:translate-y-[2px]"
             >
               <Menu className="h-6 w-6 text-black" />
             </Button>
@@ -55,7 +55,7 @@ export default function MobileHeader() {
           <SheetContent side="left" className="border-r-4 border-black p-0 w-[320px] bg-white">
             <div className="h-full flex flex-col">
               {/* Header */}
-              <div className="p-6 border-b-4 border-black bg-gradient-to-r from-red-500 to-red-600 text-white relative">
+              <div className="p-6 border-b-4 border-black bg-gradient-to-r from-gryt-green to-green-600 text-white relative">
                 <div className="flex items-center justify-between">
                   <Link href="/" className="text-2xl font-black">
                     GRYT
@@ -80,8 +80,8 @@ export default function MobileHeader() {
                         variant={isActive(item.href) ? "default" : "ghost"}
                         className={`w-full justify-start gap-3 rounded-xl font-bold min-h-[56px] text-base transition-all duration-200 ${
                           isActive(item.href)
-                            ? "bg-red-500 hover:bg-red-600 text-white border-2 border-black shadow-[3px_3px_0px_0px_rgba(0,0,0,1)]"
-                            : "hover:bg-red-50 text-black border-2 border-transparent hover:border-red-200 active:bg-red-100"
+                            ? "bg-gryt-green hover:bg-green-600 text-white border-2 border-black shadow-[3px_3px_0px_0px_rgba(0,0,0,1)]"
+                            : "hover:bg-green-50 text-black border-2 border-transparent hover:border-green-200 active:bg-green-100"
                         }`}
                       >
                         <item.icon className="h-6 w-6" />
@@ -92,14 +92,14 @@ export default function MobileHeader() {
                 </nav>
 
                 {/* Quick Actions */}
-                <div className="mt-8 p-4 border-2 border-black rounded-xl bg-gradient-to-br from-red-50 to-red-100">
+                <div className="mt-8 p-4 border-2 border-black rounded-xl bg-gradient-to-br from-green-50 to-green-100">
                   <h3 className="font-bold text-black mb-3">Quick Actions</h3>
                   <div className="space-y-2">
                     <Link href="/dashboard/habits/new">
                       <Button
                         variant="outline"
                         size="sm"
-                        className="w-full justify-start border-2 border-black rounded-lg font-bold min-h-[44px] hover:bg-red-50"
+                        className="w-full justify-start border-2 border-black rounded-lg font-bold min-h-[44px] hover:bg-green-50"
                         onClick={() => setIsOpen(false)}
                       >
                         <Target className="h-4 w-4 mr-2" />
@@ -110,7 +110,7 @@ export default function MobileHeader() {
                       <Button
                         variant="outline"
                         size="sm"
-                        className="w-full justify-start border-2 border-black rounded-lg font-bold min-h-[44px] hover:bg-red-50"
+                        className="w-full justify-start border-2 border-black rounded-lg font-bold min-h-[44px] hover:bg-green-50"
                         onClick={() => setIsOpen(false)}
                       >
                         <BookOpen className="h-4 w-4 mr-2" />
@@ -128,8 +128,8 @@ export default function MobileHeader() {
                     variant={isActive("/dashboard/settings") ? "default" : "ghost"}
                     className={`w-full justify-start gap-3 rounded-xl font-bold mb-3 min-h-[52px] ${
                       isActive("/dashboard/settings")
-                        ? "bg-red-500 hover:bg-red-600 text-white border-2 border-black"
-                        : "hover:bg-red-50 text-black"
+                        ? "bg-gryt-green hover:bg-green-600 text-white border-2 border-black"
+                        : "hover:bg-green-50 text-black"
                     }`}
                   >
                     <Settings className="h-5 w-5" />
@@ -139,7 +139,7 @@ export default function MobileHeader() {
                 <Link href="/">
                   <Button
                     variant="ghost"
-                    className="w-full justify-start gap-3 rounded-xl font-bold text-red-600 hover:bg-red-50 hover:text-red-700 min-h-[52px] border-2 border-transparent hover:border-red-200"
+                    className="w-full justify-start gap-3 rounded-xl font-bold text-gryt-green hover:bg-green-50 hover:text-green-700 min-h-[52px] border-2 border-transparent hover:border-green-200"
                   >
                     <LogOut className="h-5 w-5" />
                     Log Out
@@ -157,11 +157,11 @@ export default function MobileHeader() {
         <Button
           variant="outline"
           size="icon"
-          className="rounded-xl border-3 border-black min-w-[48px] min-h-[48px] bg-white hover:bg-red-50 active:bg-red-100 transition-all duration-200 shadow-[3px_3px_0px_0px_rgba(0,0,0,1)] active:shadow-[1px_1px_0px_0px_rgba(0,0,0,1)] active:translate-x-[2px] active:translate-y-[2px] relative"
+          className="rounded-xl border-3 border-black min-w-[48px] min-h-[48px] bg-white hover:bg-green-50 active:bg-green-100 transition-all duration-200 shadow-[3px_3px_0px_0px_rgba(0,0,0,1)] active:shadow-[1px_1px_0px_0px_rgba(0,0,0,1)] active:translate-x-[2px] active:translate-y-[2px] relative"
         >
           <Bell className="h-6 w-6 text-black" />
           {/* Notification Badge */}
-          <div className="absolute -top-1 -right-1 w-5 h-5 bg-red-500 border-2 border-white rounded-full flex items-center justify-center">
+          <div className="absolute -top-1 -right-1 w-5 h-5 bg-gryt-green border-2 border-white rounded-full flex items-center justify-center">
             <span className="text-xs font-bold text-white">3</span>
           </div>
         </Button>

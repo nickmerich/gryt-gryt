@@ -4,6 +4,9 @@ import { getSessionUser, isValidSessionToken } from "@/lib/auth"
 
 export async function middleware(request: NextRequest) {
   const { pathname } = request.nextUrl
+  const timestamp = new Date().toISOString()
+
+  console.log(`\n[MIDDLEWARE ${timestamp}] Processing: ${pathname}`)
 
   // Skip middleware for static files, API routes, and specific paths
   if (
@@ -14,10 +17,16 @@ export async function middleware(request: NextRequest) {
     pathname.startsWith("/images/") ||
     pathname.startsWith("/icons/")
   ) {
+    console.log(`[MIDDLEWARE] Skipping static/API route: ${pathname}`)
     return NextResponse.next()
   }
 
   const sessionToken = request.cookies.get("session-id")?.value
+  console.log(`[MIDDLEWARE] Session token present: ${sessionToken ? "YES" : "NO"}`)
+
+  if (sessionToken) {
+    console.log(`[MIDDLEWARE] Session token: ${sessionToken.substring(0, 8)}...`)
+  }
 
   // Protected routes that require authentication
   const protectedRoutes = ["/dashboard", "/studio", "/admin"]
@@ -27,51 +36,68 @@ export async function middleware(request: NextRequest) {
   const publicRoutes = ["/login", "/signup"]
   const isPublicRoute = publicRoutes.includes(pathname)
 
-  console.log(`Middleware: ${pathname}, Session: ${sessionToken ? "exists" : "none"}`)
+  console.log(`[MIDDLEWARE] Route type: ${isProtectedRoute ? "PROTECTED" : isPublicRoute ? "PUBLIC" : "GENERAL"}`)
 
+  // Handle protected routes
   if (isProtectedRoute) {
+    console.log("[MIDDLEWARE] Checking authentication for protected route...")
+
     if (!sessionToken) {
-      console.log(`Redirecting to login: no session token`)
-      return NextResponse.redirect(new URL("/login", request.url))
+      console.log("[MIDDLEWARE] No session token - redirecting to login")
+      const loginUrl = new URL("/login", request.url)
+      loginUrl.searchParams.set("redirect", pathname)
+      return NextResponse.redirect(loginUrl)
     }
 
     if (!isValidSessionToken(sessionToken)) {
-      console.log(`Redirecting to login: invalid session token format`)
+      console.log("[MIDDLEWARE] Invalid session token format - redirecting to login")
       const response = NextResponse.redirect(new URL("/login", request.url))
       response.cookies.delete("session-id")
       return response
     }
 
     try {
+      console.log("[MIDDLEWARE] Validating session with database...")
       const user = await getSessionUser(sessionToken)
+
       if (!user) {
-        console.log(`Redirecting to login: invalid session`)
+        console.log("[MIDDLEWARE] Session validation failed - redirecting to login")
         const response = NextResponse.redirect(new URL("/login", request.url))
         response.cookies.delete("session-id")
         return response
       }
-      console.log(`Access granted for user: ${user.email}`)
+
+      console.log(`[MIDDLEWARE] Access granted for user: ${user.email} (ID: ${user.id})`)
+
+      // Add user info to headers for debugging
+      const response = NextResponse.next()
+      response.headers.set("x-user-id", user.id.toString())
+      response.headers.set("x-user-email", user.email)
+      return response
     } catch (error) {
-      console.error("Session validation error:", error)
+      console.error("[MIDDLEWARE] Session validation error:", error)
       const response = NextResponse.redirect(new URL("/login", request.url))
       response.cookies.delete("session-id")
       return response
     }
   }
 
+  // Handle public routes (redirect authenticated users)
   if (isPublicRoute && sessionToken && isValidSessionToken(sessionToken)) {
+    console.log("[MIDDLEWARE] Checking if authenticated user should be redirected...")
     try {
       const user = await getSessionUser(sessionToken)
       if (user) {
-        console.log(`Redirecting authenticated user to dashboard`)
+        console.log(`[MIDDLEWARE] Redirecting authenticated user ${user.email} to dashboard`)
         return NextResponse.redirect(new URL("/dashboard", request.url))
       }
     } catch (error) {
-      console.error("Session check error:", error)
+      console.error("[MIDDLEWARE] Session check error:", error)
       // Continue to public route if session check fails
     }
   }
 
+  console.log("[MIDDLEWARE] Allowing request to proceed")
   return NextResponse.next()
 }
 
