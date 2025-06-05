@@ -52,11 +52,12 @@ export default function LandingPage() {
           <div className="container px-4 mx-auto">
             <div className="max-w-6xl mx-auto text-center mb-12 sm:mb-20">
               <h1 className="text-brutal-hero mb-8 tracking-tight leading-tight text-gryt-black">
-                One Habit a Day Can <span className="text-gryt-red">Change Everything</span>
+                Build Habits That <span className="text-gryt-green">Change Everything</span>
               </h1>
-              <p className="text-brutal-body mb-12 max-w-4xl mx-auto text-gray-700 leading-relaxed">
-                Track your habits, achieve your goals, and transform your life with Gryt - the all-in-one personal
-                development platform.
+              <p className="text-brutal-body mb-12 max-w-5xl mx-auto text-gray-700 leading-relaxed">
+                🚀 Centralize habit tracking from all your apps. 📊 Leverage AI-driven insights. 💪 Achieve tangible
+                results within 90 days. ✨ Transform into the person you aspire to be in just one year. Begin your
+                journey today.
               </p>
               <div className="flex flex-wrap justify-center gap-6">
                 <Link href="/signup">
@@ -78,7 +79,7 @@ export default function LandingPage() {
         <section className="py-20 bg-gryt-black lazy-content">
           <div className="container px-4 mx-auto">
             <h2 className="text-brutal-title mb-16 text-center text-gryt-white">
-              Transform Your Life With These <span className="text-gryt-red">Features</span>
+              Transform Your Life With These <span className="text-gryt-green">Features</span>
             </h2>
 
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
@@ -87,7 +88,7 @@ export default function LandingPage() {
                   title="Habit & Goal Aggregation"
                   description="Track habits from multiple sources in one place. Integrate with your favorite apps for fitness, nutrition, productivity, and more."
                   icon="layers"
-                  color="bg-gradient-to-br from-red-600 to-red-800"
+                  color="bg-gradient-to-br from-green-600 to-green-800"
                   isDark={true}
                 />
               </Suspense>
@@ -105,7 +106,7 @@ export default function LandingPage() {
                   title="Unified Analytics"
                   description="Visualize your progress with comprehensive analytics. See your streaks, trends, and insights all in one dashboard."
                   icon="bar-chart"
-                  color="bg-gradient-to-br from-red-600 to-red-800"
+                  color="bg-gradient-to-br from-green-600 to-green-800"
                   isDark={true}
                 />
               </Suspense>
@@ -123,7 +124,7 @@ export default function LandingPage() {
                   title="Community Support"
                   description="Connect with like-minded individuals for accountability, inspiration, and motivation on your personal development journey."
                   icon="users"
-                  color="bg-gradient-to-br from-red-600 to-red-800"
+                  color="bg-gradient-to-br from-green-600 to-green-800"
                   isDark={true}
                 />
               </Suspense>
@@ -144,7 +145,7 @@ export default function LandingPage() {
         <section className="py-20 bg-white lazy-content">
           <div className="container px-4 mx-auto">
             <h2 className="text-brutal-title mb-16 text-center text-gryt-black">
-              How <span className="text-gryt-red">Gryt</span> Works
+              How <span className="text-gryt-green">Gryt</span> Works
             </h2>
 
             <div className="max-w-5xl mx-auto">
@@ -155,7 +156,7 @@ export default function LandingPage() {
                     title: "Onboarding & Goal Definition",
                     description:
                       "Define your goals, connect your favorite apps, and set up the habits that will help you achieve success.",
-                    variant: "red" as const,
+                    variant: "green" as const,
                   },
                   {
                     number: "2",
@@ -169,7 +170,7 @@ export default function LandingPage() {
                     title: "Logging & Progress Tracking",
                     description:
                       "Easily log your habits manually or automatically through integrations, and watch your progress grow over time.",
-                    variant: "red" as const,
+                    variant: "green" as const,
                   },
                   {
                     number: "4",
@@ -182,7 +183,7 @@ export default function LandingPage() {
                   <div key={index} className="flex flex-col md:flex-row gap-8 items-center">
                     <div
                       className={`
-                      ${step.variant === "red" ? "bg-gryt-red border-gryt-black" : "bg-gryt-black border-gryt-red"}
+                      ${step.variant === "green" ? "bg-gryt-green border-gryt-black" : "bg-gryt-black border-gryt-green"}
                       border-4 rounded-full h-20 w-20 flex items-center justify-center text-3xl font-black 
                       shadow-brutal text-gryt-white gpu-layer
                     `}
@@ -204,7 +205,7 @@ export default function LandingPage() {
         <section className="py-20 bg-gray-100 lazy-content">
           <div className="container px-4 mx-auto">
             <h2 className="text-brutal-title mb-16 text-center text-gryt-black">
-              Choose Your <span className="text-gryt-red">Plan</span>
+              Choose Your <span className="text-gryt-green">Plan</span>
             </h2>
 
             <div className="grid grid-cols-1 md:grid-cols-2 max-w-5xl mx-auto gap-8">
@@ -252,7 +253,7 @@ export default function LandingPage() {
         </section>
 
         {/* CTA Section - Critical Performance */}
-        <section className="py-20 bg-gradient-to-r from-red-600 to-red-800 text-white critical-performance">
+        <section className="py-20 bg-gradient-to-r from-green-600 to-green-800 text-white critical-performance">
           <div className="container px-4 mx-auto text-center">
             <h2 className="text-brutal-title mb-8 text-gryt-white">Ready to Transform Your Life?</h2>
             <p className="text-brutal-body mb-12 max-w-3xl mx-auto leading-relaxed">
@@ -272,14 +273,14 @@ export default function LandingPage() {
             <div className="flex flex-col md:flex-row justify-between items-center">
               <div className="mb-6 md:mb-0">
                 <h2 className="text-3xl font-black">GRYT</h2>
-                <p className="text-gray-400 text-lg">One habit a day can change everything.</p>
+                <p className="text-gray-400 text-lg">Build habits that change everything.</p>
               </div>
               <div className="flex gap-8">
                 {["About", "Privacy", "Terms", "Contact"].map((link) => (
                   <Link
                     key={link}
                     href={`/${link.toLowerCase()}`}
-                    className="hover:text-red-400 transition-colors duration-300 text-lg"
+                    className="hover:text-green-400 transition-colors duration-300 text-lg"
                   >
                     {link}
                   </Link>

@@ -49,16 +49,20 @@ export default function SignupPage() {
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-purple-50 to-blue-50 py-12 px-4">
+    <div className="min-h-screen bg-gryt-white py-12 px-4">
       <div className="max-w-md mx-auto">
-        <Button variant="outline" className="mb-6 rounded-xl border-2 border-black" onClick={handleBack}>
+        <Button
+          variant="outline"
+          className="mb-6 rounded-xl border-4 border-gryt-black bg-gryt-white text-gryt-black hover:bg-gryt-green hover:text-gryt-white shadow-brutal transition-brutal"
+          onClick={handleBack}
+        >
           <ArrowLeft className="h-4 w-4 mr-2" /> Back
         </Button>
 
-        <div className="bg-white border-4 border-black rounded-xl p-6 shadow-[8px_8px_0px_0px_rgba(0,0,0,1)]">
+        <div className="bg-gryt-white border-4 border-gryt-black rounded-xl p-6 shadow-brutal">
           <div className="text-center mb-6">
-            <h1 className="text-3xl font-black">Join Gryt</h1>
-            <p className="text-gray-600 mt-2">
+            <h1 className="text-3xl font-black text-gryt-black">Join Gryt</h1>
+            <p className="text-gryt-gray-600 mt-2">
               {plan === "premium"
                 ? "You're signing up for the Premium plan"
                 : "Start your personal development journey"}
@@ -71,13 +75,15 @@ export default function SignupPage() {
                 <div key={i} className="flex flex-col items-center">
                   <div
                     className={`
-                    w-10 h-10 rounded-full flex items-center justify-center font-bold border-2 border-black
-                    ${step >= i ? "bg-black text-white" : "bg-white text-black"}
+                    w-10 h-10 rounded-full flex items-center justify-center font-bold border-4 border-gryt-black transition-brutal
+                    ${step >= i ? "bg-gryt-green text-gryt-white shadow-brutal-green" : "bg-gryt-white text-gryt-black shadow-brutal"}
                   `}
                   >
                     {i}
                   </div>
-                  <span className="text-xs mt-1">{i === 1 ? "Account" : i === 2 ? "Profile" : "Goals"}</span>
+                  <span className="text-xs mt-1 text-gryt-black font-medium">
+                    {i === 1 ? "Account" : i === 2 ? "Profile" : "Goals"}
+                  </span>
                 </div>
               ))}
             </div>
@@ -87,7 +93,7 @@ export default function SignupPage() {
             {step === 1 && (
               <div className="space-y-4">
                 <div>
-                  <Label htmlFor="name" className="font-bold">
+                  <Label htmlFor="name" className="font-bold text-gryt-black">
                     Full Name
                   </Label>
                   <Input
@@ -95,12 +101,12 @@ export default function SignupPage() {
                     name="name"
                     value={formData.name}
                     onChange={handleChange}
-                    className="border-2 border-black rounded-xl mt-1"
+                    className="border-4 border-gryt-black rounded-xl mt-1 bg-gryt-white text-gryt-black focus:border-gryt-green focus:ring-gryt-green"
                     required
                   />
                 </div>
                 <div>
-                  <Label htmlFor="email" className="font-bold">
+                  <Label htmlFor="email" className="font-bold text-gryt-black">
                     Email Address
                   </Label>
                   <Input
@@ -109,12 +115,12 @@ export default function SignupPage() {
                     type="email"
                     value={formData.email}
                     onChange={handleChange}
-                    className="border-2 border-black rounded-xl mt-1"
+                    className="border-4 border-gryt-black rounded-xl mt-1 bg-gryt-white text-gryt-black focus:border-gryt-green focus:ring-gryt-green"
                     required
                   />
                 </div>
                 <div>
-                  <Label htmlFor="password" className="font-bold">
+                  <Label htmlFor="password" className="font-bold text-gryt-black">
                     Password
                   </Label>
                   <Input
@@ -123,7 +129,7 @@ export default function SignupPage() {
                     type="password"
                     value={formData.password}
                     onChange={handleChange}
-                    className="border-2 border-black rounded-xl mt-1"
+                    className="border-4 border-gryt-black rounded-xl mt-1 bg-gryt-white text-gryt-black focus:border-gryt-green focus:ring-gryt-green"
                     required
                   />
                 </div>
@@ -133,7 +139,7 @@ export default function SignupPage() {
             {step === 2 && (
               <div className="space-y-4">
                 <div>
-                  <Label htmlFor="goal" className="font-bold">
+                  <Label htmlFor="goal" className="font-bold text-gryt-black">
                     What goal are you working towards?
                   </Label>
                   <Input
@@ -141,13 +147,13 @@ export default function SignupPage() {
                     name="goal"
                     value={formData.goal}
                     onChange={handleChange}
-                    className="border-2 border-black rounded-xl mt-1"
+                    className="border-4 border-gryt-black rounded-xl mt-1 bg-gryt-white text-gryt-black focus:border-gryt-green focus:ring-gryt-green"
                     placeholder="e.g., Run a marathon, Learn a new language"
                     required
                   />
                 </div>
                 <div>
-                  <Label htmlFor="motivation" className="font-bold">
+                  <Label htmlFor="motivation" className="font-bold text-gryt-black">
                     Why does achieving this goal matter to you?
                   </Label>
                   <textarea
@@ -155,7 +161,7 @@ export default function SignupPage() {
                     name="motivation"
                     value={formData.motivation}
                     onChange={handleChange}
-                    className="w-full border-2 border-black rounded-xl mt-1 p-2"
+                    className="w-full border-4 border-gryt-black rounded-xl mt-1 p-3 bg-gryt-white text-gryt-black focus:border-gryt-green focus:ring-gryt-green resize-none"
                     rows={4}
                     placeholder="This will help keep you motivated when things get tough"
                     required
@@ -167,24 +173,24 @@ export default function SignupPage() {
             {step === 3 && (
               <div className="space-y-4">
                 <div className="text-center">
-                  <h2 className="text-xl font-bold mb-2">You're almost there!</h2>
-                  <p className="text-gray-600 mb-4">We'll help you set up your habits in the next step.</p>
+                  <h2 className="text-xl font-bold mb-2 text-gryt-black">You're almost there!</h2>
+                  <p className="text-gryt-gray-600 mb-4">We'll help you set up your habits in the next step.</p>
 
-                  <div className="border-2 border-black rounded-xl p-4 bg-purple-50 mb-4">
-                    <h3 className="font-bold">Your Goal</h3>
-                    <p>{formData.goal || "No goal specified"}</p>
+                  <div className="border-4 border-gryt-black rounded-xl p-4 bg-gryt-green bg-opacity-10 mb-4">
+                    <h3 className="font-bold text-gryt-black">Your Goal</h3>
+                    <p className="text-gryt-gray-700">{formData.goal || "No goal specified"}</p>
 
-                    <h3 className="font-bold mt-2">Your Motivation</h3>
-                    <p>{formData.motivation || "No motivation specified"}</p>
+                    <h3 className="font-bold mt-2 text-gryt-black">Your Motivation</h3>
+                    <p className="text-gryt-gray-700">{formData.motivation || "No motivation specified"}</p>
                   </div>
 
-                  <p className="text-sm text-gray-600">
+                  <p className="text-sm text-gryt-gray-600">
                     By clicking "Create Account", you agree to our{" "}
-                    <Link href="/terms" className="text-purple-600 underline">
+                    <Link href="/terms" className="text-gryt-green font-bold hover:underline">
                       Terms of Service
                     </Link>{" "}
                     and{" "}
-                    <Link href="/privacy" className="text-purple-600 underline">
+                    <Link href="/privacy" className="text-gryt-green font-bold hover:underline">
                       Privacy Policy
                     </Link>
                     .
@@ -196,7 +202,7 @@ export default function SignupPage() {
             <div className="mt-6">
               <Button
                 type="submit"
-                className="w-full bg-black hover:bg-black/80 text-white rounded-xl border-2 border-black font-bold py-6 h-auto shadow-[4px_4px_0px_0px_rgba(0,0,0,1)]"
+                className="w-full bg-gryt-black hover:bg-gryt-green text-gryt-white rounded-xl border-4 border-gryt-black font-bold py-6 h-auto shadow-brutal transition-brutal hover:shadow-brutal-xl hover:-translate-y-0.5 active:translate-y-0"
               >
                 {step < 3 ? "Continue" : "Create Account"}
               </Button>
@@ -204,9 +210,9 @@ export default function SignupPage() {
           </form>
 
           <div className="mt-4 text-center">
-            <p className="text-sm text-gray-600">
+            <p className="text-sm text-gryt-gray-600">
               Already have an account?{" "}
-              <Link href="/login" className="text-purple-600 font-bold">
+              <Link href="/login" className="text-gryt-green font-bold hover:underline">
                 Log in
               </Link>
             </p>

@@ -29,12 +29,12 @@ export default function PricingCard({
     <div
       className={`border-4 rounded-xl p-8 transition-all duration-300 hover:translate-y-[-4px] ${
         highlighted
-          ? "border-red-600 bg-black text-white shadow-[8px_8px_0px_0px_rgba(220,38,38,1)] hover:shadow-[12px_12px_0px_0px_rgba(220,38,38,1)]"
+          ? "border-green-600 bg-black text-white shadow-[8px_8px_0px_0px_rgba(22,163,74,1)] hover:shadow-[12px_12px_0px_0px_rgba(22,163,74,1)]"
           : "border-black bg-white text-black shadow-[8px_8px_0px_0px_rgba(0,0,0,1)] hover:shadow-[12px_12px_0px_0px_rgba(0,0,0,1)]"
       }`}
     >
       {highlighted && (
-        <div className="bg-red-600 text-white text-center py-2 px-4 rounded-lg mb-6 font-bold">Most Popular</div>
+        <div className="bg-green-600 text-white text-center py-2 px-4 rounded-lg mb-6 font-bold">Most Popular</div>
       )}
 
       <div className="text-center mb-8">
@@ -49,7 +49,7 @@ export default function PricingCard({
       <ul className="space-y-4 mb-8">
         {features.map((feature, index) => (
           <li key={index} className="flex items-start gap-3">
-            <Check className={`h-5 w-5 mt-0.5 flex-shrink-0 ${highlighted ? "text-red-400" : "text-red-600"}`} />
+            <Check className={`h-5 w-5 mt-0.5 flex-shrink-0 ${highlighted ? "text-green-400" : "text-green-600"}`} />
             <span className={`${highlighted ? "text-gray-200" : "text-gray-700"} leading-relaxed`}>{feature}</span>
           </li>
         ))}
@@ -59,7 +59,7 @@ export default function PricingCard({
         <Button
           className={`w-full rounded-xl border-2 font-bold text-lg py-6 h-auto transition-all duration-300 ${
             highlighted
-              ? "bg-red-600 hover:bg-red-700 text-white border-red-600 shadow-[4px_4px_0px_0px_rgba(220,38,38,0.5)]"
+              ? "bg-green-600 hover:bg-green-700 text-white border-green-600 shadow-[4px_4px_0px_0px_rgba(22,163,74,0.5)]"
               : "bg-black hover:bg-gray-800 text-white border-black shadow-[4px_4px_0px_0px_rgba(0,0,0,1)]"
           }`}
         >
