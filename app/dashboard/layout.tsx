@@ -1,47 +1,26 @@
 "use client"
 
 import type { ReactNode } from "react"
-import { useState } from "react"
 import { Sidebar } from "@/components/dashboard/sidebar"
-import MobileHeader from "@/components/dashboard/mobile-header"
-import MobileSidebar from "@/components/dashboard/mobile-sidebar"
 import MobileBottomNav from "@/components/dashboard/mobile-bottom-nav"
 import NotificationScheduler from "@/components/notifications/notification-scheduler"
 import { mockNotificationPreferences } from "@/lib/notifications"
-import { Menu } from "lucide-react"
-import { Button } from "@/components/ui/button"
 import KeyboardShortcutProvider from "@/components/keyboard/keyboard-shortcut-provider"
 
 export default function DashboardLayout({ children }: { children: ReactNode }) {
-  const [sidebarOpen, setSidebarOpen] = useState(false)
-
   const toggleSidebar = () => {
-    setSidebarOpen(!sidebarOpen)
+    // This will be handled by the Sidebar component internally
   }
 
   return (
     <KeyboardShortcutProvider onToggleSidebar={toggleSidebar}>
       <div className="min-h-screen bg-gray-50">
         <div className="flex h-screen">
-          {/* Sidebar - Desktop only */}
-          <div className="hidden md:block">
-            <Sidebar />
-          </div>
-
-          {/* Mobile Sidebar */}
-          <MobileSidebar
-            trigger={
-              <Button variant="ghost" size="icon" className="md:hidden" aria-label="Toggle sidebar menu">
-                <Menu className="h-6 w-6" />
-              </Button>
-            }
-          />
+          {/* Unified Sidebar - handles both mobile and desktop */}
+          <Sidebar />
 
           {/* Main content */}
           <div className="flex-1 flex flex-col overflow-hidden">
-            {/* Mobile header */}
-            <MobileHeader />
-
             {/* Content area */}
             <main className="flex-1 overflow-y-auto bg-gray-50">
               {/* Desktop padding */}
@@ -50,7 +29,7 @@ export default function DashboardLayout({ children }: { children: ReactNode }) {
               </div>
 
               {/* Mobile optimized content */}
-              <div className="md:hidden">{children}</div>
+              <div className="md:hidden p-4 pb-20">{children}</div>
             </main>
           </div>
         </div>

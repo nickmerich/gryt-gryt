@@ -1,21 +1,19 @@
-"use client"
-
-import type React from "react"
-
 import Link from "next/link"
 import { cn } from "@/lib/utils"
 
-interface MainNavProps extends React.HTMLAttributes<HTMLElement> {}
+interface MainNavProps {
+  className?: string
+}
 
-export function MainNav({ className, ...props }: MainNavProps) {
+export function MainNav({ className }: MainNavProps) {
   return (
-    <nav className={cn("flex items-center space-x-4 lg:space-x-6", className)} {...props}>
-      <Link href="/dashboard" className="flex items-center space-x-2 font-bold text-lg">
-        <div className="w-8 h-8 bg-green-500 rounded-lg flex items-center justify-center shadow-[0_0_0_2px_#ffffff,_2px_2px_0px_2px_#000000] hover:shadow-[0_0_0_2px_#ffffff,_4px_4px_0px_2px_#000000] transition-all duration-200">
-          <span className="text-white font-black text-sm">G</span>
+    <div className={cn("flex items-center space-x-4 lg:space-x-6", className)}>
+      <Link href="/dashboard" className="flex items-center space-x-2">
+        <div className="flex h-8 w-8 items-center justify-center rounded-full bg-gryt-green border-2 border-black shadow-[2px_2px_0px_0px_rgba(0,0,0,1)] hover:shadow-[4px_4px_0px_0px_rgba(255,255,255,1),6px_6px_0px_0px_rgba(0,0,0,1)] transition-all duration-200">
+          <span className="text-sm font-black text-white">G</span>
         </div>
-        <span className="text-green-600 font-black tracking-tight">GRYT</span>
+        <span className="text-lg font-black text-black">GRYT</span>
       </Link>
-    </nav>
+    </div>
   )
 }

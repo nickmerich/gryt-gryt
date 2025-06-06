@@ -81,16 +81,7 @@ export default function LandingPage() {
           <div className="container px-4 mx-auto">
             {/* Section Header */}
             <div className="text-center mb-16">
-              <h2
-                className="text-brutal-title mb-6 text-gryt-white font-black"
-                style={{
-                  color: "#FFFFFF",
-                  textShadow: "2px 2px 0px #22c55e, 4px 4px 0px #16a34a, 6px 6px 0px rgba(34, 197, 94, 0.3)",
-                  fontWeight: "900",
-                }}
-              >
-                Your Daily Growth Stack
-              </h2>
+              <h2 className="text-brutal-title mb-6 text-gryt-green font-black">Your Daily Growth Stack</h2>
               <p className="text-xl text-gryt-white max-w-3xl mx-auto leading-relaxed font-medium">
                 Powerful tools designed to help you build lasting habits and achieve your goals
               </p>

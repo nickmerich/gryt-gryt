@@ -1,16 +1,14 @@
 "use client"
 
-import type React from "react"
-
 import Link from "next/link"
 import { usePathname } from "next/navigation"
 import { cn } from "@/lib/utils"
+import type { ReactNode } from "react"
 
 export interface SidebarNavItem {
   name: string
   href: string
-  icon?: React.ReactNode
-  disabled?: boolean
+  icon: ReactNode
 }
 
 interface SidebarNavProps {
@@ -21,33 +19,22 @@ export function SidebarNav({ items }: SidebarNavProps) {
   const pathname = usePathname()
 
   return (
-    <nav className="grid gap-2">
+    <nav className="space-y-1">
       {items.map((item) => {
         const isActive = pathname === item.href
         return (
           <Link
             key={item.href}
-            href={item.disabled ? "#" : item.href}
+            href={item.href}
             className={cn(
-              "group flex items-center gap-3 rounded-lg px-3 py-2 text-sm font-medium transition-all duration-200",
-              "border-2 border-black",
+              "flex items-center space-x-3 rounded-lg px-3 py-2 text-sm font-medium transition-all duration-200 border-2 border-transparent",
               isActive
-                ? "bg-green-500 text-white shadow-[0_0_0_2px_#ffffff,_4px_4px_0px_2px_#000000]"
-                : "bg-white text-gray-900 shadow-[2px_2px_0px_2px_#000000] hover:bg-green-50 hover:text-green-700 hover:shadow-[0_0_0_2px_#ffffff,_4px_4px_0px_2px_#000000]",
-              item.disabled && "pointer-events-none opacity-60",
+                ? "bg-gryt-green text-white border-black shadow-[2px_2px_0px_0px_rgba(0,0,0,1)] hover:shadow-[4px_4px_0px_0px_rgba(255,255,255,1),6px_6px_0px_0px_rgba(0,0,0,1)]"
+                : "text-gray-700 hover:bg-gray-100 hover:text-gray-900 hover:border-black hover:shadow-[2px_2px_0px_0px_rgba(0,0,0,1)]",
             )}
           >
-            {item.icon && (
-              <span
-                className={cn(
-                  "transition-colors",
-                  isActive ? "text-white" : "text-gray-600 group-hover:text-green-600",
-                )}
-              >
-                {item.icon}
-              </span>
-            )}
-            <span className="font-bold">{item.name}</span>
+            {item.icon}
+            <span className="font-semibold">{item.name}</span>
           </Link>
         )
       })}
