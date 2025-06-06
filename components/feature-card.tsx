@@ -10,7 +10,7 @@ interface FeatureCardProps {
 
 export default function FeatureCard({ title, description, icon, color, isDark = false }: FeatureCardProps) {
   const getIcon = () => {
-    const iconClass = "h-8 w-8 text-white"
+    const iconClass = "h-8 w-8"
     switch (icon) {
       case "layers":
         return <Layers className={iconClass} />
@@ -29,16 +29,94 @@ export default function FeatureCard({ title, description, icon, color, isDark = 
     }
   }
 
+  // Determine if this should be a green card based on the color prop
+  const isGreenCard = color.includes("green")
+
   return (
-    <div
-      className={`border-4 border-black rounded-xl overflow-hidden shadow-[8px_8px_0px_0px_rgba(0,0,0,1)] transition-all duration-300 hover:shadow-[12px_12px_0px_0px_rgba(0,0,0,1)] hover:translate-y-[-4px] ${isDark ? "bg-gray-900" : "bg-white"}`}
-    >
-      <div className={`p-6 text-white ${color}`}>
-        {getIcon()}
-        <h3 className="text-xl font-bold mt-4">{title}</h3>
-      </div>
-      <div className={`p-6 ${isDark ? "bg-gray-900 text-gray-100" : "bg-white text-gray-800"}`}>
-        <p className="text-base leading-relaxed">{description}</p>
+    <div className="group gpu-layer will-change-transform">
+      {/* Main Card Container */}
+      <div
+        className={`
+          relative overflow-hidden border-4 border-gryt-black rounded-xl
+          transition-all duration-300 ease-out
+          ${
+            isGreenCard
+              ? "bg-gryt-green shadow-white-lg hover:shadow-white-xl"
+              : "bg-gryt-white shadow-brutal hover:shadow-brutal-lg"
+          }
+          hover:translate-y-[-4px] hover:translate-x-[-2px]
+          active:translate-y-0 active:translate-x-0
+          ${isGreenCard ? "hover:shadow-[0_0_0_4px_#ffffff,8px_8px_0px_4px_#000000]" : ""}
+        `}
+      >
+        {/* Icon Header Section */}
+        <div
+          className={`
+            relative p-8 border-b-4 border-gryt-black
+            ${isGreenCard ? "bg-gryt-black" : "bg-gryt-green"}
+          `}
+        >
+          {/* Icon Container */}
+          <div
+            className={`
+              inline-flex items-center justify-center p-4 rounded-xl border-4 border-gryt-black
+              ${isGreenCard ? "bg-gryt-green" : "bg-gryt-white"}
+              shadow-brutal mb-6
+              group-hover:shadow-brutal-lg group-hover:translate-y-[-2px]
+              transition-all duration-300
+            `}
+          >
+            <div className={isGreenCard ? "text-gryt-white" : "text-gryt-black"}>{getIcon()}</div>
+          </div>
+
+          {/* Title */}
+          <h3
+            className={`
+              text-2xl font-black leading-tight tracking-tight
+              ${isGreenCard ? "text-gryt-white" : "text-gryt-white"}
+            `}
+          >
+            {title}
+          </h3>
+
+          {/* Decorative Corner Element */}
+          <div
+            className={`
+              absolute top-4 right-4 w-6 h-6 border-4 border-gryt-black rounded-full
+              ${isGreenCard ? "bg-gryt-white" : "bg-gryt-black"}
+            `}
+          />
+        </div>
+
+        {/* Content Section */}
+        <div
+          className={`
+            p-8 relative
+            ${isGreenCard ? "bg-gryt-green" : "bg-gryt-white"}
+          `}
+        >
+          <p
+            className={`
+              text-lg leading-relaxed font-medium
+              ${isGreenCard ? "text-gryt-white" : "text-gryt-black"}
+            `}
+          >
+            {description}
+          </p>
+
+          {/* Bottom Accent Line */}
+          <div
+            className={`
+              absolute bottom-0 left-8 right-8 h-1 rounded-full
+              ${isGreenCard ? "bg-gryt-white" : "bg-gryt-green"}
+            `}
+          />
+        </div>
+
+        {/* Hover Glow Effect for Green Cards */}
+        {isGreenCard && (
+          <div className="absolute inset-0 rounded-xl opacity-0 group-hover:opacity-20 transition-opacity duration-300 pointer-events-none bg-gradient-to-br from-white via-transparent to-transparent" />
+        )}
       </div>
     </div>
   )

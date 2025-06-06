@@ -49,11 +49,11 @@ export default function DataFilters({ filters, onFilterChange, isDarkMode, isLoa
     <Card
       className={`border-3 rounded-xl overflow-hidden transition-all duration-500 ease-in-out ${
         isDarkMode
-          ? "bg-black/90 border-yellow-600 shadow-[4px_4px_0px_0px_rgba(234,179,8,0.3)]"
-          : "bg-white/95 border-black shadow-[4px_4px_0px_0px_rgba(0,0,0,0.3)]"
+          ? "bg-black/90 border-green-600 shadow-[0_0_0_2px_#ffffff,4px_4px_0px_2px_rgba(34,197,94,0.3)]"
+          : "bg-white/95 border-black shadow-[0_0_0_2px_#ffffff,4px_4px_0px_2px_rgba(0,0,0,0.3)]"
       }`}
     >
-      <div className="bg-gradient-to-r from-yellow-500 to-yellow-600 p-4 text-black">
+      <div className="bg-gradient-to-r from-green-500 to-green-600 p-4 text-white shadow-white">
         <h2 className="text-lg font-bold flex items-center gap-2">
           <Filter className="h-5 w-5" />
           Data Filters
@@ -76,10 +76,10 @@ export default function DataFilters({ filters, onFilterChange, isDarkMode, isLoa
                 variant={filters.dateRange === option.value ? "default" : "outline"}
                 className={`rounded-xl border-2 font-bold min-h-[36px] px-3 text-sm transition-all duration-300 ease-in-out ${
                   filters.dateRange === option.value
-                    ? "bg-yellow-500 hover:bg-yellow-600 text-black border-yellow-400"
+                    ? "bg-green-500 hover:bg-green-600 text-white border-green-400 shadow-white"
                     : isDarkMode
-                      ? "border-yellow-600 hover:bg-yellow-950/50 text-yellow-400 bg-black/50"
-                      : "border-black hover:bg-yellow-50 text-black"
+                      ? "border-green-600 hover:bg-green-950/50 text-green-400 bg-black/50"
+                      : "border-black hover:bg-green-50 text-black"
                 }`}
               >
                 {option.label}
@@ -103,10 +103,10 @@ export default function DataFilters({ filters, onFilterChange, isDarkMode, isLoa
                 variant={filters.timeframe === option.value ? "default" : "outline"}
                 className={`rounded-xl border-2 font-bold min-h-[36px] px-3 text-sm transition-all duration-300 ease-in-out ${
                   filters.timeframe === option.value
-                    ? "bg-yellow-500 hover:bg-yellow-600 text-black border-yellow-400"
+                    ? "bg-green-500 hover:bg-green-600 text-white border-green-400 shadow-white"
                     : isDarkMode
-                      ? "border-yellow-600 hover:bg-yellow-950/50 text-yellow-400 bg-black/50"
-                      : "border-black hover:bg-yellow-50 text-black"
+                      ? "border-green-600 hover:bg-green-950/50 text-green-400 bg-black/50"
+                      : "border-black hover:bg-green-50 text-black"
                 }`}
               >
                 {option.label}
@@ -130,10 +130,10 @@ export default function DataFilters({ filters, onFilterChange, isDarkMode, isLoa
                 variant={filters.habitCategory === category.value ? "default" : "outline"}
                 className={`rounded-xl border-2 font-bold min-h-[36px] px-3 text-sm transition-all duration-300 ease-in-out ${
                   filters.habitCategory === category.value
-                    ? "bg-yellow-500 hover:bg-yellow-600 text-black border-yellow-400"
+                    ? "bg-green-500 hover:bg-green-600 text-white border-green-400 shadow-white"
                     : isDarkMode
-                      ? "border-yellow-600 hover:bg-yellow-950/50 text-yellow-400 bg-black/50"
-                      : "border-black hover:bg-yellow-50 text-black"
+                      ? "border-green-600 hover:bg-green-950/50 text-green-400 bg-black/50"
+                      : "border-black hover:bg-green-50 text-black"
                 }`}
               >
                 {category.label}
@@ -157,10 +157,10 @@ export default function DataFilters({ filters, onFilterChange, isDarkMode, isLoa
                 variant={filters.achievementType === type.value ? "default" : "outline"}
                 className={`rounded-xl border-2 font-bold min-h-[36px] px-3 text-sm transition-all duration-300 ease-in-out ${
                   filters.achievementType === type.value
-                    ? "bg-yellow-500 hover:bg-yellow-600 text-black border-yellow-400"
+                    ? "bg-green-500 hover:bg-green-600 text-white border-green-400 shadow-white"
                     : isDarkMode
-                      ? "border-yellow-600 hover:bg-yellow-950/50 text-yellow-400 bg-black/50"
-                      : "border-black hover:bg-yellow-50 text-black"
+                      ? "border-green-600 hover:bg-green-950/50 text-green-400 bg-black/50"
+                      : "border-black hover:bg-green-50 text-black"
                 }`}
               >
                 {type.label}
@@ -173,19 +173,19 @@ export default function DataFilters({ filters, onFilterChange, isDarkMode, isLoa
         <div>
           <span className={`font-semibold mb-3 block ${isDarkMode ? "text-white" : "text-black"}`}>Active Filters</span>
           <div className="flex flex-wrap gap-2">
-            <Badge variant="outline" className="border-yellow-500 text-yellow-600 bg-yellow-50 font-bold">
+            <Badge variant="outline" className="border-green-500 text-green-600 bg-green-50 font-bold shadow-white">
               {dateRangeOptions.find((d) => d.value === filters.dateRange)?.label}
             </Badge>
-            <Badge variant="outline" className="border-yellow-500 text-yellow-600 bg-yellow-50 font-bold">
+            <Badge variant="outline" className="border-green-500 text-green-600 bg-green-50 font-bold shadow-white">
               {timeframeOptions.find((t) => t.value === filters.timeframe)?.label}
             </Badge>
             {filters.habitCategory !== "all" && (
-              <Badge variant="outline" className="border-yellow-500 text-yellow-600 bg-yellow-50 font-bold">
+              <Badge variant="outline" className="border-green-500 text-green-600 bg-green-50 font-bold shadow-white">
                 {habitCategories.find((h) => h.value === filters.habitCategory)?.label}
               </Badge>
             )}
             {filters.achievementType !== "all" && (
-              <Badge variant="outline" className="border-yellow-500 text-yellow-600 bg-yellow-50 font-bold">
+              <Badge variant="outline" className="border-green-500 text-green-600 bg-green-50 font-bold shadow-white">
                 {achievementTypes.find((a) => a.value === filters.achievementType)?.label}
               </Badge>
             )}

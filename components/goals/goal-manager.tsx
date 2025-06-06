@@ -3,19 +3,18 @@
 import { useState, useEffect } from "react"
 import { Card } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
-import { Badge } from "@/components/ui/badge"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
-import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog"
 import { Textarea } from "@/components/ui/textarea"
-import type { Goal, GoalProgress } from "@/lib/goal-service"
-import { Target, Plus, TrendingUp, AlertCircle, CheckCircle2 } from "lucide-react"
+import { Badge } from "@/components/ui/badge"
+import { Plus, Target, Save, X } from "lucide-react"
+import type { Goal } from "@/lib/goal-service"
+import GoalStreakTracker from "./goal-streak-tracker"
 
 interface GoalManagerProps {
   integrationProvider?: string
   integrationType?: string
-  metric?: string
   onGoalsUpdate?: (goals: Goal[]) => void
   isDarkMode?: boolean
 }
@@ -23,21 +22,22 @@ interface GoalManagerProps {
 export default function GoalManager({
   integrationProvider,
   integrationType,
-  metric,
   onGoalsUpdate,
   isDarkMode = false,
 }: GoalManagerProps) {
   const [goals, setGoals] = useState<Goal[]>([])
-  const [goalProgress, setGoalProgress] = useState<GoalProgress[]>([])
-  const [isAddingGoal, setIsAddingGoal] = useState(false)
-  const [newGoal, setNewGoal] = useState({
+  const [showCreateForm, setShowCreateForm] = useState(false)
+  const [editingGoal, setEditingGoal] = useState<Goal | null>(null)
+  const [loading, setLoading] = useState(true)
+
+  const [formData, setFormData] = useState({
     integrationProvider: integrationProvider || "",
     integrationType: integrationType || "",
-    metric: metric || "",
-    targetValue: 0,
-    targetType: "daily" as const,
-    goalType: "minimum" as const,
-    color: "#10b981",
+    metric: "",
+    targetValue: "",
+    targetType: "daily" as "daily" | "weekly" | "monthly",
+    goalType: "minimum" as "minimum" | "maximum" | "exact",
+    color: "#ef4444",
     description: "",
   })
 
@@ -47,291 +47,295 @@ export default function GoalManager({
 
   const fetchGoals = async () => {
     try {
+      setLoading(true)
       const response = await fetch("/api/goals")
-      const data = await response.json()
-      setGoals(data.goals || [])
-      onGoalsUpdate?.(data.goals || [])
+      const result = await response.json()
+      const fetchedGoals = result.goals || []
+
+      // Filter goals if specific integration is provided
+      const filteredGoals =
+        integrationProvider && integrationType
+          ? fetchedGoals.filter(
+              (goal: Goal) =>
+                goal.integrationProvider === integrationProvider && goal.integrationType === integrationType,
+            )
+          : fetchedGoals
+
+      setGoals(filteredGoals)
+      onGoalsUpdate?.(filteredGoals)
     } catch (error) {
       console.error("Failed to fetch goals:", error)
+    } finally {
+      setLoading(false)
     }
   }
 
-  const createGoal = async () => {
+  const handleCreateGoal = async () => {
     try {
       const response = await fetch("/api/goals", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
-          ...newGoal,
+          ...formData,
+          targetValue: Number.parseFloat(formData.targetValue),
           isActive: true,
         }),
       })
 
       if (response.ok) {
         await fetchGoals()
-        setIsAddingGoal(false)
-        setNewGoal({
-          integrationProvider: integrationProvider || "",
-          integrationType: integrationType || "",
-          metric: metric || "",
-          targetValue: 0,
-          targetType: "daily",
-          goalType: "minimum",
-          color: "#10b981",
-          description: "",
-        })
+        setShowCreateForm(false)
+        resetForm()
       }
     } catch (error) {
       console.error("Failed to create goal:", error)
     }
   }
 
-  const getStatusColor = (status: GoalProgress["status"]) => {
-    switch (status) {
-      case "completed":
-        return "text-green-600 bg-green-100 border-green-200"
-      case "on_track":
-        return "text-blue-600 bg-blue-100 border-blue-200"
-      case "ahead":
-        return "text-purple-600 bg-purple-100 border-purple-200"
-      case "behind":
-        return "text-red-600 bg-red-100 border-red-200"
+  const resetForm = () => {
+    setFormData({
+      integrationProvider: integrationProvider || "",
+      integrationType: integrationType || "",
+      metric: "",
+      targetValue: "",
+      targetType: "daily",
+      goalType: "minimum",
+      color: "#ef4444",
+      description: "",
+    })
+  }
+
+  const getGoalTypeColor = (goalType: string) => {
+    switch (goalType) {
+      case "minimum":
+        return "bg-green-100 text-green-800 border-green-300"
+      case "maximum":
+        return "bg-red-100 text-red-800 border-red-300"
+      case "exact":
+        return "bg-blue-100 text-blue-800 border-blue-300"
       default:
-        return "text-gray-600 bg-gray-100 border-gray-200"
+        return "bg-gray-100 text-gray-800 border-gray-300"
     }
   }
 
-  const getStatusIcon = (status: GoalProgress["status"]) => {
-    switch (status) {
-      case "completed":
-        return <CheckCircle2 className="h-4 w-4" />
-      case "on_track":
-        return <TrendingUp className="h-4 w-4" />
-      case "ahead":
-        return <TrendingUp className="h-4 w-4" />
-      case "behind":
-        return <AlertCircle className="h-4 w-4" />
+  const formatTargetValue = (value: number, type: string) => {
+    switch (type) {
+      case "fitness":
+        return value.toLocaleString()
+      case "nutrition":
+        return `${value} cal`
+      case "productivity":
+        return `${value}h`
+      case "reading":
+        return `${value} pages`
       default:
-        return <Target className="h-4 w-4" />
+        return value.toString()
     }
   }
 
-  const filteredGoals = goals.filter((goal) => {
-    if (integrationProvider && goal.integrationProvider !== integrationProvider) return false
-    if (integrationType && goal.integrationType !== integrationType) return false
-    if (metric && goal.metric !== metric) return false
-    return true
-  })
+  if (loading) {
+    return (
+      <div className="space-y-4">
+        {Array.from({ length: 2 }).map((_, index) => (
+          <Card
+            key={index}
+            className={`border-3 rounded-xl p-6 animate-pulse ${
+              isDarkMode ? "bg-black/50 border-green-600/50" : "bg-white/50 border-black/50"
+            }`}
+          >
+            <div className="space-y-4">
+              <div className={`h-6 rounded ${isDarkMode ? "bg-gray-700" : "bg-gray-300"}`}></div>
+              <div className={`h-32 rounded ${isDarkMode ? "bg-gray-700" : "bg-gray-300"}`}></div>
+            </div>
+          </Card>
+        ))}
+      </div>
+    )
+  }
 
   return (
-    <div className="space-y-4">
+    <div className="space-y-6">
+      {/* Header */}
       <div className="flex items-center justify-between">
-        <div className="flex items-center gap-2">
-          <Target className="h-5 w-5 text-green-600" />
-          <h3 className={`text-lg font-bold ${isDarkMode ? "text-white" : "text-black"}`}>Goals & Targets</h3>
+        <div>
+          <h3 className={`text-xl font-bold ${isDarkMode ? "text-white" : "text-black"}`}>Goal Management</h3>
+          <p className={`${isDarkMode ? "text-gray-300" : "text-gray-600"}`}>Set and track your achievement goals</p>
         </div>
 
-        <Dialog open={isAddingGoal} onOpenChange={setIsAddingGoal}>
-          <DialogTrigger asChild>
-            <Button
-              size="sm"
-              className="bg-green-500 hover:bg-green-600 text-white border-2 border-green-400 rounded-lg font-bold"
-            >
-              <Plus className="h-4 w-4 mr-1" />
-              Add Goal
-            </Button>
-          </DialogTrigger>
-          <DialogContent className="max-w-md">
-            <DialogHeader>
-              <DialogTitle>Create New Goal</DialogTitle>
-            </DialogHeader>
+        <Button
+          onClick={() => setShowCreateForm(!showCreateForm)}
+          className="bg-green-500 hover:bg-green-600 text-white font-bold border-2 border-green-400 rounded-xl"
+        >
+          <Plus className="h-4 w-4 mr-2" />
+          New Goal
+        </Button>
+      </div>
 
-            <div className="space-y-4">
-              <div className="grid grid-cols-2 gap-4">
-                <div>
-                  <Label htmlFor="provider">Provider</Label>
-                  <Select
-                    value={newGoal.integrationProvider}
-                    onValueChange={(value) => setNewGoal({ ...newGoal, integrationProvider: value })}
-                  >
-                    <SelectTrigger>
-                      <SelectValue placeholder="Select provider" />
-                    </SelectTrigger>
-                    <SelectContent>
-                      <SelectItem value="strava">Strava</SelectItem>
-                      <SelectItem value="fitbit">Fitbit</SelectItem>
-                      <SelectItem value="myfitnesspal">MyFitnessPal</SelectItem>
-                      <SelectItem value="rescuetime">RescueTime</SelectItem>
-                      <SelectItem value="goodreads">Goodreads</SelectItem>
-                    </SelectContent>
-                  </Select>
-                </div>
+      {/* Create Goal Form */}
+      {showCreateForm && (
+        <Card
+          className={`border-3 rounded-xl p-6 ${
+            isDarkMode
+              ? "bg-black/90 border-green-600 shadow-[4px_4px_0px_0px_rgba(34,197,94,0.3)]"
+              : "bg-white/95 border-black shadow-[4px_4px_0px_0px_rgba(0,0,0,0.3)]"
+          }`}
+        >
+          <div className="space-y-4">
+            <h4 className={`text-lg font-bold ${isDarkMode ? "text-white" : "text-black"}`}>Create New Goal</h4>
 
-                <div>
-                  <Label htmlFor="metric">Metric</Label>
-                  <Select value={newGoal.metric} onValueChange={(value) => setNewGoal({ ...newGoal, metric: value })}>
-                    <SelectTrigger>
-                      <SelectValue placeholder="Select metric" />
-                    </SelectTrigger>
-                    <SelectContent>
-                      <SelectItem value="steps">Steps</SelectItem>
-                      <SelectItem value="calories">Calories</SelectItem>
-                      <SelectItem value="focusTime">Focus Time</SelectItem>
-                      <SelectItem value="pagesRead">Pages Read</SelectItem>
-                      <SelectItem value="screenTime">Screen Time</SelectItem>
-                    </SelectContent>
-                  </Select>
-                </div>
-              </div>
-
-              <div className="grid grid-cols-2 gap-4">
-                <div>
-                  <Label htmlFor="targetValue">Target Value</Label>
-                  <Input
-                    id="targetValue"
-                    type="number"
-                    value={newGoal.targetValue}
-                    onChange={(e) => setNewGoal({ ...newGoal, targetValue: Number.parseInt(e.target.value) || 0 })}
-                    placeholder="Enter target"
-                  />
-                </div>
-
-                <div>
-                  <Label htmlFor="targetType">Period</Label>
-                  <Select
-                    value={newGoal.targetType}
-                    onValueChange={(value: any) => setNewGoal({ ...newGoal, targetType: value })}
-                  >
-                    <SelectTrigger>
-                      <SelectValue />
-                    </SelectTrigger>
-                    <SelectContent>
-                      <SelectItem value="daily">Daily</SelectItem>
-                      <SelectItem value="weekly">Weekly</SelectItem>
-                      <SelectItem value="monthly">Monthly</SelectItem>
-                    </SelectContent>
-                  </Select>
-                </div>
-              </div>
-
-              <div className="grid grid-cols-2 gap-4">
-                <div>
-                  <Label htmlFor="goalType">Goal Type</Label>
-                  <Select
-                    value={newGoal.goalType}
-                    onValueChange={(value: any) => setNewGoal({ ...newGoal, goalType: value })}
-                  >
-                    <SelectTrigger>
-                      <SelectValue />
-                    </SelectTrigger>
-                    <SelectContent>
-                      <SelectItem value="minimum">Minimum</SelectItem>
-                      <SelectItem value="maximum">Maximum</SelectItem>
-                      <SelectItem value="exact">Exact</SelectItem>
-                    </SelectContent>
-                  </Select>
-                </div>
-
-                <div>
-                  <Label htmlFor="color">Color</Label>
-                  <Input
-                    id="color"
-                    type="color"
-                    value={newGoal.color}
-                    onChange={(e) => setNewGoal({ ...newGoal, color: e.target.value })}
-                    className="h-10"
-                  />
-                </div>
-              </div>
-
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
               <div>
-                <Label htmlFor="description">Description (Optional)</Label>
-                <Textarea
-                  id="description"
-                  value={newGoal.description}
-                  onChange={(e) => setNewGoal({ ...newGoal, description: e.target.value })}
-                  placeholder="Describe your goal..."
-                  rows={2}
+                <Label htmlFor="metric">Metric</Label>
+                <Input
+                  id="metric"
+                  value={formData.metric}
+                  onChange={(e) => setFormData({ ...formData, metric: e.target.value })}
+                  placeholder="e.g., steps, calories, pages"
+                  className="border-2 border-black rounded-lg"
                 />
               </div>
 
-              <div className="flex gap-2 pt-4">
-                <Button onClick={createGoal} className="flex-1 bg-green-500 hover:bg-green-600 text-white font-bold">
-                  Create Goal
-                </Button>
-                <Button
-                  variant="outline"
-                  onClick={() => setIsAddingGoal(false)}
-                  className="flex-1 border-2 border-gray-300"
+              <div>
+                <Label htmlFor="targetValue">Target Value</Label>
+                <Input
+                  id="targetValue"
+                  type="number"
+                  value={formData.targetValue}
+                  onChange={(e) => setFormData({ ...formData, targetValue: e.target.value })}
+                  placeholder="e.g., 10000"
+                  className="border-2 border-black rounded-lg"
+                />
+              </div>
+
+              <div>
+                <Label htmlFor="targetType">Time Period</Label>
+                <Select
+                  value={formData.targetType}
+                  onValueChange={(value: any) => setFormData({ ...formData, targetType: value })}
                 >
-                  Cancel
-                </Button>
+                  <SelectTrigger className="border-2 border-black rounded-lg">
+                    <SelectValue />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="daily">Daily</SelectItem>
+                    <SelectItem value="weekly">Weekly</SelectItem>
+                    <SelectItem value="monthly">Monthly</SelectItem>
+                  </SelectContent>
+                </Select>
+              </div>
+
+              <div>
+                <Label htmlFor="goalType">Goal Type</Label>
+                <Select
+                  value={formData.goalType}
+                  onValueChange={(value: any) => setFormData({ ...formData, goalType: value })}
+                >
+                  <SelectTrigger className="border-2 border-black rounded-lg">
+                    <SelectValue />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="minimum">Minimum (at least)</SelectItem>
+                    <SelectItem value="maximum">Maximum (no more than)</SelectItem>
+                    <SelectItem value="exact">Exact (exactly)</SelectItem>
+                  </SelectContent>
+                </Select>
               </div>
             </div>
-          </DialogContent>
-        </Dialog>
-      </div>
 
-      {filteredGoals.length === 0 ? (
-        <Card
-          className={`border-2 rounded-lg p-6 text-center ${
-            isDarkMode ? "border-gray-600 bg-gray-800/50" : "border-gray-200 bg-gray-50"
-          }`}
-        >
-          <Target className={`h-12 w-12 mx-auto mb-3 ${isDarkMode ? "text-gray-500" : "text-gray-400"}`} />
-          <p className={`${isDarkMode ? "text-gray-300" : "text-gray-600"}`}>
-            No goals set for this integration yet. Create your first goal to track progress!
-          </p>
+            <div>
+              <Label htmlFor="description">Description (Optional)</Label>
+              <Textarea
+                id="description"
+                value={formData.description}
+                onChange={(e) => setFormData({ ...formData, description: e.target.value })}
+                placeholder="Describe your goal..."
+                className="border-2 border-black rounded-lg"
+              />
+            </div>
+
+            <div className="flex gap-3">
+              <Button
+                onClick={handleCreateGoal}
+                className="bg-green-500 hover:bg-green-600 text-white font-bold border-2 border-green-400 rounded-xl"
+              >
+                <Save className="h-4 w-4 mr-2" />
+                Create Goal
+              </Button>
+
+              <Button
+                onClick={() => {
+                  setShowCreateForm(false)
+                  resetForm()
+                }}
+                variant="outline"
+                className="border-2 border-black font-bold rounded-xl"
+              >
+                <X className="h-4 w-4 mr-2" />
+                Cancel
+              </Button>
+            </div>
+          </div>
         </Card>
-      ) : (
-        <div className="space-y-3">
-          {filteredGoals.map((goal) => {
-            const progress = goalProgress.find((p) => p.goalId === goal.id)
+      )}
 
-            return (
+      {/* Goals List */}
+      <div className="space-y-4">
+        {goals.length === 0 ? (
+          <Card
+            className={`border-3 rounded-xl p-8 text-center ${
+              isDarkMode
+                ? "bg-black/90 border-green-600 shadow-[4px_4px_0px_0px_rgba(34,197,94,0.3)]"
+                : "bg-white/95 border-black shadow-[4px_4px_0px_0px_rgba(0,0,0,0.3)]"
+            }`}
+          >
+            <Target className={`h-12 w-12 mx-auto mb-4 ${isDarkMode ? "text-gray-600" : "text-gray-400"}`} />
+            <h3 className={`text-lg font-bold mb-2 ${isDarkMode ? "text-white" : "text-black"}`}>No Goals Yet</h3>
+            <p className={`${isDarkMode ? "text-gray-300" : "text-gray-600"}`}>
+              Create your first goal to start tracking your achievements and building streaks!
+            </p>
+          </Card>
+        ) : (
+          goals.map((goal) => (
+            <div key={goal.id} className="space-y-4">
+              {/* Goal Info Card */}
               <Card
-                key={goal.id}
-                className={`border-2 rounded-lg p-4 ${
-                  isDarkMode ? "border-green-600/50 bg-black/50" : "border-green-200 bg-green-50/50"
+                className={`border-3 rounded-xl p-6 ${
+                  isDarkMode
+                    ? "bg-black/90 border-green-600 shadow-[4px_4px_0px_0px_rgba(34,197,94,0.3)]"
+                    : "bg-white/95 border-black shadow-[4px_4px_0px_0px_rgba(0,0,0,0.3)]"
                 }`}
               >
-                <div className="flex items-center justify-between">
+                <div className="flex items-center justify-between mb-4">
                   <div className="flex items-center gap-3">
                     <div
-                      className="w-4 h-4 rounded-full border-2 border-white shadow-sm"
+                      className="w-4 h-4 rounded-full border-2 border-black"
                       style={{ backgroundColor: goal.color }}
-                    />
+                    ></div>
                     <div>
-                      <div className={`font-semibold ${isDarkMode ? "text-white" : "text-black"}`}>
-                        {goal.targetValue.toLocaleString()} {goal.metric} {goal.targetType}
-                      </div>
-                      <div className={`text-sm ${isDarkMode ? "text-gray-300" : "text-gray-600"}`}>
-                        {goal.goalType} target • {goal.integrationProvider}
-                      </div>
+                      <h4 className={`font-bold ${isDarkMode ? "text-white" : "text-black"}`}>
+                        {goal.description || `${goal.metric} Goal`}
+                      </h4>
+                      <p className={`text-sm ${isDarkMode ? "text-gray-300" : "text-gray-600"}`}>
+                        {goal.goalType} {formatTargetValue(goal.targetValue, goal.integrationType)} {goal.targetType}
+                      </p>
                     </div>
                   </div>
 
-                  {progress && (
-                    <div className="flex items-center gap-2">
-                      <Badge variant="outline" className={`${getStatusColor(progress.status)} border font-bold`}>
-                        {getStatusIcon(progress.status)}
-                        <span className="ml-1 capitalize">{progress.status.replace("_", " ")}</span>
-                      </Badge>
-                      <div className={`text-sm font-semibold ${isDarkMode ? "text-white" : "text-black"}`}>
-                        {progress.percentage}%
-                      </div>
-                    </div>
-                  )}
+                  <div className="flex items-center gap-2">
+                    <Badge className={getGoalTypeColor(goal.goalType)}>{goal.goalType}</Badge>
+                    <Badge variant="outline" className="border-green-500 text-green-600">
+                      {goal.targetType}
+                    </Badge>
+                  </div>
                 </div>
-
-                {goal.description && (
-                  <p className={`text-sm mt-2 ${isDarkMode ? "text-gray-300" : "text-gray-600"}`}>{goal.description}</p>
-                )}
               </Card>
-            )
-          })}
-        </div>
-      )}
+
+              {/* Streak Tracker */}
+              <GoalStreakTracker goal={goal} isDarkMode={isDarkMode} />
+            </div>
+          ))
+        )}
+      </div>
     </div>
   )
 }

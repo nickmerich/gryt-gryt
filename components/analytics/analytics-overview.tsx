@@ -97,7 +97,7 @@ export default function AnalyticsOverview({ filters, isDarkMode, isLoading }: An
           <Card
             key={index}
             className={`border-3 rounded-xl p-6 animate-pulse ${
-              isDarkMode ? "bg-black/50 border-yellow-600/50" : "bg-white/50 border-black/50"
+              isDarkMode ? "bg-black/50 border-green-600/50" : "bg-white/50 border-black/50"
             }`}
           >
             <div className="space-y-3">
@@ -120,19 +120,19 @@ export default function AnalyticsOverview({ filters, isDarkMode, isLoading }: An
             key={index}
             className={`border-3 rounded-xl overflow-hidden transition-all duration-300 ease-in-out hover:scale-105 ${
               isDarkMode
-                ? "bg-black/90 border-yellow-600 shadow-[4px_4px_0px_0px_rgba(234,179,8,0.3)]"
-                : "bg-white/95 border-black shadow-[4px_4px_0px_0px_rgba(0,0,0,0.3)]"
+                ? "bg-black/90 border-green-600 shadow-[0_0_0_2px_#ffffff,4px_4px_0px_2px_rgba(34,197,94,0.3)]"
+                : "bg-white/95 border-black shadow-[0_0_0_2px_#ffffff,4px_4px_0px_2px_rgba(0,0,0,0.3)]"
             }`}
           >
             <div className="p-6">
               <div className="flex items-center justify-between mb-4">
-                <div className={`p-3 rounded-xl ${isDarkMode ? "bg-yellow-600/20" : "bg-yellow-100"}`}>{kpi.icon}</div>
+                <div className={`p-3 rounded-xl ${isDarkMode ? "bg-green-600/20" : "bg-green-100"}`}>{kpi.icon}</div>
                 <Badge
                   variant="outline"
                   className={`${
                     kpi.trend === "up"
-                      ? "border-green-500 text-green-600 bg-green-50"
-                      : "border-red-500 text-red-600 bg-red-50"
+                      ? "border-green-500 text-green-600 bg-green-50 shadow-white"
+                      : "border-green-500 text-green-600 bg-green-50 shadow-white"
                   }`}
                 >
                   {kpi.trend === "up" ? (
@@ -158,11 +158,11 @@ export default function AnalyticsOverview({ filters, isDarkMode, isLoading }: An
       <Card
         className={`border-3 rounded-xl overflow-hidden ${
           isDarkMode
-            ? "bg-black/90 border-yellow-600 shadow-[4px_4px_0px_0px_rgba(234,179,8,0.3)]"
-            : "bg-white/95 border-black shadow-[4px_4px_0px_0px_rgba(0,0,0,0.3)]"
+            ? "bg-black/90 border-green-600 shadow-[0_0_0_2px_#ffffff,4px_4px_0px_2px_rgba(34,197,94,0.3)]"
+            : "bg-white/95 border-black shadow-[0_0_0_2px_#ffffff,4px_4px_0px_2px_rgba(0,0,0,0.3)]"
         }`}
       >
-        <div className="bg-gradient-to-r from-yellow-500 to-yellow-600 p-4 text-black">
+        <div className="bg-gradient-to-r from-green-500 to-green-600 p-4 text-white shadow-white">
           <h2 className="text-lg font-bold">Weekly Activity Overview</h2>
         </div>
         <div className="p-6">
@@ -176,19 +176,20 @@ export default function AnalyticsOverview({ filters, isDarkMode, isLoading }: An
                   <div
                     className={`w-full rounded-t-lg relative border-2 transition-all duration-500 ease-out ${
                       isDarkMode
-                        ? "bg-gradient-to-t from-gray-800 to-gray-700 border-yellow-600"
+                        ? "bg-gradient-to-t from-gray-800 to-gray-700 border-green-600"
                         : "bg-gradient-to-t from-gray-200 to-gray-300 border-black"
                     }`}
                     style={{ height: "200px" }}
                   >
                     <div
-                      className="bg-gradient-to-t from-yellow-500 via-yellow-400 to-yellow-300 rounded-t-lg transition-all duration-500 ease-out"
+                      className="bg-gradient-to-t from-green-500 via-green-400 to-green-300 rounded-t-lg transition-all duration-500 ease-out shadow-white"
                       style={{
                         height: `${height}px`,
                         position: "absolute",
                         bottom: 0,
                         left: 0,
                         right: 0,
+                        boxShadow: "0 0 0 1px #ffffff",
                       }}
                     />
                     <div className="absolute top-2 left-1/2 transform -translate-x-1/2 text-xs font-bold text-black drop-shadow-lg">

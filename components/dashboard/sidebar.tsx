@@ -31,20 +31,38 @@ export function DashboardSidebar({ className, isMobile }: DashboardSidebarProps)
       icon: <LayoutDashboard className="h-5 w-5" />,
     },
     {
-      name: "Customers",
-      href: "/dashboard/customers",
+      name: "Habits",
+      href: "/dashboard/habits",
+      icon: <CheckCircle2 className="h-5 w-5" />,
+    },
+    {
+      name: "Journal",
+      href: "/dashboard/journal",
+      icon: <Calendar className="h-5 w-5" />,
+    },
+    {
+      name: "Analytics",
+      href: "/dashboard/analytics",
+      icon: <BarChart3 className="h-5 w-5" />,
+    },
+    {
+      name: "Achievements",
+      href: "/dashboard/achievements",
       icon: <Users className="h-5 w-5" />,
     },
     {
-      name: "Transactions",
-      href: "/dashboard/transactions",
-      icon: <CreditCard className="h-5 w-5" />,
-    },
-    {
-      name: "Invoices",
-      href: "/dashboard/invoices",
+      name: "Leaderboard",
+      href: "/dashboard/leaderboard",
       icon: <ListChecks className="h-5 w-5" />,
     },
+    {
+      name: "Personal Contract",
+      href: "/dashboard/contract",
+      icon: <CreditCard className="h-5 w-5" />,
+    },
+  ]
+
+  const componentsItems: SidebarNavItem[] = [
     {
       name: "Integrations",
       href: "/dashboard/integrations",
@@ -59,19 +77,6 @@ export function DashboardSidebar({ className, isMobile }: DashboardSidebarProps)
       name: "Notifications",
       href: "/dashboard/notifications",
       icon: <Bell className="h-5 w-5" />,
-    },
-  ]
-
-  const componentsItems: SidebarNavItem[] = [
-    {
-      name: "Calendar",
-      href: "/dashboard/calendar",
-      icon: <Calendar className="h-5 w-5" />,
-    },
-    {
-      name: "Tasks",
-      href: "/dashboard/tasks",
-      icon: <CheckCircle2 className="h-5 w-5" />,
     },
   ]
 
