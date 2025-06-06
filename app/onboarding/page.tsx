@@ -5,7 +5,7 @@ import { useRouter } from "next/navigation"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
-import { ArrowLeft, ArrowRight, Check } from "lucide-react"
+import { ArrowLeft, ArrowRight, Check, Activity, Utensils, Clock, Book } from "lucide-react"
 import IntegrationCard from "@/components/integration-card"
 
 export default function OnboardingPage() {
@@ -158,28 +158,28 @@ export default function OnboardingPage() {
                   name="Fitness"
                   description="Connect your fitness trackers"
                   apps={["Apple Health", "Google Fit", "Fitbit", "Strava"]}
-                  icon="activity"
+                  icon={Activity}
                   color="bg-gradient-to-br from-gryt-green to-gryt-green/70"
                 />
                 <IntegrationCard
                   name="Nutrition"
                   description="Track your diet and nutrition"
                   apps={["MyFitnessPal", "LoseIt!", "Cronometer"]}
-                  icon="utensils"
+                  icon={Utensils}
                   color="bg-gradient-to-br from-gryt-green to-gryt-green/70"
                 />
                 <IntegrationCard
                   name="Productivity"
                   description="Monitor your screen time and focus"
                   apps={["RescueTime", "Screen Time", "Forest"]}
-                  icon="clock"
+                  icon={Clock}
                   color="bg-gradient-to-br from-gryt-green to-gryt-green/70"
                 />
                 <IntegrationCard
                   name="Reading"
                   description="Track your reading habits"
                   apps={["Kindle", "Goodreads", "Audible", "Libby"]}
-                  icon="book"
+                  icon={Book}
                   color="bg-gradient-to-br from-gryt-green to-gryt-green/70"
                 />
               </div>
