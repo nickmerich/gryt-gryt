@@ -1,13 +1,16 @@
 "use client"
 
-import { Home, Calendar, Settings, Bell, Menu } from "lucide-react"
+import { Home, Calendar, BarChart3, BookOpen, Menu } from "lucide-react"
 import { usePathname } from "next/navigation"
 import { cn } from "@/lib/utils"
-import { Button } from "@/components/ui/button"
-import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet"
+import { useState } from "react"
+import Link from "next/link"
+import { MobileTouchFeedback } from "@/components/mobile/mobile-touch-feedback"
+import { MobileDrawer } from "@/components/ui/mobile-drawer"
 
 const MobileBottomNav = () => {
   const pathname = usePathname()
+  const [isMenuOpen, setIsMenuOpen] = useState(false)
 
   const navigation = [
     {
@@ -17,75 +20,99 @@ const MobileBottomNav = () => {
       current: pathname === "/dashboard",
     },
     {
+      name: "Habits",
+      href: "/dashboard/habits",
+      icon: BookOpen,
+      current: pathname.startsWith("/dashboard/habits"),
+    },
+    {
+      name: "Analytics",
+      href: "/dashboard/analytics",
+      icon: BarChart3,
+      current: pathname.startsWith("/dashboard/analytics"),
+    },
+    {
       name: "Calendar",
       href: "/dashboard/calendar",
       icon: Calendar,
-      current: pathname === "/dashboard/calendar",
-    },
-    {
-      name: "Notifications",
-      href: "/dashboard/notifications",
-      icon: Bell,
-      current: pathname === "/dashboard/notifications",
-    },
-    {
-      name: "Settings",
-      href: "/dashboard/settings",
-      icon: Settings,
-      current: pathname === "/dashboard/settings",
+      current: pathname.startsWith("/dashboard/calendar"),
     },
   ]
 
+  const moreNavigation = [
+    { name: "Journal", href: "/dashboard/journal" },
+    { name: "Achievements", href: "/dashboard/achievements" },
+    { name: "Leaderboard", href: "/dashboard/leaderboard" },
+    { name: "Personal Contract", href: "/dashboard/contract" },
+    { name: "Notifications", href: "/dashboard/notifications" },
+    { name: "Settings", href: "/dashboard/settings" },
+  ]
+
   return (
-    <div className="sm:hidden fixed bottom-0 left-0 w-full bg-white border-t z-50">
-      <div className="flex items-center justify-between h-16 px-4">
-        {navigation.map((item) => (
-          <Button
-            key={item.name}
-            variant="ghost"
-            className={cn("p-2 rounded-md hover:bg-gray-100", item.current ? "text-primary" : "text-gray-500")}
-            href={item.href}
-            asChild
-          >
-            <item.icon className="h-6 w-6" />
-            <span className="sr-only">{item.name}</span>
-          </Button>
-        ))}
-        <Sheet>
-          <SheetTrigger asChild>
-            <Button variant="ghost" className="p-2 rounded-md hover:bg-gray-100">
-              <Menu className="h-6 w-6" />
-              <span className="sr-only">Menu</span>
-            </Button>
-          </SheetTrigger>
-          <SheetContent side="bottom" className="h-[300px]">
-            <div className="grid gap-4 py-4">
-              <h3 className="text-lg font-semibold text-gray-900">Navigation</h3>
-              <div className="grid gap-2">
-                <Button variant="ghost" className="justify-start" asChild>
-                  <a href="/dashboard/habits">Habits</a>
-                </Button>
-                <Button variant="ghost" className="justify-start" asChild>
-                  <a href="/dashboard/journal">Journal</a>
-                </Button>
-                <Button variant="ghost" className="justify-start" asChild>
-                  <a href="/dashboard/analytics">Analytics</a>
-                </Button>
-                <Button variant="ghost" className="justify-start" asChild>
-                  <a href="/dashboard/achievements">Achievements</a>
-                </Button>
-                <Button variant="ghost" className="justify-start" asChild>
-                  <a href="/dashboard/contract">Personal Contract</a>
-                </Button>
-                <Button variant="ghost" className="justify-start" asChild>
-                  <a href="/dashboard/leaderboard">Leaderboard</a>
-                </Button>
-              </div>
+    <>
+      <div className="md:hidden fixed bottom-0 left-0 w-full bg-white border-t z-40 safe-area-bottom">
+        <div className="flex items-center justify-between h-16 px-4">
+          {navigation.map((item) => (
+            <MobileTouchFeedback key={item.name} className="flex-1">
+              <Link
+                href={item.href}
+                className={cn(
+                  "flex flex-col items-center justify-center h-full",
+                  item.current ? "text-gryt-green" : "text-gray-500",
+                )}
+              >
+                <item.icon className="h-6 w-6" />
+                <span className="text-xs mt-1">{item.name}</span>
+              </Link>
+            </MobileTouchFeedback>
+          ))}
+          <MobileTouchFeedback className="flex-1" onTap={() => setIsMenuOpen(true)}>
+            <div className="flex flex-col items-center justify-center h-full">
+              <Menu className="h-6 w-6 text-gray-500" />
+              <span className="text-xs mt-1 text-gray-500">More</span>
             </div>
-          </SheetContent>
-        </Sheet>
+          </MobileTouchFeedback>
+        </div>
       </div>
-    </div>
+
+      <MobileDrawer
+        isOpen={isMenuOpen}
+        onClose={() => setIsMenuOpen(false)}
+        position="bottom"
+        height="auto"
+        className="max-h-[80vh]"
+      >
+        <div className="p-4 pt-2">
+          <h3 className="text-lg font-bold mb-4">More Options</h3>
+          <div className="grid grid-cols-2 gap-3">
+            {moreNavigation.map((item) => (
+              <MobileTouchFeedback key={item.name}>
+                <Link
+                  href={item.href}
+                  className="flex items-center p-3 rounded-xl border-2 border-black bg-white shadow-[2px_2px_0px_0px_rgba(0,0,0,1)]"
+                  onClick={() => setIsMenuOpen(false)}
+                >
+                  <span className="font-medium">{item.name}</span>
+                </Link>
+              </MobileTouchFeedback>
+            ))}
+          </div>
+          <div className="mt-6 mb-8">
+            <MobileTouchFeedback>
+              <button
+                className="w-full p-3 rounded-xl border-2 border-red-500 text-red-600 font-medium"
+                onClick={() => {
+                  setIsMenuOpen(false)
+                  // Add logout functionality here
+                }}
+              >
+                Log Out
+              </button>
+            </MobileTouchFeedback>
+          </div>
+        </div>
+      </MobileDrawer>
+    </>
   )
 }
 

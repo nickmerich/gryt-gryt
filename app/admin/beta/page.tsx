@@ -1,72 +1,89 @@
-import { getBetaMetrics } from "@/lib/beta-utils"
-import { sql } from "@/lib/database"
-import { getCurrentUser } from "@/lib/auth"
-import { redirect } from "next/navigation"
-import BetaUsersList from "@/components/admin/beta-users-list"
-import BetaMetricsCard from "@/components/admin/beta-metrics-card"
-import BetaFeedbackList from "@/components/admin/beta-feedback-list"
+"use client"
 
-export default async function BetaAdminPage() {
-  const user = await getCurrentUser()
+import { useEffect, useState } from "react"
+import { useRouter } from "next/navigation"
+import { Card } from "@/components/ui/card"
+import { Skeleton } from "@/components/ui/skeleton"
 
-  // Only allow admin users
-  if (!user || user.id !== 1) {
-    redirect("/dashboard")
+export default function BetaAdminPage() {
+  const router = useRouter()
+  const [loading, setLoading] = useState(true)
+  const [user, setUser] = useState<any>(null)
+
+  useEffect(() => {
+    const checkAuth = async () => {
+      try {
+        const response = await fetch("/api/auth/me")
+        if (response.ok) {
+          const data = await response.json()
+          if (data.user && data.user.id === 1) {
+            setUser(data.user)
+          } else {
+            router.push("/dashboard")
+          }
+        } else {
+          router.push("/dashboard")
+        }
+      } catch (error) {
+        router.push("/dashboard")
+      } finally {
+        setLoading(false)
+      }
+    }
+
+    checkAuth()
+  }, [router])
+
+  if (loading) {
+    return (
+      <div className="p-6 max-w-7xl mx-auto">
+        <Skeleton className="h-8 w-64 mb-8" />
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
+          {Array.from({ length: 3 }).map((_, i) => (
+            <Card key={i} className="border-3 rounded-xl p-4">
+              <Skeleton className="h-16 w-full" />
+            </Card>
+          ))}
+        </div>
+      </div>
+    )
   }
 
-  const metrics = await getBetaMetrics()
-
-  // Get recent feedback
-  const recentFeedback = await sql`
-    SELECT f.id, f.feedback_type, f.content, f.created_at, u.username
-    FROM user_feedback f
-    JOIN users u ON f.user_id = u.id
-    ORDER BY f.created_at DESC
-    LIMIT 10
-  `
-
-  // Get active habits
-  const habitStats = await sql`
-    SELECT 
-      COUNT(*) as total_habits,
-      COUNT(DISTINCT user_id) as users_with_habits,
-      AVG(CAST((SELECT COUNT(*) FROM habit_logs WHERE habit_id = h.id) AS FLOAT)) as avg_completions_per_habit
-    FROM habits h
-  `
+  if (!user) {
+    return null
+  }
 
   return (
     <div className="p-6 max-w-7xl mx-auto">
       <h1 className="text-3xl font-bold mb-8 text-black">Beta Admin Dashboard</h1>
 
       <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
-        <BetaMetricsCard title="Users" value={metrics.registrations} total={metrics.totalInvites} label="registered" />
+        <Card className="border-3 border-black rounded-xl p-4">
+          <div className="text-center">
+            <div className="text-3xl font-black text-black">0</div>
+            <div className="text-sm text-gray-600">Beta Users</div>
+          </div>
+        </Card>
 
-        <BetaMetricsCard
-          title="Active Users"
-          value={metrics.activeUsers}
-          total={metrics.registrations}
-          label="in last 7 days"
-        />
+        <Card className="border-3 border-black rounded-xl p-4">
+          <div className="text-center">
+            <div className="text-3xl font-black text-black">0</div>
+            <div className="text-sm text-gray-600">Active Users</div>
+          </div>
+        </Card>
 
-        <BetaMetricsCard
-          title="Habits"
-          value={habitStats[0]?.total_habits || 0}
-          total={habitStats[0]?.users_with_habits || 0}
-          label="habits created"
-        />
+        <Card className="border-3 border-black rounded-xl p-4">
+          <div className="text-center">
+            <div className="text-3xl font-black text-black">0</div>
+            <div className="text-sm text-gray-600">Feedback Items</div>
+          </div>
+        </Card>
       </div>
 
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
-        <div>
-          <h2 className="text-2xl font-bold mb-4 text-black">Beta Users</h2>
-          <BetaUsersList />
-        </div>
-
-        <div>
-          <h2 className="text-2xl font-bold mb-4 text-black">Recent Feedback</h2>
-          <BetaFeedbackList feedback={recentFeedback} />
-        </div>
-      </div>
+      <Card className="border-3 border-black rounded-xl p-6">
+        <h2 className="text-xl font-bold mb-4">Admin Panel</h2>
+        <p className="text-gray-600">Beta admin functionality will be available here.</p>
+      </Card>
     </div>
   )
 }

@@ -33,6 +33,7 @@
     --ring: 142 76% 36%;
 
     --radius: 0.5rem;
+    --vh: 1vh; /* Viewport height fix for mobile browsers */
   }
 
   .dark {
@@ -67,6 +68,7 @@
     @apply bg-background text-foreground;
     transform: translateZ(0);
     backface-visibility: hidden;
+    overscroll-behavior: none; /* Prevent rubber-banding on iOS */
   }
 
   /* Performance optimization base classes */
@@ -500,6 +502,138 @@
   }
 }
 
+/* Mobile-specific optimizations */
+@media (max-width: 767px) {
+  /* Increase touch targets */
+  .mobile-touch-target {
+    min-height: 44px;
+    min-width: 44px;
+    touch-action: manipulation;
+  }
+
+  /* Prevent text selection on mobile */
+  .mobile-no-select {
+    -webkit-touch-callout: none;
+    -webkit-user-select: none;
+    user-select: none;
+  }
+
+  /* Optimize shadows for mobile */
+  .shadow-brutal {
+    box-shadow: 2px 2px 0px 0px rgba(0, 0, 0, 1);
+  }
+
+  .shadow-brutal-lg {
+    box-shadow: 3px 3px 0px 0px rgba(0, 0, 0, 1);
+  }
+
+  /* Optimize animations for mobile */
+  .mobile-transition {
+    transition-property: transform, opacity;
+    transition-duration: 200ms;
+    transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
+  }
+
+  /* Mobile heading styles */
+  .mobile-heading-green {
+    color: #22c55e;
+    font-weight: 800;
+  }
+
+  /* Mobile body text styles */
+  .mobile-body-green {
+    color: #000000;
+    font-weight: 400;
+  }
+
+  /* Safe area insets for notched devices */
+  .safe-area-top {
+    padding-top: env(safe-area-inset-top, 0);
+  }
+
+  .safe-area-bottom {
+    padding-bottom: env(safe-area-inset-bottom, 0);
+  }
+
+  /* Optimize scrolling */
+  .mobile-smooth-scroll {
+    -webkit-overflow-scrolling: touch;
+    scroll-behavior: smooth;
+    overscroll-behavior: contain;
+  }
+
+  /* Prevent rubber-banding on iOS */
+  html,
+  body {
+    overscroll-behavior: none;
+  }
+
+  /* Optimize images for mobile */
+  .mobile-optimized-image {
+    content-visibility: auto;
+    will-change: transform;
+    backface-visibility: hidden;
+  }
+
+  /* Optimize buttons for mobile */
+  button,
+  a {
+    touch-action: manipulation;
+  }
+
+  /* Optimize forms for mobile */
+  input,
+  select,
+  textarea {
+    font-size: 16px; /* Prevents iOS zoom on focus */
+  }
+
+  /* Optimize modals for mobile */
+  .mobile-modal {
+    overscroll-behavior: contain;
+    -webkit-overflow-scrolling: touch;
+  }
+
+  /* Optimize animations for battery life */
+  .battery-saving .animate-glow,
+  .battery-saving .animate-pulse-slow,
+  .battery-saving .animate-spin-slow {
+    animation: none !important;
+  }
+
+  /* Optimize shadows for battery life */
+  .battery-saving .shadow-brutal,
+  .battery-saving .shadow-brutal-lg,
+  .battery-saving .shadow-brutal-xl {
+    box-shadow: none !important;
+    border: 2px solid #000000 !important;
+  }
+}
+
+/* Add support for dark mode */
+@media (prefers-color-scheme: dark) {
+  .mobile-heading-green {
+    color: #4ade80;
+  }
+
+  .mobile-body-green {
+    color: #ffffff;
+  }
+}
+
+/* Add support for reduced motion */
+@media (prefers-reduced-motion: reduce) {
+  .mobile-transition {
+    transition: none !important;
+  }
+
+  .animate-glow,
+  .animate-pulse-slow,
+  .animate-spin-slow {
+    animation: none !important;
+  }
+}
+
 /* Dark mode optimizations */
 .dark .brutal-button {
   background-color: #22c55e;
@@ -554,23 +688,6 @@
   }
 }
 
-/* Reduced motion preferences */
-@media (prefers-reduced-motion: reduce) {
-  .transition-brutal {
-    transition: none;
-  }
-
-  .hover\:-translate-y-0\.5:hover {
-    transform: none;
-  }
-
-  .animate-spin-slow,
-  .animate-pulse-slow,
-  .animate-glow {
-    animation: none;
-  }
-}
-
 /* Performance mode */
 .performance-mode {
   .shadow-brutal,
@@ -589,5 +706,21 @@
   .hover\:-translate-y-0\.5:hover,
   .hover\:translate-y-brutal:hover {
     transform: none;
+  }
+}
+
+/* Viewport height fix for mobile browsers */
+.mobile-full-height {
+  height: calc(var(--vh, 1vh) * 100);
+}
+
+@media (max-width: 767px) {
+  :root {
+    --app-height: 100%;
+  }
+
+  html,
+  body {
+    height: var(--app-height);
   }
 }

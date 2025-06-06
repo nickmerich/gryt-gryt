@@ -3,6 +3,8 @@ import { getUserFromSession } from "@/lib/auth"
 import { getUserIntegrations } from "@/lib/integration-service"
 import { IntegrationDataProcessor } from "@/lib/integration-data-processor"
 
+export const dynamic = "force-dynamic"
+
 export async function GET(request: NextRequest) {
   try {
     const user = await getUserFromSession(request)
@@ -10,9 +12,9 @@ export async function GET(request: NextRequest) {
       return NextResponse.json({ error: "Unauthorized" }, { status: 401 })
     }
 
-    const { searchParams } = new URL(request.url)
-    const provider = searchParams.get("provider")
-    const type = searchParams.get("type")
+    const url = new URL(request.url)
+    const provider = url.searchParams.get("provider")
+    const type = url.searchParams.get("type")
 
     const integrations = await getUserIntegrations(user.id)
 

@@ -1,6 +1,8 @@
 import bcrypt from "bcryptjs"
 import { cookies } from "next/headers"
 import { sql } from "./database"
+import type { NextRequest } from "next/server"
+import crypto from "crypto"
 
 export interface SessionUser {
   id: number
@@ -116,6 +118,38 @@ export async function getCurrentUser(): Promise<SessionUser | null> {
     return getSessionUser(sessionToken)
   } catch (error) {
     console.error("[AUTH] Failed to get current user:", error)
+    return null
+  }
+}
+
+// Add missing getUserFromSession function
+export async function getUserFromSession(request: NextRequest): Promise<SessionUser | null> {
+  try {
+    const sessionToken = request.cookies.get("session-id")?.value
+
+    if (!sessionToken) {
+      return null
+    }
+
+    return getSessionUser(sessionToken)
+  } catch (error) {
+    console.error("[AUTH] Failed to get user from session:", error)
+    return null
+  }
+}
+
+// Add missing getSession function
+export async function getSession(request: NextRequest): Promise<{ user: SessionUser } | null> {
+  try {
+    const user = await getUserFromSession(request)
+
+    if (!user) {
+      return null
+    }
+
+    return { user }
+  } catch (error) {
+    console.error("[AUTH] Failed to get session:", error)
     return null
   }
 }

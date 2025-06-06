@@ -1,6 +1,8 @@
 import { type NextRequest, NextResponse } from "next/server"
 import { getSession } from "@/lib/auth"
 
+export const dynamic = "force-dynamic"
+
 // OAuth configuration for different providers
 const oauthConfigs = {
   twitter: {
@@ -38,8 +40,8 @@ const oauthConfigs = {
 export async function GET(request: NextRequest) {
   try {
     // Get the provider from the query string
-    const searchParams = request.nextUrl.searchParams
-    const provider = searchParams.get("provider")
+    const url = new URL(request.url)
+    const provider = url.searchParams.get("provider")
 
     if (!provider || !oauthConfigs[provider as keyof typeof oauthConfigs]) {
       return NextResponse.json({ error: "Invalid or unsupported provider" }, { status: 400 })
