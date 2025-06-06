@@ -1,41 +1,92 @@
 "use client"
 
-import Link from "next/link"
+import { Home, Calendar, Settings, Bell, Menu } from "lucide-react"
 import { usePathname } from "next/navigation"
-import { LayoutDashboard, Target, BookOpen, Trophy, Star } from "lucide-react"
+import { cn } from "@/lib/utils"
+import { Button } from "@/components/ui/button"
+import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet"
 
-const navigation = [
-  { name: "Dashboard", href: "/dashboard", icon: LayoutDashboard },
-  { name: "Habits", href: "/dashboard/habits", icon: Target },
-  { name: "Journal", href: "/dashboard/journal", icon: BookOpen },
-  { name: "Achievements", href: "/dashboard/achievements", icon: Trophy },
-  { name: "Leaderboard", href: "/dashboard/leaderboard", icon: Star },
-]
-
-export default function MobileBottomNav() {
+const MobileBottomNav = () => {
   const pathname = usePathname()
 
+  const navigation = [
+    {
+      name: "Home",
+      href: "/dashboard",
+      icon: Home,
+      current: pathname === "/dashboard",
+    },
+    {
+      name: "Calendar",
+      href: "/dashboard/calendar",
+      icon: Calendar,
+      current: pathname === "/dashboard/calendar",
+    },
+    {
+      name: "Notifications",
+      href: "/dashboard/notifications",
+      icon: Bell,
+      current: pathname === "/dashboard/notifications",
+    },
+    {
+      name: "Settings",
+      href: "/dashboard/settings",
+      icon: Settings,
+      current: pathname === "/dashboard/settings",
+    },
+  ]
+
   return (
-    <div className="md:hidden fixed bottom-0 left-0 right-0 bg-white border-t-4 border-black z-50">
-      <nav className="flex justify-around items-center py-2 px-1">
-        {navigation.map((item) => {
-          const isActive = pathname === item.href || pathname.startsWith(item.href + "/")
-          return (
-            <Link
-              key={item.name}
-              href={item.href}
-              className={`flex flex-col items-center justify-center min-w-[60px] py-2 px-1 rounded-xl transition-all ${
-                isActive
-                  ? "bg-gryt-green text-white shadow-[2px_2px_0px_0px_rgba(0,0,0,0.3)]"
-                  : "text-gray-600 hover:bg-green-50 hover:text-black"
-              }`}
-            >
-              <item.icon className="h-5 w-5 mb-1" />
-              <span className="text-xs font-bold">{item.name}</span>
-            </Link>
-          )
-        })}
-      </nav>
+    <div className="sm:hidden fixed bottom-0 left-0 w-full bg-white border-t z-50">
+      <div className="flex items-center justify-between h-16 px-4">
+        {navigation.map((item) => (
+          <Button
+            key={item.name}
+            variant="ghost"
+            className={cn("p-2 rounded-md hover:bg-gray-100", item.current ? "text-primary" : "text-gray-500")}
+            href={item.href}
+            asChild
+          >
+            <item.icon className="h-6 w-6" />
+            <span className="sr-only">{item.name}</span>
+          </Button>
+        ))}
+        <Sheet>
+          <SheetTrigger asChild>
+            <Button variant="ghost" className="p-2 rounded-md hover:bg-gray-100">
+              <Menu className="h-6 w-6" />
+              <span className="sr-only">Menu</span>
+            </Button>
+          </SheetTrigger>
+          <SheetContent side="bottom" className="h-[300px]">
+            <div className="grid gap-4 py-4">
+              <h3 className="text-lg font-semibold text-gray-900">Navigation</h3>
+              <div className="grid gap-2">
+                <Button variant="ghost" className="justify-start" asChild>
+                  <a href="/dashboard/habits">Habits</a>
+                </Button>
+                <Button variant="ghost" className="justify-start" asChild>
+                  <a href="/dashboard/journal">Journal</a>
+                </Button>
+                <Button variant="ghost" className="justify-start" asChild>
+                  <a href="/dashboard/analytics">Analytics</a>
+                </Button>
+                <Button variant="ghost" className="justify-start" asChild>
+                  <a href="/dashboard/achievements">Achievements</a>
+                </Button>
+                <Button variant="ghost" className="justify-start" asChild>
+                  <a href="/dashboard/contract">Personal Contract</a>
+                </Button>
+                <Button variant="ghost" className="justify-start" asChild>
+                  <a href="/dashboard/leaderboard">Leaderboard</a>
+                </Button>
+              </div>
+            </div>
+          </SheetContent>
+        </Sheet>
+      </div>
     </div>
   )
 }
+
+export default MobileBottomNav

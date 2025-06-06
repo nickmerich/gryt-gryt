@@ -1,76 +1,144 @@
 "use client"
 
-import Link from "next/link"
+import {
+  Bell,
+  BarChart3,
+  Calendar,
+  Home,
+  Settings,
+  Target,
+  BookOpen,
+  Trophy,
+  FileText,
+  Users,
+  Keyboard,
+} from "lucide-react"
 import { usePathname } from "next/navigation"
+import Link from "next/link"
+import { cn } from "@/lib/utils"
 import { Button } from "@/components/ui/button"
-import { LayoutDashboard, Target, BookOpen, BarChart3, Trophy, Star, Settings, LogOut, Zap } from "lucide-react"
+import { useKeyboardShortcutContext } from "@/components/keyboard/keyboard-shortcut-provider"
 
 const navigation = [
-  { name: "Dashboard", href: "/dashboard", icon: LayoutDashboard },
-  { name: "Habits", href: "/dashboard/habits", icon: Target },
-  { name: "Journal", href: "/dashboard/journal", icon: BookOpen },
-  { name: "Analytics", href: "/dashboard/analytics", icon: BarChart3 },
-  { name: "Achievements", href: "/dashboard/achievements", icon: Trophy },
-  { name: "Leaderboard", href: "/dashboard/leaderboard", icon: Star },
-  { name: "AI Studio", href: "/studio", icon: Zap },
+  {
+    name: "Home",
+    href: "/dashboard",
+    icon: Home,
+    shortcut: "Alt + D",
+  },
+  {
+    name: "Habits",
+    href: "/dashboard/habits",
+    icon: Target,
+    shortcut: "Alt + H",
+  },
+  {
+    name: "Journal",
+    href: "/dashboard/journal",
+    icon: BookOpen,
+    shortcut: "Alt + J",
+  },
+  {
+    name: "Analytics",
+    href: "/dashboard/analytics",
+    icon: BarChart3,
+    shortcut: "Alt + A",
+  },
+  {
+    name: "Achievements",
+    href: "/dashboard/achievements",
+    icon: Trophy,
+    shortcut: "Alt + T",
+  },
+  {
+    name: "Personal Contract",
+    href: "/dashboard/contract",
+    icon: FileText,
+    shortcut: "Alt + C",
+  },
+  {
+    name: "Leaderboard",
+    href: "/dashboard/leaderboard",
+    icon: Users,
+    shortcut: "Alt + L",
+  },
+  {
+    name: "Calendar",
+    href: "/dashboard/calendar",
+    icon: Calendar,
+  },
+  {
+    name: "Notifications",
+    href: "/dashboard/notifications",
+    icon: Bell,
+  },
+  {
+    name: "Settings",
+    href: "/dashboard/settings",
+    icon: Settings,
+    shortcut: "Alt + S",
+  },
 ]
 
-export default function Sidebar() {
+export function Sidebar() {
   const pathname = usePathname()
+  const { showShortcutHelp } = useKeyboardShortcutContext()
+
+  const navigationItems = navigation.map((item) => ({
+    ...item,
+    current: pathname === item.href,
+  }))
 
   return (
-    <div className="hidden md:flex md:w-64 md:flex-col md:fixed md:inset-y-0">
-      <div className="flex flex-col flex-grow pt-5 bg-white border-r-4 border-black overflow-y-auto">
-        <div className="flex items-center flex-shrink-0 px-4">
-          <Link href="/dashboard" className="flex items-center gap-2">
-            <div className="bg-green-500 p-2 rounded-xl border-2 border-black shadow-brutal">
-              <Target className="h-6 w-6 text-white" />
-            </div>
-            <span className="text-xl font-black text-black">GRYT</span>
-          </Link>
-        </div>
+    <div className="h-full w-64 border-r-4 border-black bg-white">
+      {/* Logo */}
+      <div className="p-6 border-b-4 border-black bg-gradient-to-r from-gryt-green to-green-600">
+        <h1 className="text-2xl font-black text-white">GRYT</h1>
+        <p className="text-green-100 text-sm font-medium">Your Personal Growth Tracker</p>
+      </div>
 
-        <div className="mt-8 flex-grow flex flex-col">
-          <nav className="flex-1 px-2 pb-4 space-y-2">
-            {navigation.map((item) => {
-              const isActive = pathname === item.href || pathname.startsWith(item.href + "/")
-              return (
-                <Link key={item.name} href={item.href}>
-                  <Button
-                    variant={isActive ? "default" : "ghost"}
-                    className={`w-full justify-start gap-3 rounded-xl border-2 font-bold min-h-[44px] transition-all ${
-                      isActive
-                        ? "bg-green-500 hover:bg-green-600 text-white border-black shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] hover:shadow-[6px_6px_0px_0px_rgba(0,0,0,1)]"
-                        : "border-transparent hover:border-black hover:bg-green-50 text-black hover:shadow-[2px_2px_0px_0px_rgba(0,0,0,0.3)]"
-                    }`}
-                  >
-                    <item.icon className="h-5 w-5" />
-                    {item.name}
-                  </Button>
-                </Link>
-              )
-            })}
-          </nav>
-
-          <div className="px-2 space-y-2">
-            <Link href="/dashboard/settings">
-              <Button
-                variant="ghost"
-                className="w-full justify-start gap-3 rounded-xl border-2 border-transparent hover:border-black hover:bg-green-50 text-black font-bold min-h-[44px] hover:shadow-[2px_2px_0px_0px_rgba(0,0,0,0.3)]"
-              >
-                <Settings className="h-5 w-5" />
-                Settings
-              </Button>
-            </Link>
-            <Button
-              variant="ghost"
-              className="w-full justify-start gap-3 rounded-xl border-2 border-transparent hover:border-black hover:bg-green-50 text-black font-bold min-h-[44px] hover:shadow-[2px_2px_0px_0px_rgba(0,0,0,0.3)]"
-            >
-              <LogOut className="h-5 w-5" />
-              Sign Out
-            </Button>
+      {/* Navigation */}
+      <div className="space-y-4 py-4">
+        <div className="px-3 py-2">
+          <div className="space-y-1">
+            {navigationItems.map((item) => (
+              <Link key={item.name} href={item.href}>
+                <Button
+                  variant="ghost"
+                  className={cn(
+                    "w-full justify-start gap-2 rounded-xl px-4 py-2 font-bold",
+                    item.current
+                      ? "bg-gryt-green text-white hover:bg-green-600 border-2 border-black shadow-[3px_3px_0px_0px_rgba(0,0,0,1)]"
+                      : "hover:bg-green-50 text-black border-2 border-transparent hover:border-green-200",
+                  )}
+                >
+                  <item.icon className="h-5 w-5" />
+                  <span className="flex-1 text-left">{item.name}</span>
+                  {item.shortcut && (
+                    <kbd className="hidden md:inline-flex h-5 items-center gap-1 rounded border bg-muted px-1.5 font-mono text-[10px] font-medium text-muted-foreground">
+                      {item.shortcut}
+                    </kbd>
+                  )}
+                </Button>
+              </Link>
+            ))}
           </div>
         </div>
+      </div>
+
+      {/* Keyboard Shortcuts Button */}
+      <div className="px-3 py-2 mt-auto border-t-4 border-black">
+        <Button
+          variant="outline"
+          onClick={showShortcutHelp}
+          className="w-full justify-start gap-2 border-2 border-black rounded-lg font-bold hover:bg-yellow-50 transition-all duration-200"
+        >
+          <Keyboard className="h-5 w-5" />
+          Keyboard Shortcuts
+          <kbd className="ml-auto inline-flex h-5 items-center gap-1 rounded border bg-muted px-1.5 font-mono text-[10px] font-medium text-muted-foreground">
+            ?
+          </kbd>
+        </Button>
       </div>
     </div>
   )

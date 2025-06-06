@@ -29,7 +29,7 @@ export async function middleware(request: NextRequest) {
   }
 
   // Protected routes that require authentication
-  const protectedRoutes = ["/dashboard", "/studio", "/admin"]
+  const protectedRoutes = ["/dashboard", "/admin"]
   const isProtectedRoute = protectedRoutes.some((route) => pathname.startsWith(route))
 
   // Public routes that should redirect if authenticated
@@ -62,7 +62,9 @@ export async function middleware(request: NextRequest) {
 
       if (!user) {
         console.log("[MIDDLEWARE] Session validation failed - redirecting to login")
-        const response = NextResponse.redirect(new URL("/login", request.url))
+        const loginUrl = new URL("/login", request.url)
+        loginUrl.searchParams.set("redirect", pathname)
+        const response = NextResponse.redirect(loginUrl)
         response.cookies.delete("session-id")
         return response
       }
@@ -76,7 +78,9 @@ export async function middleware(request: NextRequest) {
       return response
     } catch (error) {
       console.error("[MIDDLEWARE] Session validation error:", error)
-      const response = NextResponse.redirect(new URL("/login", request.url))
+      const loginUrl = new URL("/login", request.url)
+      loginUrl.searchParams.set("redirect", pathname)
+      const response = NextResponse.redirect(loginUrl)
       response.cookies.delete("session-id")
       return response
     }

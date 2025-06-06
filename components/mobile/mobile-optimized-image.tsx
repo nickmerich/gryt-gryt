@@ -1,241 +1,135 @@
 "use client"
 
-import { useState, useEffect, useRef, type ImgHTMLAttributes } from "react"
-import { getOptimizedImageSrc } from "@/lib/mobile-performance"
-import { cn } from "@/lib/utils"
+import { useState, useRef, useEffect } from "react"
+import Image from "next/image"
 
-interface MobileOptimizedImageProps extends Omit<ImgHTMLAttributes<HTMLImageElement>, "src"> {
+interface MobileOptimizedImageProps {
   src: string
   alt: string
-  width?: number
-  height?: number
+  width: number
+  height: number
   priority?: boolean
+  className?: string
+  loading?: "lazy" | "eager"
   quality?: number
-  placeholder?: "blur" | "empty" | "color"
+  placeholder?: "blur" | "empty"
   blurDataURL?: string
-  placeholderColor?: string
-  lazyBoundary?: string
-  loadingStrategy?: "lazy" | "eager" | "progressive"
-  onLoad?: () => void
-  onError?: () => void
 }
 
-export default function MobileOptimizedImage({
+export function MobileOptimizedImage({
   src,
   alt,
-  width = 0,
+  width,
   height,
   priority = false,
-  quality,
+  className = "",
+  loading = "lazy",
+  quality = 75,
   placeholder = "empty",
   blurDataURL,
-  placeholderColor = "#f3f4f6",
-  lazyBoundary = "200px",
-  loadingStrategy = "lazy",
-  className,
-  onLoad,
-  onError,
-  ...props
 }: MobileOptimizedImageProps) {
   const [isLoaded, setIsLoaded] = useState(false)
-  const [isInView, setIsInView] = useState(priority)
-  const [imageSrc, setImageSrc] = useState<string>("")
   const [hasError, setHasError] = useState(false)
-  const imageRef = useRef<HTMLImageElement>(null)
-  const containerRef = useRef<HTMLDivElement>(null)
+  const imgRef = useRef<HTMLImageElement>(null)
 
-  // Progressive loading strategy
-  const [lowQualitySrc, setLowQualitySrc] = useState<string>("")
-  const [highQualitySrc, setHighQualitySrc] = useState<string>("")
-  const [showLowQuality, setShowLowQuality] = useState(loadingStrategy === "progressive")
-  const [showHighQuality, setShowHighQuality] = useState(false)
+  // Detect if we're on a mobile device with limited bandwidth
+  const shouldOptimize = useEffect(() => {
+    const connection = (navigator as any).connection
+    const isSlowConnection =
+      connection &&
+      (connection.effectiveType === "slow-2g" || connection.effectiveType === "2g" || connection.effectiveType === "3g")
 
-  // Intersection Observer for lazy loading
-  useEffect(() => {
-    if (priority) {
-      setIsInView(true)
-      return
+    if (isSlowConnection) {
+      // Further reduce quality for slow connections
+      quality = Math.min(quality, 50)
     }
+  }, [])
 
-    const observer = new IntersectionObserver(
-      ([entry]) => {
-        if (entry.isIntersecting) {
-          setIsInView(true)
-          observer.disconnect()
-        }
-      },
-      { rootMargin: lazyBoundary },
-    )
-
-    if (containerRef.current) {
-      observer.observe(containerRef.current)
-    }
-
-    return () => observer.disconnect()
-  }, [priority, lazyBoundary])
-
-  // Generate optimized image URL based on device capabilities
-  useEffect(() => {
-    if (!isInView) return
-
-    if (loadingStrategy === "progressive") {
-      // For progressive loading, generate both low and high quality versions
-      const lowQuality = getOptimizedImageSrc(src, width, height, undefined, 20) // Low quality version
-      const highQuality = getOptimizedImageSrc(src, width, height, undefined, quality)
-
-      setLowQualitySrc(lowQuality)
-      setHighQualitySrc(highQuality)
-    } else {
-      // Standard loading
-      const optimizedSrc = getOptimizedImageSrc(src, width, height, undefined, quality)
-      setImageSrc(optimizedSrc)
-    }
-  }, [isInView, src, width, height, quality, loadingStrategy])
+  // Generate responsive image sizes based on device
+  const sizes = `
+    (max-width: 640px) ${Math.min(width, 640)}px,
+    (max-width: 768px) ${Math.min(width, 768)}px,
+    (max-width: 1024px) ${Math.min(width, 1024)}px,
+    ${width}px
+  `
 
   const handleLoad = () => {
     setIsLoaded(true)
-    onLoad?.()
-
-    if (loadingStrategy === "progressive" && !showHighQuality) {
-      // After low quality image loads, load high quality
-      setShowHighQuality(true)
+    if (imgRef.current) {
+      imgRef.current.classList.add("animate-in")
     }
-  }
-
-  const handleHighQualityLoad = () => {
-    setShowLowQuality(false)
   }
 
   const handleError = () => {
     setHasError(true)
-    onError?.()
-  }
-
-  // Calculate aspect ratio for placeholder
-  const aspectRatio = height && width ? height / width : undefined
-
-  if (!isInView) {
-    return (
-      <div
-        ref={containerRef}
-        className={cn("bg-gray-100", className)}
-        style={{
-          width: width || undefined,
-          height: height || undefined,
-          aspectRatio: aspectRatio ? `${width} / ${height}` : undefined,
-        }}
-        {...props}
-      />
-    )
+    console.warn(`Failed to load image: ${src}`)
   }
 
   if (hasError) {
     return (
       <div
-        className={cn("bg-gray-100 flex items-center justify-center text-gray-400", className)}
-        style={{ width: width || undefined, height: height || undefined }}
+        className={`flex items-center justify-center bg-gryt-gray-100 border-2 border-gryt-black rounded-lg ${className}`}
+        style={{ width, height }}
       >
-        <span className="text-sm">Failed to load image</span>
-      </div>
-    )
-  }
-
-  if (loadingStrategy === "progressive") {
-    return (
-      <div
-        className="relative overflow-hidden"
-        style={{
-          width: width || undefined,
-          height: height || undefined,
-          aspectRatio: aspectRatio ? `${width} / ${height}` : undefined,
-        }}
-      >
-        {/* Placeholder */}
-        {placeholder === "color" && !isLoaded && (
-          <div className="absolute inset-0 w-full h-full" style={{ backgroundColor: placeholderColor }} />
-        )}
-
-        {/* Blur placeholder */}
-        {placeholder === "blur" && blurDataURL && !isLoaded && (
-          <img
-            src={blurDataURL || "/placeholder.svg"}
-            alt=""
-            className="absolute inset-0 w-full h-full object-cover filter blur-md scale-110"
-            aria-hidden="true"
-          />
-        )}
-
-        {/* Low quality image */}
-        {showLowQuality && (
-          <img
-            src={lowQualitySrc || "/placeholder.svg"}
-            alt={alt}
-            width={width || undefined}
-            height={height || undefined}
-            onLoad={handleLoad}
-            onError={handleError}
-            className={cn(
-              "transition-opacity duration-300 absolute inset-0 w-full h-full object-cover",
-              isLoaded ? "opacity-100" : "opacity-0",
-            )}
-            loading={priority ? "eager" : "lazy"}
-            decoding="async"
-          />
-        )}
-
-        {/* High quality image */}
-        {showHighQuality && (
-          <img
-            ref={imageRef}
-            src={highQualitySrc || "/placeholder.svg"}
-            alt={alt}
-            width={width || undefined}
-            height={height || undefined}
-            onLoad={handleHighQualityLoad}
-            className={cn(
-              "transition-opacity duration-500 w-full h-full object-cover",
-              !showLowQuality ? "opacity-100" : "opacity-0",
-            )}
-            loading={priority ? "eager" : "lazy"}
-            decoding="async"
-            {...props}
-          />
-        )}
+        <span className="text-gryt-gray-500 text-sm">Image failed to load</span>
       </div>
     )
   }
 
   return (
-    <div className="relative overflow-hidden">
-      {/* Placeholder */}
-      {placeholder === "color" && !isLoaded && (
-        <div className="absolute inset-0 w-full h-full" style={{ backgroundColor: placeholderColor }} />
-      )}
-
-      {/* Blur placeholder */}
-      {placeholder === "blur" && blurDataURL && !isLoaded && (
-        <img
-          src={blurDataURL || "/placeholder.svg"}
-          alt=""
-          className="absolute inset-0 w-full h-full object-cover filter blur-md scale-110"
-          aria-hidden="true"
-        />
-      )}
-
-      {/* Main image */}
-      <img
-        ref={imageRef}
-        src={imageSrc || src}
+    <div className={`relative overflow-hidden ${className}`}>
+      <Image
+        ref={imgRef}
+        src={src || "/placeholder.svg"}
         alt={alt}
-        width={width || undefined}
-        height={height || undefined}
+        width={width}
+        height={height}
+        priority={priority}
+        loading={loading}
+        quality={quality}
+        sizes={sizes}
+        placeholder={placeholder}
+        blurDataURL={blurDataURL}
         onLoad={handleLoad}
         onError={handleError}
-        className={cn("transition-opacity duration-300", isLoaded ? "opacity-100" : "opacity-0", className)}
-        loading={priority ? "eager" : "lazy"}
-        decoding="async"
-        {...props}
+        className={`
+          mobile-optimized-image
+          transition-opacity duration-300
+          ${isLoaded ? "opacity-100" : "opacity-0"}
+          ${priority ? "critical-performance" : ""}
+        `}
+        style={{
+          willChange: isLoaded ? "auto" : "opacity",
+          contentVisibility: priority ? "visible" : "auto",
+        }}
       />
+
+      {!isLoaded && !hasError && (
+        <div
+          className="absolute inset-0 bg-gryt-gray-100 animate-pulse"
+          style={{
+            background: "linear-gradient(90deg, #f3f4f6 25%, #e5e7eb 50%, #f3f4f6 75%)",
+            backgroundSize: "200% 100%",
+            animation: "shimmer 1.5s infinite",
+          }}
+        />
+      )}
     </div>
   )
+}
+
+// Shimmer animation for loading state
+const shimmerKeyframes = `
+  @keyframes shimmer {
+    0% { background-position: -200% 0; }
+    100% { background-position: 200% 0; }
+  }
+`
+
+// Inject shimmer animation if not already present
+if (typeof document !== "undefined" && !document.getElementById("shimmer-animation")) {
+  const style = document.createElement("style")
+  style.id = "shimmer-animation"
+  style.textContent = shimmerKeyframes
+  document.head.appendChild(style)
 }

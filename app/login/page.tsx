@@ -1,7 +1,7 @@
 "use client"
 
 import type React from "react"
-import { useState, useEffect } from "react"
+import { useState } from "react"
 import Link from "next/link"
 import { useRouter, useSearchParams } from "next/navigation"
 import { Button } from "@/components/ui/button"
@@ -23,38 +23,7 @@ export default function LoginPage() {
   const [showPassword, setShowPassword] = useState(false)
   const [isLoading, setIsLoading] = useState(false)
   const [error, setError] = useState("")
-  const [debugInfo, setDebugInfo] = useState<any>(null)
-  const [authStatus, setAuthStatus] = useState<"checking" | "authenticated" | "unauthenticated">("checking")
-
-  // Check authentication status on page load
-  useEffect(() => {
-    const checkAuth = async () => {
-      try {
-        console.log("[LOGIN PAGE] Checking authentication status...")
-        const response = await fetch("/api/auth/verify-session")
-
-        if (response.ok) {
-          const data = await response.json()
-          console.log("[LOGIN PAGE] User already authenticated:", data.user)
-          setAuthStatus("authenticated")
-
-          // Redirect authenticated users
-          setTimeout(() => {
-            console.log(`[LOGIN PAGE] Redirecting authenticated user to: ${redirectTo}`)
-            window.location.href = redirectTo
-          }, 1000)
-        } else {
-          console.log("[LOGIN PAGE] User not authenticated")
-          setAuthStatus("unauthenticated")
-        }
-      } catch (error) {
-        console.log("[LOGIN PAGE] Authentication check failed:", error)
-        setAuthStatus("unauthenticated")
-      }
-    }
-
-    checkAuth()
-  }, [redirectTo])
+  const [success, setSuccess] = useState(false)
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value, type, checked } = e.target
@@ -70,10 +39,10 @@ export default function LoginPage() {
     e.preventDefault()
     setIsLoading(true)
     setError("")
-    setDebugInfo(null)
+    setSuccess(false)
 
     const timestamp = new Date().toISOString()
-    console.log(`\n[LOGIN PAGE ${timestamp}] === CLIENT LOGIN ATTEMPT ===`)
+    console.log(`\n[LOGIN PAGE ${timestamp}] === LOGIN ATTEMPT START ===`)
     console.log("[LOGIN PAGE] Form data:", { email: formData.email, rememberMe: formData.rememberMe })
 
     try {
@@ -95,15 +64,14 @@ export default function LoginPage() {
       }
 
       if (data.success) {
-        console.log("[LOGIN PAGE] Login successful, setting debug info...")
-        setDebugInfo(data)
+        console.log("[LOGIN PAGE] Login successful!")
+        setSuccess(true)
 
-        // Wait longer to ensure cookie is properly set
-        console.log(`[LOGIN PAGE] Waiting 2 seconds before redirect to: ${redirectTo}`)
+        // Wait a moment for the cookie to be set, then redirect
         setTimeout(() => {
-          console.log("[LOGIN PAGE] Executing redirect...")
-          window.location.href = redirectTo // Force full page navigation
-        }, 2000)
+          console.log(`[LOGIN PAGE] Redirecting to: ${redirectTo}`)
+          router.push(redirectTo)
+        }, 1000)
       }
     } catch (error) {
       console.error("[LOGIN PAGE] Login error:", error)
@@ -111,30 +79,6 @@ export default function LoginPage() {
     } finally {
       setIsLoading(false)
     }
-  }
-
-  // Show loading state while checking authentication
-  if (authStatus === "checking") {
-    return (
-      <div className="min-h-screen bg-gryt-white py-12 px-4 flex items-center justify-center">
-        <div className="text-center">
-          <Loader2 className="h-8 w-8 animate-spin mx-auto mb-4" />
-          <p className="text-gray-600">Checking authentication...</p>
-        </div>
-      </div>
-    )
-  }
-
-  // Show redirect message for authenticated users
-  if (authStatus === "authenticated") {
-    return (
-      <div className="min-h-screen bg-gryt-white py-12 px-4 flex items-center justify-center">
-        <div className="text-center">
-          <CheckCircle className="h-8 w-8 text-green-600 mx-auto mb-4" />
-          <p className="text-gray-600">Already logged in. Redirecting to dashboard...</p>
-        </div>
-      </div>
-    )
   }
 
   return (
@@ -165,15 +109,13 @@ export default function LoginPage() {
             </div>
           )}
 
-          {debugInfo && (
+          {success && (
             <div className="mb-4 p-3 bg-green-50 border-2 border-green-200 rounded-xl">
               <div className="flex items-start gap-2">
                 <CheckCircle className="h-4 w-4 text-green-600 mt-0.5 flex-shrink-0" />
                 <div>
                   <p className="text-green-700 text-sm font-medium">Login successful!</p>
-                  <p className="text-green-600 text-xs mt-1">
-                    Session: {debugInfo.sessionInfo?.tokenPreview} | Redirecting in 2 seconds...
-                  </p>
+                  <p className="text-green-600 text-xs mt-1">Redirecting to dashboard...</p>
                 </div>
               </div>
             </div>
@@ -245,13 +187,18 @@ export default function LoginPage() {
             <div className="pt-2">
               <Button
                 type="submit"
-                disabled={isLoading}
+                disabled={isLoading || success}
                 className="w-full bg-gradient-to-r from-green-500 to-green-600 hover:from-green-600 hover:to-green-700 text-white rounded-xl border-2 border-green-400 font-bold py-6 h-auto shadow-[4px_4px_0px_0px_rgba(34,197,94,0.5)] disabled:opacity-50 disabled:cursor-not-allowed"
               >
                 {isLoading ? (
                   <>
                     <Loader2 className="h-4 w-4 mr-2 animate-spin" />
                     Signing In...
+                  </>
+                ) : success ? (
+                  <>
+                    <CheckCircle className="h-4 w-4 mr-2" />
+                    Success! Redirecting...
                   </>
                 ) : (
                   "Sign In"

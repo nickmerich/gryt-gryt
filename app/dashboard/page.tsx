@@ -9,7 +9,19 @@ import GamificationStats from "@/components/gamification/gamification-stats"
 import AchievementNotifications from "@/components/gamification/achievement-notifications"
 import ProgressRings from "@/components/gamification/progress-rings"
 import StreakTracker from "@/components/gamification/streak-tracker"
-import { Target, BarChart3, BookOpen, Zap, CheckCircle2, ArrowRight, Moon, Sun, Trophy, Star } from "lucide-react"
+import {
+  Target,
+  BarChart3,
+  BookOpen,
+  Zap,
+  CheckCircle2,
+  ArrowRight,
+  Moon,
+  Sun,
+  Trophy,
+  Star,
+  FileText,
+} from "lucide-react"
 import Link from "next/link"
 import { useState, useEffect } from "react"
 
@@ -295,11 +307,17 @@ export default function DashboardPage() {
                   { icon: <BookOpen className="h-4 w-4" />, label: "View Journal Entries", href: "/dashboard/journal" },
                   {
                     icon: <BarChart3 className="h-4 w-4" />,
+                    label: "Habit Impact Tracker",
+                    href: "/dashboard/habits/submissions",
+                  },
+                  {
+                    icon: <BarChart3 className="h-4 w-4" />,
                     label: "Analytics Dashboard",
                     href: "/dashboard/analytics",
                   },
                   { icon: <Trophy className="h-4 w-4" />, label: "View Achievements", href: "/dashboard/achievements" },
                   { icon: <Star className="h-4 w-4" />, label: "Personal Leaderboard", href: "/dashboard/leaderboard" },
+                  { icon: <FileText className="h-4 w-4" />, label: "Personal Contract", href: "/dashboard/contract" },
                 ].map((action, index) => (
                   <Link href={action.href} key={index}>
                     <Button

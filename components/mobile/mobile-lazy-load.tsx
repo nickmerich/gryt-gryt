@@ -1,82 +1,113 @@
 "use client"
 
-import { useState, useEffect, useRef, type ReactNode } from "react"
-import { cn } from "@/lib/utils"
+import type React from "react"
+
+import { useState, useRef, useEffect, type ReactNode } from "react"
 
 interface MobileLazyLoadProps {
   children: ReactNode
+  height?: number
   className?: string
-  placeholder?: ReactNode
   threshold?: number
-  rootMargin?: string
-  height?: number | string
-  width?: number | string
-  onVisible?: () => void
-  fallbackInView?: boolean
+  once?: boolean
+  placeholder?: ReactNode
 }
 
-export default function MobileLazyLoad({
+export function MobileLazyLoad({
   children,
-  className,
-  placeholder,
+  height = 200,
+  className = "",
   threshold = 0.1,
-  rootMargin = "200px 0px",
-  height,
-  width,
-  onVisible,
-  fallbackInView = false,
+  once = true,
+  placeholder,
 }: MobileLazyLoadProps) {
-  const [isVisible, setIsVisible] = useState(fallbackInView)
-  const [hasRendered, setHasRendered] = useState(false)
-  const containerRef = useRef<HTMLDivElement>(null)
+  const [isVisible, setIsVisible] = useState(false)
+  const [hasLoaded, setHasLoaded] = useState(false)
+  const elementRef = useRef<HTMLDivElement>(null)
 
   useEffect(() => {
-    // Skip if SSR or already visible
-    if (typeof window === "undefined" || isVisible) return
-
-    const currentElement = containerRef.current
-    if (!currentElement) return
+    const element = elementRef.current
+    if (!element) return
 
     const observer = new IntersectionObserver(
       ([entry]) => {
         if (entry.isIntersecting) {
           setIsVisible(true)
-          setHasRendered(true)
+          setHasLoaded(true)
 
-          if (onVisible) {
-            onVisible()
+          if (once) {
+            observer.unobserve(element)
           }
-
-          // Disconnect after becoming visible
-          observer.disconnect()
+        } else if (!once) {
+          setIsVisible(false)
         }
       },
       {
         threshold,
-        rootMargin,
+        rootMargin: "50px",
       },
     )
 
-    observer.observe(currentElement)
+    observer.observe(element)
 
     return () => {
-      if (currentElement) {
-        observer.unobserve(currentElement)
-      }
+      observer.unobserve(element)
     }
-  }, [isVisible, threshold, rootMargin, onVisible])
+  }, [threshold, once])
+
+  const shouldRender = isVisible || hasLoaded
 
   return (
     <div
-      ref={containerRef}
-      className={cn("mobile-lazy-load", className)}
+      ref={elementRef}
+      className={`mobile-lazy-load ${className}`}
       style={{
-        height: !isVisible && height ? height : undefined,
-        width: !isVisible && width ? width : undefined,
-        minHeight: !isVisible && height ? height : undefined,
+        minHeight: shouldRender ? "auto" : height,
+        contentVisibility: shouldRender ? "visible" : "auto",
+        containIntrinsicSize: shouldRender ? "none" : `auto ${height}px`,
       }}
     >
-      {isVisible ? children : placeholder || <div className="w-full h-full bg-gray-100 animate-pulse rounded-md" />}
+      {shouldRender ? (
+        <div className="animate-in fade-in duration-300">{children}</div>
+      ) : (
+        placeholder || (
+          <div className="flex items-center justify-center bg-gryt-gray-50 rounded-lg animate-pulse" style={{ height }}>
+            <div className="w-8 h-8 bg-gryt-gray-200 rounded-full animate-pulse" />
+          </div>
+        )
+      )}
     </div>
+  )
+}
+
+// Auto-apply lazy loading to images
+export function MobileLazyImage({
+  src,
+  alt,
+  width,
+  height,
+  className = "",
+  ...props
+}: React.ImgHTMLAttributes<HTMLImageElement> & {
+  width: number
+  height: number
+}) {
+  return (
+    <MobileLazyLoad height={height} className={className}>
+      <img
+        src={src || "/placeholder.svg"}
+        alt={alt}
+        width={width}
+        height={height}
+        loading="lazy"
+        decoding="async"
+        className="mobile-optimized-image"
+        style={{
+          willChange: "transform",
+          backfaceVisibility: "hidden",
+        }}
+        {...props}
+      />
+    </MobileLazyLoad>
   )
 }
