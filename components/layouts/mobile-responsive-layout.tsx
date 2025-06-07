@@ -1,13 +1,24 @@
 "use client"
 
 import type React from "react"
-
 import { useState, useEffect } from "react"
 import { usePathname } from "next/navigation"
-import MobileHeader from "@/components/dashboard/mobile-header"
-import MobileBottomNav from "@/components/dashboard/mobile-bottom-nav"
-import { MobilePerformanceMonitor } from "@/components/mobile/mobile-performance-monitor"
-import { mobilePerformanceManager } from "@/lib/mobile-performance"
+import dynamic from "next/dynamic"
+
+// Dynamically import components to avoid SSR issues
+const MobileHeader = dynamic(() => import("@/components/dashboard/mobile-header"), {
+  ssr: false,
+  loading: () => <div className="h-16 bg-white border-b-4 border-black" />,
+})
+
+const MobileBottomNav = dynamic(() => import("@/components/dashboard/mobile-bottom-nav"), {
+  ssr: false,
+  loading: () => <div className="h-16 bg-white border-t-4 border-black" />,
+})
+
+const MobilePerformanceMonitor = dynamic(() => import("@/components/mobile/mobile-performance-monitor"), {
+  ssr: false,
+})
 
 interface MobileResponsiveLayoutProps {
   children: React.ReactNode
@@ -21,29 +32,33 @@ export default function MobileResponsiveLayout({ children }: MobileResponsiveLay
   // Detect mobile device
   useEffect(() => {
     const checkMobile = () => {
-      const mobile = window.innerWidth < 768
-      setIsMobile(mobile)
-      document.documentElement.classList.toggle("is-mobile", mobile)
+      if (typeof window !== "undefined") {
+        const mobile = window.innerWidth < 768
+        setIsMobile(mobile)
+        document.documentElement.classList.toggle("is-mobile", mobile)
+      }
     }
 
     checkMobile()
-    window.addEventListener("resize", checkMobile)
 
-    // Initialize mobile performance optimizations
     if (typeof window !== "undefined") {
-      mobilePerformanceManager.optimizeForDevice()
-      mobilePerformanceManager.preloadCriticalResources()
+      window.addEventListener("resize", checkMobile)
     }
 
     setIsLoaded(true)
-    return () => window.removeEventListener("resize", checkMobile)
+
+    return () => {
+      if (typeof window !== "undefined") {
+        window.removeEventListener("resize", checkMobile)
+      }
+    }
   }, [])
 
   // Skip mobile layout for certain pages
   const skipMobileLayout = ["/login", "/signup", "/onboarding"].some((path) => pathname.startsWith(path))
 
   if (!isLoaded) {
-    return <div className="min-h-screen bg-gray-50"></div>
+    return <div className="min-h-screen bg-gray-50" />
   }
 
   if (skipMobileLayout) {

@@ -4,326 +4,258 @@ import type React from "react"
 
 import { useState } from "react"
 import { useRouter } from "next/navigation"
-import Link from "next/link"
+import { ArrowLeft, Plus, X, Target, Clock, Tag } from "lucide-react"
 import { Button } from "@/components/ui/button"
-import { Card } from "@/components/ui/card"
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Input } from "@/components/ui/input"
 import { Textarea } from "@/components/ui/textarea"
 import { Label } from "@/components/ui/label"
-import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group"
-import { Checkbox } from "@/components/ui/checkbox"
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
-import { ArrowLeft, Target, Clock, Calendar } from "lucide-react"
+
+const categories = [
+  { id: "health", name: "Health & Fitness", icon: "💪", color: "bg-green-100" },
+  { id: "learning", name: "Learning", icon: "📚", color: "bg-blue-100" },
+  { id: "productivity", name: "Productivity", icon: "⚡", color: "bg-yellow-100" },
+  { id: "mindfulness", name: "Mindfulness", icon: "🧘", color: "bg-purple-100" },
+  { id: "social", name: "Social", icon: "👥", color: "bg-pink-100" },
+  { id: "creativity", name: "Creativity", icon: "🎨", color: "bg-orange-100" },
+  { id: "finance", name: "Finance", icon: "💰", color: "bg-emerald-100" },
+  { id: "other", name: "Other", icon: "📝", color: "bg-gray-100" },
+]
+
+const frequencies = [
+  { id: "daily", name: "Daily", description: "Every day" },
+  { id: "weekly", name: "Weekly", description: "Once a week" },
+  { id: "custom", name: "Custom", description: "Set your own schedule" },
+]
 
 export default function NewHabitPage() {
   const router = useRouter()
+  const [isLoading, setIsLoading] = useState(false)
   const [formData, setFormData] = useState({
     name: "",
     description: "",
     category: "",
     frequency: "daily",
-    targetType: "boolean",
-    targetValue: "",
-    targetUnit: "",
-    timeOfDay: "",
-    daysOfWeek: [] as string[],
-    reminder: false,
-    reminderTime: "",
-    difficulty: "medium",
+    target: "",
+    tags: [] as string[],
   })
+  const [newTag, setNewTag] = useState("")
 
-  const handleChange = (field: string, value: any) => {
-    setFormData({ ...formData, [field]: value })
-  }
-
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
-    // Here you would typically save the habit to your database
-    console.log("Form submitted:", formData)
+    if (!formData.name.trim()) return
+
+    setIsLoading(true)
+
+    // Simulate API call
+    await new Promise((resolve) => setTimeout(resolve, 1000))
+
+    console.log("Creating habit:", formData)
+    setIsLoading(false)
     router.push("/dashboard/habits")
   }
 
-  const categories = [
-    { value: "mindfulness", label: "Mindfulness" },
-    { value: "fitness", label: "Fitness" },
-    { value: "learning", label: "Learning" },
-    { value: "health", label: "Health" },
-    { value: "productivity", label: "Productivity" },
-    { value: "reflection", label: "Reflection" },
-    { value: "social", label: "Social" },
-    { value: "creativity", label: "Creativity" },
-  ]
-
-  const daysOfWeek = ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"]
-
-  const toggleDayOfWeek = (day: string) => {
-    if (formData.daysOfWeek.includes(day)) {
-      handleChange(
-        "daysOfWeek",
-        formData.daysOfWeek.filter((d) => d !== day),
-      )
-    } else {
-      handleChange("daysOfWeek", [...formData.daysOfWeek, day])
+  const addTag = () => {
+    if (newTag.trim() && !formData.tags.includes(newTag.trim())) {
+      setFormData((prev) => ({
+        ...prev,
+        tags: [...prev.tags, newTag.trim()],
+      }))
+      setNewTag("")
     }
   }
 
+  const removeTag = (tagToRemove: string) => {
+    setFormData((prev) => ({
+      ...prev,
+      tags: prev.tags.filter((tag) => tag !== tagToRemove),
+    }))
+  }
+
   return (
-    <div className="space-y-6 pb-8">
-      <div className="flex items-center gap-2">
-        <Button variant="ghost" size="sm" asChild>
-          <Link href="/dashboard/habits">
-            <ArrowLeft className="h-4 w-4 mr-1" /> Back
-          </Link>
+    <div className="min-h-screen bg-gray-50 p-4 pb-20">
+      {/* Mobile Header */}
+      <div className="flex items-center gap-4 mb-6">
+        <Button
+          variant="outline"
+          size="icon"
+          onClick={() => router.back()}
+          className="rounded-xl border-2 border-black shadow-[2px_2px_0px_0px_rgba(0,0,0,1)] min-w-[44px] min-h-[44px]"
+        >
+          <ArrowLeft className="h-5 w-5" />
         </Button>
-        <h1 className="text-2xl sm:text-3xl font-black">Create New Habit</h1>
+        <h1 className="text-2xl font-black text-black">Create New Habit</h1>
       </div>
 
-      <Card className="border-4 border-black rounded-xl p-6 shadow-[4px_4px_0px_0px_rgba(0,0,0,1)]">
-        <form onSubmit={handleSubmit} className="space-y-6">
-          {/* Basic Information */}
-          <div className="space-y-4">
-            <h2 className="text-xl font-bold">Basic Information</h2>
-
-            <div className="space-y-2">
-              <Label htmlFor="name">Habit Name</Label>
+      <form onSubmit={handleSubmit} className="space-y-6">
+        {/* Basic Information */}
+        <Card className="border-4 border-black shadow-[4px_4px_0px_0px_rgba(0,0,0,1)]">
+          <CardHeader>
+            <CardTitle className="flex items-center gap-2">
+              <Target className="h-5 w-5" />
+              Basic Information
+            </CardTitle>
+          </CardHeader>
+          <CardContent className="space-y-4">
+            <div>
+              <Label htmlFor="name" className="text-sm font-bold">
+                Habit Name *
+              </Label>
               <Input
                 id="name"
-                placeholder="e.g., Morning Meditation"
                 value={formData.name}
-                onChange={(e) => handleChange("name", e.target.value)}
-                className="border-2 border-black rounded-xl"
+                onChange={(e) => setFormData((prev) => ({ ...prev, name: e.target.value }))}
+                placeholder="e.g., Drink 8 glasses of water"
+                className="mt-1 border-2 border-black rounded-xl font-medium min-h-[44px]"
                 required
               />
             </div>
 
-            <div className="space-y-2">
-              <Label htmlFor="description">Description (Optional)</Label>
+            <div>
+              <Label htmlFor="description" className="text-sm font-bold">
+                Description (Optional)
+              </Label>
               <Textarea
                 id="description"
-                placeholder="Why is this habit important to you?"
                 value={formData.description}
-                onChange={(e) => handleChange("description", e.target.value)}
-                className="border-2 border-black rounded-xl min-h-[100px]"
+                onChange={(e) => setFormData((prev) => ({ ...prev, description: e.target.value }))}
+                placeholder="Why is this habit important to you?"
+                className="mt-1 border-2 border-black rounded-xl font-medium min-h-[80px]"
+                rows={3}
               />
             </div>
+          </CardContent>
+        </Card>
 
-            <div className="space-y-2">
-              <Label htmlFor="category">Category</Label>
-              <Select value={formData.category} onValueChange={(value) => handleChange("category", value)}>
-                <SelectTrigger className="border-2 border-black rounded-xl">
-                  <SelectValue placeholder="Select a category" />
-                </SelectTrigger>
-                <SelectContent>
-                  {categories.map((category) => (
-                    <SelectItem key={category.value} value={category.value}>
-                      {category.label}
-                    </SelectItem>
-                  ))}
-                </SelectContent>
-              </Select>
+        {/* Category Selection */}
+        <Card className="border-4 border-black shadow-[4px_4px_0px_0px_rgba(0,0,0,1)]">
+          <CardHeader>
+            <CardTitle>Choose Category</CardTitle>
+          </CardHeader>
+          <CardContent>
+            <div className="grid grid-cols-2 gap-3">
+              {categories.map((category) => (
+                <button
+                  key={category.id}
+                  type="button"
+                  onClick={() => setFormData((prev) => ({ ...prev, category: category.id }))}
+                  className={`p-4 rounded-xl border-2 border-black text-left transition-all min-h-[60px] ${
+                    formData.category === category.id
+                      ? "bg-green-500 text-white shadow-[3px_3px_0px_0px_rgba(0,0,0,1)]"
+                      : "bg-white hover:bg-gray-50 shadow-[2px_2px_0px_0px_rgba(0,0,0,1)]"
+                  }`}
+                >
+                  <div className="flex items-center gap-2">
+                    <span className="text-lg">{category.icon}</span>
+                    <span className="font-bold text-sm">{category.name}</span>
+                  </div>
+                </button>
+              ))}
             </div>
+          </CardContent>
+        </Card>
 
-            <div className="space-y-2">
-              <Label>Difficulty</Label>
-              <RadioGroup
-                value={formData.difficulty}
-                onValueChange={(value) => handleChange("difficulty", value)}
-                className="flex space-x-2"
-              >
-                <div className="flex items-center space-x-2">
-                  <RadioGroupItem value="easy" id="easy" />
-                  <Label htmlFor="easy" className="cursor-pointer">
-                    Easy
-                  </Label>
-                </div>
-                <div className="flex items-center space-x-2">
-                  <RadioGroupItem value="medium" id="medium" />
-                  <Label htmlFor="medium" className="cursor-pointer">
-                    Medium
-                  </Label>
-                </div>
-                <div className="flex items-center space-x-2">
-                  <RadioGroupItem value="hard" id="hard" />
-                  <Label htmlFor="hard" className="cursor-pointer">
-                    Hard
-                  </Label>
-                </div>
-              </RadioGroup>
+        {/* Frequency */}
+        <Card className="border-4 border-black shadow-[4px_4px_0px_0px_rgba(0,0,0,1)]">
+          <CardHeader>
+            <CardTitle className="flex items-center gap-2">
+              <Clock className="h-5 w-5" />
+              Frequency
+            </CardTitle>
+          </CardHeader>
+          <CardContent>
+            <div className="space-y-3">
+              {frequencies.map((freq) => (
+                <button
+                  key={freq.id}
+                  type="button"
+                  onClick={() => setFormData((prev) => ({ ...prev, frequency: freq.id }))}
+                  className={`w-full p-4 rounded-xl border-2 border-black text-left transition-all min-h-[60px] ${
+                    formData.frequency === freq.id
+                      ? "bg-green-500 text-white shadow-[3px_3px_0px_0px_rgba(0,0,0,1)]"
+                      : "bg-white hover:bg-gray-50 shadow-[2px_2px_0px_0px_rgba(0,0,0,1)]"
+                  }`}
+                >
+                  <div className="font-bold">{freq.name}</div>
+                  <div className={`text-sm ${formData.frequency === freq.id ? "text-green-100" : "text-gray-600"}`}>
+                    {freq.description}
+                  </div>
+                </button>
+              ))}
             </div>
-          </div>
+          </CardContent>
+        </Card>
 
-          {/* Frequency & Scheduling */}
-          <div className="space-y-4 pt-4 border-t border-gray-200">
-            <div className="flex items-center gap-2">
-              <Calendar className="h-5 w-5 text-red-500" />
-              <h2 className="text-xl font-bold">Frequency & Scheduling</h2>
-            </div>
+        {/* Target/Goal */}
+        <Card className="border-4 border-black shadow-[4px_4px_0px_0px_rgba(0,0,0,1)]">
+          <CardHeader>
+            <CardTitle>Target/Goal</CardTitle>
+          </CardHeader>
+          <CardContent>
+            <Input
+              value={formData.target}
+              onChange={(e) => setFormData((prev) => ({ ...prev, target: e.target.value }))}
+              placeholder="e.g., 30 minutes, 10,000 steps, 3 times"
+              className="border-2 border-black rounded-xl font-medium min-h-[44px]"
+            />
+          </CardContent>
+        </Card>
 
-            <div className="space-y-2">
-              <Label>Frequency</Label>
-              <RadioGroup
-                value={formData.frequency}
-                onValueChange={(value) => handleChange("frequency", value)}
-                className="flex flex-wrap gap-4"
-              >
-                <div className="flex items-center space-x-2">
-                  <RadioGroupItem value="daily" id="daily" />
-                  <Label htmlFor="daily" className="cursor-pointer">
-                    Daily
-                  </Label>
-                </div>
-                <div className="flex items-center space-x-2">
-                  <RadioGroupItem value="weekly" id="weekly" />
-                  <Label htmlFor="weekly" className="cursor-pointer">
-                    Weekly
-                  </Label>
-                </div>
-                <div className="flex items-center space-x-2">
-                  <RadioGroupItem value="monthly" id="monthly" />
-                  <Label htmlFor="monthly" className="cursor-pointer">
-                    Monthly
-                  </Label>
-                </div>
-              </RadioGroup>
-            </div>
-
-            {formData.frequency === "weekly" && (
-              <div className="space-y-2">
-                <Label>Days of Week</Label>
-                <div className="flex flex-wrap gap-2">
-                  {daysOfWeek.map((day) => (
-                    <Button
-                      key={day}
-                      type="button"
-                      variant={formData.daysOfWeek.includes(day) ? "default" : "outline"}
-                      className={`rounded-xl border-2 ${
-                        formData.daysOfWeek.includes(day)
-                          ? "bg-red-500 hover:bg-red-600 border-red-500 text-white"
-                          : "border-black"
-                      }`}
-                      onClick={() => toggleDayOfWeek(day)}
-                    >
-                      {day.substring(0, 3)}
-                    </Button>
-                  ))}
-                </div>
-              </div>
-            )}
-
-            <div className="space-y-2">
-              <Label htmlFor="timeOfDay">Preferred Time of Day</Label>
-              <Select value={formData.timeOfDay} onValueChange={(value) => handleChange("timeOfDay", value)}>
-                <SelectTrigger className="border-2 border-black rounded-xl">
-                  <SelectValue placeholder="Select a time of day" />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="morning">Morning</SelectItem>
-                  <SelectItem value="afternoon">Afternoon</SelectItem>
-                  <SelectItem value="evening">Evening</SelectItem>
-                  <SelectItem value="anytime">Anytime</SelectItem>
-                </SelectContent>
-              </Select>
-            </div>
-          </div>
-
-          {/* Target & Measurement */}
-          <div className="space-y-4 pt-4 border-t border-gray-200">
-            <div className="flex items-center gap-2">
-              <Target className="h-5 w-5 text-red-500" />
-              <h2 className="text-xl font-bold">Target & Measurement</h2>
-            </div>
-
-            <div className="space-y-2">
-              <Label>Target Type</Label>
-              <RadioGroup
-                value={formData.targetType}
-                onValueChange={(value) => handleChange("targetType", value)}
-                className="flex flex-wrap gap-4"
-              >
-                <div className="flex items-center space-x-2">
-                  <RadioGroupItem value="boolean" id="boolean" />
-                  <Label htmlFor="boolean" className="cursor-pointer">
-                    Yes/No Completion
-                  </Label>
-                </div>
-                <div className="flex items-center space-x-2">
-                  <RadioGroupItem value="count" id="count" />
-                  <Label htmlFor="count" className="cursor-pointer">
-                    Count (e.g., 8 glasses)
-                  </Label>
-                </div>
-                <div className="flex items-center space-x-2">
-                  <RadioGroupItem value="duration" id="duration" />
-                  <Label htmlFor="duration" className="cursor-pointer">
-                    Duration (e.g., 30 minutes)
-                  </Label>
-                </div>
-              </RadioGroup>
-            </div>
-
-            {formData.targetType !== "boolean" && (
-              <div className="grid grid-cols-2 gap-4">
-                <div className="space-y-2">
-                  <Label htmlFor="targetValue">Target Value</Label>
-                  <Input
-                    id="targetValue"
-                    type="number"
-                    placeholder="e.g., 8 or 30"
-                    value={formData.targetValue}
-                    onChange={(e) => handleChange("targetValue", e.target.value)}
-                    className="border-2 border-black rounded-xl"
-                  />
-                </div>
-                <div className="space-y-2">
-                  <Label htmlFor="targetUnit">Unit</Label>
-                  <Input
-                    id="targetUnit"
-                    placeholder="e.g., glasses, minutes, pages"
-                    value={formData.targetUnit}
-                    onChange={(e) => handleChange("targetUnit", e.target.value)}
-                    className="border-2 border-black rounded-xl"
-                  />
-                </div>
-              </div>
-            )}
-          </div>
-
-          {/* Reminders */}
-          <div className="space-y-4 pt-4 border-t border-gray-200">
-            <div className="flex items-center gap-2">
-              <Clock className="h-5 w-5 text-red-500" />
-              <h2 className="text-xl font-bold">Reminders</h2>
-            </div>
-
-            <div className="flex items-start space-x-2">
-              <Checkbox
-                id="reminder"
-                checked={formData.reminder}
-                onCheckedChange={(checked) => handleChange("reminder", checked)}
+        {/* Tags */}
+        <Card className="border-4 border-black shadow-[4px_4px_0px_0px_rgba(0,0,0,1)]">
+          <CardHeader>
+            <CardTitle className="flex items-center gap-2">
+              <Tag className="h-5 w-5" />
+              Tags
+            </CardTitle>
+          </CardHeader>
+          <CardContent className="space-y-4">
+            <div className="flex gap-2">
+              <Input
+                value={newTag}
+                onChange={(e) => setNewTag(e.target.value)}
+                onKeyPress={(e) => e.key === "Enter" && (e.preventDefault(), addTag())}
+                placeholder="Add a tag"
+                className="flex-1 border-2 border-black rounded-xl font-medium min-h-[44px]"
               />
-              <div className="grid gap-1.5 leading-none">
-                <Label htmlFor="reminder" className="cursor-pointer">
-                  Enable Reminders
-                </Label>
-                <p className="text-sm text-gray-500">Get notified when it's time for this habit</p>
-              </div>
+              <Button
+                type="button"
+                onClick={addTag}
+                className="bg-green-500 hover:bg-green-600 text-white border-2 border-black rounded-xl shadow-[2px_2px_0px_0px_rgba(0,0,0,1)] min-w-[44px] min-h-[44px]"
+              >
+                <Plus className="h-4 w-4" />
+              </Button>
             </div>
 
-            {formData.reminder && (
-              <div className="space-y-2">
-                <Label htmlFor="reminderTime">Reminder Time</Label>
-                <Input
-                  id="reminderTime"
-                  type="time"
-                  value={formData.reminderTime}
-                  onChange={(e) => handleChange("reminderTime", e.target.value)}
-                  className="border-2 border-black rounded-xl"
-                />
+            {formData.tags.length > 0 && (
+              <div className="flex flex-wrap gap-2">
+                {formData.tags.map((tag, index) => (
+                  <span
+                    key={index}
+                    className="inline-flex items-center gap-1 bg-gray-100 text-black px-3 py-1 rounded-full border-2 border-black font-medium"
+                  >
+                    {tag}
+                    <button type="button" onClick={() => removeTag(tag)} className="hover:text-red-600 ml-1">
+                      <X className="h-3 w-3" />
+                    </button>
+                  </span>
+                ))}
               </div>
             )}
-          </div>
-        </form>
-      </Card>
+          </CardContent>
+        </Card>
+
+        {/* Submit Button */}
+        <div className="sticky bottom-4 bg-gray-50 pt-4">
+          <Button
+            type="submit"
+            disabled={!formData.name.trim() || isLoading}
+            className="w-full bg-green-500 hover:bg-green-600 text-white font-bold py-4 px-6 rounded-xl border-4 border-black shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] hover:shadow-[6px_6px_0px_0px_rgba(0,0,0,1)] hover:-translate-y-1 transition-all duration-200 min-h-[56px] text-lg"
+          >
+            {isLoading ? "Creating Habit..." : "Create Habit"}
+          </Button>
+        </div>
+      </form>
     </div>
   )
 }

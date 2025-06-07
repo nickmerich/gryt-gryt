@@ -1,13 +1,15 @@
 "use client"
 
-import { useEffect, useState } from "react"
+import { useEffect, useState, Suspense } from "react"
 import { useSearchParams } from "next/navigation"
 import { Card } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
 import { CheckCircle, XCircle, Mail, ArrowLeft } from "lucide-react"
 import Link from "next/link"
 
-export default function UnsubscribePage() {
+export const dynamic = "force-dynamic"
+
+function UnsubscribeContent() {
   const searchParams = useSearchParams()
   const token = searchParams.get("token")
 
@@ -109,5 +111,19 @@ export default function UnsubscribePage() {
         </div>
       </Card>
     </div>
+  )
+}
+
+export default function UnsubscribePage() {
+  return (
+    <Suspense
+      fallback={
+        <div className="min-h-screen bg-gray-50 flex items-center justify-center">
+          <div className="animate-spin rounded-full h-12 w-12 border-4 border-green-600 border-t-transparent"></div>
+        </div>
+      }
+    >
+      <UnsubscribeContent />
+    </Suspense>
   )
 }

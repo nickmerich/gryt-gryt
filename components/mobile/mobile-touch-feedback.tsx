@@ -1,86 +1,110 @@
 "use client"
 
-import * as React from "react"
-import { cn } from "@/lib/utils"
+import type React from "react"
 
-interface MobileTouchFeedbackProps extends React.HTMLAttributes<HTMLDivElement> {
-  children: React.ReactNode
-  withHaptic?: boolean
-  withRipple?: boolean
-  withScale?: boolean
+import { useState, useRef, type ReactNode } from "react"
+
+interface MobileTouchFeedbackProps {
+  children: ReactNode
+  onTap?: () => void
+  className?: string
+  disabled?: boolean
+  hapticFeedback?: boolean
 }
 
 export function MobileTouchFeedback({
   children,
-  className,
-  withHaptic = true,
-  withRipple = true,
-  withScale = true,
-  ...props
+  onTap,
+  className = "",
+  disabled = false,
+  hapticFeedback = true,
 }: MobileTouchFeedbackProps) {
-  const [isActive, setIsActive] = React.useState(false)
-  const [ripples, setRipples] = React.useState<Array<{ id: number; x: number; y: number }>>([])
-  const rippleCount = React.useRef(0)
+  const [isPressed, setIsPressed] = useState(false)
+  const touchStartTime = useRef<number>(0)
+  const touchStartPos = useRef<{ x: number; y: number }>({ x: 0, y: 0 })
 
-  const triggerHaptic = React.useCallback(() => {
-    if (withHaptic && navigator.vibrate) {
-      navigator.vibrate(10)
+  const triggerHaptic = () => {
+    if (hapticFeedback && "vibrate" in navigator) {
+      navigator.vibrate(10) // Very light haptic feedback
     }
-  }, [withHaptic])
+  }
 
-  const handleTouchStart = React.useCallback(
-    (e: React.TouchEvent<HTMLDivElement>) => {
-      setIsActive(true)
-      triggerHaptic()
+  const handleTouchStart = (e: React.TouchEvent) => {
+    if (disabled) return
 
-      if (withRipple) {
-        const rect = e.currentTarget.getBoundingClientRect()
-        const x = e.touches[0].clientX - rect.left
-        const y = e.touches[0].clientY - rect.top
-        const id = rippleCount.current++
+    const touch = e.touches[0]
+    touchStartTime.current = Date.now()
+    touchStartPos.current = { x: touch.clientX, y: touch.clientY }
+    setIsPressed(true)
+    triggerHaptic()
+  }
 
-        setRipples((prev) => [...prev, { id, x, y }])
+  const handleTouchEnd = (e: React.TouchEvent) => {
+    if (disabled) return
 
-        setTimeout(() => {
-          setRipples((prev) => prev.filter((ripple) => ripple.id !== id))
-        }, 600)
+    const touchEndTime = Date.now()
+    const touchDuration = touchEndTime - touchStartTime.current
+
+    // Only trigger if it was a quick tap (not a long press or drag)
+    if (touchDuration < 500) {
+      const touch = e.changedTouches[0]
+      const deltaX = Math.abs(touch.clientX - touchStartPos.current.x)
+      const deltaY = Math.abs(touch.clientY - touchStartPos.current.y)
+
+      // Only trigger if finger didn't move much (not a swipe)
+      if (deltaX < 10 && deltaY < 10) {
+        onTap?.()
       }
-    },
-    [triggerHaptic, withRipple],
-  )
+    }
 
-  const handleTouchEnd = React.useCallback(() => {
-    setIsActive(false)
-  }, [])
+    setIsPressed(false)
+  }
+
+  const handleTouchCancel = () => {
+    setIsPressed(false)
+  }
+
+  const handleMouseDown = () => {
+    if (disabled) return
+    setIsPressed(true)
+  }
+
+  const handleMouseUp = () => {
+    if (disabled) return
+    setIsPressed(false)
+    onTap?.()
+  }
+
+  const handleMouseLeave = () => {
+    setIsPressed(false)
+  }
 
   return (
     <div
-      className={cn(
-        "relative overflow-hidden touch-manipulation",
-        withScale && "transition-transform duration-200",
-        isActive && withScale && "transform scale-[0.97]",
-        className,
-      )}
+      className={`
+        ${className}
+        ${isPressed ? "transform scale-95 opacity-80" : ""}
+        ${disabled ? "opacity-50 cursor-not-allowed" : "cursor-pointer"}
+        transition-all duration-150 ease-out
+        select-none
+        touch-manipulation
+      `}
       onTouchStart={handleTouchStart}
       onTouchEnd={handleTouchEnd}
-      onTouchCancel={handleTouchEnd}
-      {...props}
+      onTouchCancel={handleTouchCancel}
+      onMouseDown={handleMouseDown}
+      onMouseUp={handleMouseUp}
+      onMouseLeave={handleMouseLeave}
+      style={{
+        WebkitTapHighlightColor: "transparent",
+        WebkitTouchCallout: "none",
+        WebkitUserSelect: "none",
+        userSelect: "none",
+      }}
     >
       {children}
-      {withRipple &&
-        ripples.map((ripple) => (
-          <span
-            key={ripple.id}
-            className="absolute bg-black/10 rounded-full animate-ripple pointer-events-none"
-            style={{
-              left: ripple.x,
-              top: ripple.y,
-              transform: "translate(-50%, -50%)",
-              width: "200%",
-              paddingBottom: "200%",
-            }}
-          />
-        ))}
     </div>
   )
 }
+
+export default MobileTouchFeedback

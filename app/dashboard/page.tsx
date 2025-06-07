@@ -1,182 +1,235 @@
 "use client"
 
-import { useEffect, useState } from "react"
-import { MobilePage, MobilePageSection } from "@/components/layouts/mobile-page"
-import { MobileOptimizedCardContent } from "@/components/ui/mobile-optimized-card"
-import { MobileOptimizedButton } from "@/components/ui/mobile-optimized-button"
-import { Target, BookOpen, BarChart3, Flame, Trophy, Calendar } from "lucide-react"
-import { MobileTouchFeedback } from "@/components/mobile/mobile-touch-feedback"
+import { useState, useEffect } from "react"
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
+import { Button } from "@/components/ui/button"
+import { Progress } from "@/components/ui/progress"
+import { Target, BookOpen, Plus, Flame, Award, BarChart3 } from "lucide-react"
 import Link from "next/link"
 
+interface DashboardStats {
+  habitsCompleted: number
+  totalHabits: number
+  currentStreak: number
+  weeklyProgress: number
+  totalGP: number
+  level: number
+  journalEntries: number
+}
+
 export default function DashboardPage() {
-  const [isLoading, setIsLoading] = useState(true)
-  const [greeting, setGreeting] = useState("")
-  const [stats, setStats] = useState({
-    habitsCompleted: 0,
-    habitsTotal: 0,
-    currentStreak: 0,
-    journalEntries: 0,
-    weeklyProgress: 0,
+  const [stats, setStats] = useState<DashboardStats>({
+    habitsCompleted: 7,
+    totalHabits: 10,
+    currentStreak: 12,
+    weeklyProgress: 85,
+    totalGP: 2450,
+    level: 8,
+    journalEntries: 5,
   })
 
+  const [greeting, setGreeting] = useState("")
+
   useEffect(() => {
-    // Set greeting based on time of day
     const hour = new Date().getHours()
     if (hour < 12) setGreeting("Good morning")
     else if (hour < 18) setGreeting("Good afternoon")
     else setGreeting("Good evening")
-
-    // Simulate loading data
-    const timer = setTimeout(() => {
-      setStats({
-        habitsCompleted: 7,
-        habitsTotal: 10,
-        currentStreak: 12,
-        journalEntries: 5,
-        weeklyProgress: 85,
-      })
-      setIsLoading(false)
-    }, 1000)
-
-    return () => clearTimeout(timer)
   }, [])
 
-  const quickStats = [
-    {
-      label: "Habits completed",
-      value: `${stats.habitsCompleted}/${stats.habitsTotal}`,
-      icon: Target,
-      color: "text-gryt-green",
-    },
-    {
-      label: "Current streak",
-      value: `${stats.currentStreak} days`,
-      icon: Flame,
-      color: "text-green-600",
-    },
-    {
-      label: "Journal entries",
-      value: stats.journalEntries.toString(),
-      icon: BookOpen,
-      color: "text-black",
-    },
-    {
-      label: "Weekly progress",
-      value: `${stats.weeklyProgress}%`,
-      icon: BarChart3,
-      color: "text-gryt-green",
-    },
-  ]
-
-  const quickActions = [
-    { label: "Add Habit", href: "/dashboard/habits/new", icon: Target, color: "bg-gryt-green" },
-    { label: "New Entry", href: "/dashboard/journal/new", icon: BookOpen, color: "bg-black" },
-    { label: "Analytics", href: "/dashboard/analytics", icon: BarChart3, color: "bg-green-600" },
-    { label: "Calendar", href: "/dashboard/calendar", icon: Calendar, color: "bg-gray-800" },
-  ]
+  const progressPercentage = (stats.habitsCompleted / stats.totalHabits) * 100
 
   return (
-    <MobilePage isLoading={isLoading}>
+    <div className="min-h-screen bg-gray-50 p-4 pb-20">
       {/* Welcome Header */}
-      <div className="bg-gradient-to-r from-gryt-green to-green-600 text-white p-6 rounded-3xl mb-6">
-        <h1 className="text-2xl font-black mb-2">{greeting}!</h1>
-        <p className="text-green-100 text-base">Ready to crush your goals today?</p>
+      <div className="bg-white border-4 border-black rounded-3xl p-6 mb-6 shadow-[6px_6px_0px_0px_rgba(0,0,0,1)]">
+        <h1 className="text-3xl font-black text-black mb-2">{greeting}!</h1>
+        <p className="text-gray-600 text-lg font-medium">Ready to crush your goals today?</p>
       </div>
 
-      {/* Quick Stats */}
-      <MobilePageSection title="Today's Overview">
-        <MobileOptimizedCardContent>
-          <div className="grid grid-cols-2 gap-4">
-            {quickStats.map((stat, index) => (
-              <div key={index} className="text-center p-4 border-2 border-black rounded-xl bg-gray-50">
-                <stat.icon className={`h-6 w-6 mx-auto mb-2 ${stat.color}`} />
-                <div className="text-2xl font-black text-black">{stat.value}</div>
-                <div className="text-xs text-gray-600 font-medium">{stat.label}</div>
-              </div>
-            ))}
+      {/* Quick Stats Grid */}
+      <div className="grid grid-cols-2 gap-4 mb-6">
+        <Card className="border-4 border-black shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] bg-white">
+          <CardContent className="p-4 text-center">
+            <div className="text-3xl font-black text-green-500 mb-1">
+              {stats.habitsCompleted}/{stats.totalHabits}
+            </div>
+            <div className="text-sm font-bold text-black">Habits Today</div>
+          </CardContent>
+        </Card>
+
+        <Card className="border-4 border-black shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] bg-white">
+          <CardContent className="p-4 text-center">
+            <div className="text-3xl font-black text-orange-500 mb-1 flex items-center justify-center gap-1">
+              <Flame className="h-6 w-6" />
+              {stats.currentStreak}
+            </div>
+            <div className="text-sm font-bold text-black">Day Streak</div>
+          </CardContent>
+        </Card>
+
+        <Card className="border-4 border-black shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] bg-white">
+          <CardContent className="p-4 text-center">
+            <div className="text-3xl font-black text-purple-500 mb-1">{stats.totalGP}</div>
+            <div className="text-sm font-bold text-black">Growth Points</div>
+          </CardContent>
+        </Card>
+
+        <Card className="border-4 border-black shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] bg-white">
+          <CardContent className="p-4 text-center">
+            <div className="text-3xl font-black text-blue-500 mb-1">{stats.level}</div>
+            <div className="text-sm font-bold text-black">Level</div>
+          </CardContent>
+        </Card>
+      </div>
+
+      {/* Today's Progress */}
+      <Card className="border-4 border-black shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] mb-6 bg-white">
+        <CardHeader>
+          <CardTitle className="flex items-center gap-2 text-black">
+            <Target className="h-5 w-5" />
+            Today's Progress
+          </CardTitle>
+        </CardHeader>
+        <CardContent>
+          <div className="flex items-center justify-between mb-3">
+            <span className="font-bold text-black">Overall Completion</span>
+            <span className="text-2xl font-black text-green-500">{Math.round(progressPercentage)}%</span>
           </div>
-        </MobileOptimizedCardContent>
-      </MobilePageSection>
+          <Progress value={progressPercentage} className="h-4 border-2 border-black rounded-full" />
+          <p className="text-sm text-gray-600 mt-2 font-medium">
+            {stats.totalHabits - stats.habitsCompleted} habits remaining
+          </p>
+        </CardContent>
+      </Card>
+
+      {/* Your Daily Growth Stack */}
+      <Card className="border-4 border-black shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] mb-6 bg-white">
+        <CardHeader className="bg-black p-4 border-b-4 border-black">
+          <CardTitle className="font-black text-xl">
+            <span className="text-white">Your Daily </span>
+            <span className="text-green-500">Growth Stack</span>
+          </CardTitle>
+        </CardHeader>
+        <CardContent>
+          <div className="grid grid-cols-2 gap-3">
+            <Link href="/dashboard/habits">
+              <Button
+                variant="outline"
+                className="w-full h-20 flex-col gap-2 rounded-2xl border-3 border-black font-bold text-black hover:bg-green-50 active:bg-green-100 shadow-[3px_3px_0px_0px_rgba(0,0,0,1)] active:shadow-[1px_1px_0px_0px_rgba(0,0,0,1)] active:translate-x-[2px] active:translate-y-[2px] transition-all duration-200 bg-white"
+              >
+                <div className="p-2 rounded-xl bg-green-500 text-white">
+                  <Target className="h-5 w-5" />
+                </div>
+                <span className="text-sm">Habits</span>
+              </Button>
+            </Link>
+
+            <Link href="/dashboard/journal">
+              <Button
+                variant="outline"
+                className="w-full h-20 flex-col gap-2 rounded-2xl border-3 border-black font-bold text-black hover:bg-green-50 active:bg-green-100 shadow-[3px_3px_0px_0px_rgba(0,0,0,1)] active:shadow-[1px_1px_0px_0px_rgba(0,0,0,1)] active:translate-x-[2px] active:translate-y-[2px] transition-all duration-200 bg-white"
+              >
+                <div className="p-2 rounded-xl bg-black text-white">
+                  <BookOpen className="h-5 w-5" />
+                </div>
+                <span className="text-sm">Journal</span>
+              </Button>
+            </Link>
+
+            <Link href="/dashboard/analytics">
+              <Button
+                variant="outline"
+                className="w-full h-20 flex-col gap-2 rounded-2xl border-3 border-black font-bold text-black hover:bg-green-50 active:bg-green-100 shadow-[3px_3px_0px_0px_rgba(0,0,0,1)] active:shadow-[1px_1px_0px_0px_rgba(0,0,0,1)] active:translate-x-[2px] active:translate-y-[2px] transition-all duration-200 bg-white"
+              >
+                <div className="p-2 rounded-xl bg-green-600 text-white">
+                  <BarChart3 className="h-5 w-5" />
+                </div>
+                <span className="text-sm">Analytics</span>
+              </Button>
+            </Link>
+
+            <Link href="/dashboard/achievements">
+              <Button
+                variant="outline"
+                className="w-full h-20 flex-col gap-2 rounded-2xl border-3 border-black font-bold text-black hover:bg-green-50 active:bg-green-100 shadow-[3px_3px_0px_0px_rgba(0,0,0,1)] active:shadow-[1px_1px_0px_0px_rgba(0,0,0,1)] active:translate-x-[2px] active:translate-y-[2px] transition-all duration-200 bg-white"
+              >
+                <div className="p-2 rounded-xl bg-gray-800 text-white">
+                  <Award className="h-5 w-5" />
+                </div>
+                <span className="text-sm">Achievements</span>
+              </Button>
+            </Link>
+          </div>
+        </CardContent>
+      </Card>
 
       {/* Quick Actions */}
-      <MobilePageSection title="Quick Actions">
-        <MobileOptimizedCardContent>
-          <div className="grid grid-cols-2 gap-3">
-            {quickActions.map((action, index) => (
-              <MobileTouchFeedback key={index}>
-                <Link href={action.href}>
-                  <div className="h-20 flex flex-col items-center justify-center gap-2 rounded-2xl border-3 border-black bg-white font-bold text-black shadow-[3px_3px_0px_0px_rgba(0,0,0,1)]">
-                    <div className={`p-2 rounded-xl ${action.color} text-white`}>
-                      <action.icon className="h-5 w-5" />
-                    </div>
-                    <span className="text-sm">{action.label}</span>
-                  </div>
-                </Link>
-              </MobileTouchFeedback>
-            ))}
-          </div>
-        </MobileOptimizedCardContent>
-      </MobilePageSection>
+      <Card className="border-4 border-black shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] mb-6 bg-white">
+        <CardHeader>
+          <CardTitle className="text-black">Quick Actions</CardTitle>
+        </CardHeader>
+        <CardContent>
+          <div className="space-y-3">
+            <Link href="/dashboard/habits/new">
+              <Button className="w-full bg-green-500 hover:bg-green-600 text-white border-2 border-black rounded-xl shadow-[3px_3px_0px_0px_rgba(0,0,0,1)] hover:shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] hover:-translate-y-0.5 transition-all duration-200 font-bold py-3 min-h-[52px]">
+                <Plus className="h-5 w-5 mr-2" />
+                Add New Habit
+              </Button>
+            </Link>
 
-      {/* Progress Summary */}
-      <MobilePageSection title="Your Progress">
-        <MobileOptimizedCardContent>
-          <div className="space-y-4">
-            <div>
-              <div className="flex justify-between mb-2">
-                <span className="text-sm font-medium">Weekly Goal Progress</span>
-                <span className="text-sm font-bold text-gryt-green">{stats.weeklyProgress}%</span>
+            <Link href="/dashboard/journal/new">
+              <Button
+                variant="outline"
+                className="w-full border-2 border-black rounded-xl shadow-[3px_3px_0px_0px_rgba(0,0,0,1)] hover:shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] hover:-translate-y-0.5 transition-all duration-200 font-bold py-3 min-h-[52px] bg-white text-black hover:bg-gray-50"
+              >
+                <BookOpen className="h-5 w-5 mr-2" />
+                Write Journal Entry
+              </Button>
+            </Link>
+          </div>
+        </CardContent>
+      </Card>
+
+      {/* Recent Activity */}
+      <Card className="border-4 border-black shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] bg-white">
+        <CardHeader>
+          <CardTitle className="text-black">Recent Activity</CardTitle>
+        </CardHeader>
+        <CardContent>
+          <div className="space-y-3">
+            <div className="flex items-center gap-3 p-3 bg-green-50 rounded-xl border-2 border-black">
+              <div className="w-8 h-8 bg-green-500 rounded-full flex items-center justify-center">
+                <Target className="h-4 w-4 text-white" />
               </div>
-              <div className="w-full bg-gray-200 rounded-full h-2.5">
-                <div className="bg-gryt-green h-2.5 rounded-full" style={{ width: `${stats.weeklyProgress}%` }}></div>
+              <div className="flex-1">
+                <p className="font-bold text-black text-sm">Completed "Drink Water"</p>
+                <p className="text-xs text-gray-600">2 hours ago</p>
               </div>
             </div>
 
-            <div className="flex items-center justify-between">
-              <div className="flex items-center">
-                <div className="w-10 h-10 rounded-full bg-green-100 flex items-center justify-center mr-3">
-                  <Trophy className="h-5 w-5 text-gryt-green" />
-                </div>
-                <div>
-                  <h3 className="font-bold">Level 5</h3>
-                  <p className="text-xs text-gray-600">Growth Points: 450 GP</p>
-                </div>
+            <div className="flex items-center gap-3 p-3 bg-blue-50 rounded-xl border-2 border-black">
+              <div className="w-8 h-8 bg-blue-500 rounded-full flex items-center justify-center">
+                <BookOpen className="h-4 w-4 text-white" />
               </div>
-              <MobileOptimizedButton variant="outline" size="sm">
-                View
-              </MobileOptimizedButton>
+              <div className="flex-1">
+                <p className="font-bold text-black text-sm">New journal entry</p>
+                <p className="text-xs text-gray-600">Yesterday</p>
+              </div>
+            </div>
+
+            <div className="flex items-center gap-3 p-3 bg-purple-50 rounded-xl border-2 border-black">
+              <div className="w-8 h-8 bg-purple-500 rounded-full flex items-center justify-center">
+                <Award className="h-4 w-4 text-white" />
+              </div>
+              <div className="flex-1">
+                <p className="font-bold text-black text-sm">Earned "Week Warrior" badge</p>
+                <p className="text-xs text-gray-600">2 days ago</p>
+              </div>
             </div>
           </div>
-        </MobileOptimizedCardContent>
-      </MobilePageSection>
-
-      {/* Upcoming Habits */}
-      <MobilePageSection title="Today's Habits" subtitle="3 remaining">
-        <MobileOptimizedCardContent className="p-0">
-          <div className="divide-y">
-            {[
-              { name: "Morning Meditation", time: "8:00", icon: BookOpen },
-              { name: "Evening Run", time: "18:00", icon: Flame },
-              { name: "Reading Time", time: "20:00", icon: BookOpen },
-            ].map((habit, index) => (
-              <div key={index} className="p-4 flex items-center justify-between">
-                <div className="flex items-center">
-                  <div className="w-8 h-8 rounded-full bg-gray-300 flex items-center justify-center mr-3">
-                    <habit.icon className="h-4 w-4 text-black" />
-                  </div>
-                  <div>
-                    <h3 className="font-bold">{habit.name}</h3>
-                    <p className="text-xs text-gray-600">Due at {habit.time}</p>
-                  </div>
-                </div>
-                <MobileOptimizedButton variant="outline" size="sm">
-                  Complete
-                </MobileOptimizedButton>
-              </div>
-            ))}
-          </div>
-        </MobileOptimizedCardContent>
-      </MobilePageSection>
-    </MobilePage>
+        </CardContent>
+      </Card>
+    </div>
   )
 }

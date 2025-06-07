@@ -13,11 +13,34 @@ export class MobilePerformanceManager {
   private performanceObserver?: PerformanceObserver
 
   constructor() {
-    this.config = this.detectOptimalSettings()
-    this.initPerformanceMonitoring()
+    // Only initialize if we're in the browser
+    if (typeof window !== "undefined") {
+      this.config = this.detectOptimalSettings()
+      this.initPerformanceMonitoring()
+    } else {
+      // Server-side fallback
+      this.config = {
+        enableTouchOptimizations: false,
+        enableAnimations: true,
+        enableComplexShadows: true,
+        touchTargetSize: 44,
+        devicePixelRatio: 1,
+      }
+    }
   }
 
   private detectOptimalSettings(): MobilePerformanceConfig {
+    // Only run in browser
+    if (typeof window === "undefined" || typeof navigator === "undefined") {
+      return {
+        enableTouchOptimizations: false,
+        enableAnimations: true,
+        enableComplexShadows: true,
+        touchTargetSize: 44,
+        devicePixelRatio: 1,
+      }
+    }
+
     const isMobile = /Android|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent)
     const isLowEnd = navigator.hardwareConcurrency <= 2
     const hasSlowConnection = this.getConnectionSpeed() === "slow"
@@ -32,6 +55,8 @@ export class MobilePerformanceManager {
   }
 
   private getConnectionSpeed(): "fast" | "slow" | "unknown" {
+    if (typeof navigator === "undefined") return "unknown"
+
     const connection = (navigator as any).connection
     if (!connection) return "unknown"
 
@@ -42,21 +67,23 @@ export class MobilePerformanceManager {
   }
 
   private initPerformanceMonitoring(): void {
-    if ("PerformanceObserver" in window) {
-      this.performanceObserver = new PerformanceObserver((list) => {
-        const entries = list.getEntries()
-        entries.forEach((entry) => {
-          if (entry.entryType === "measure" && entry.duration > 16) {
-            console.warn(`Slow operation detected: ${entry.name} took ${entry.duration}ms`)
-          }
-        })
-      })
+    if (typeof window === "undefined" || !("PerformanceObserver" in window)) return
 
-      this.performanceObserver.observe({ entryTypes: ["measure", "navigation"] })
-    }
+    this.performanceObserver = new PerformanceObserver((list) => {
+      const entries = list.getEntries()
+      entries.forEach((entry) => {
+        if (entry.entryType === "measure" && entry.duration > 16) {
+          console.warn(`Slow operation detected: ${entry.name} took ${entry.duration}ms`)
+        }
+      })
+    })
+
+    this.performanceObserver.observe({ entryTypes: ["measure", "navigation"] })
   }
 
   public optimizeForDevice(): void {
+    if (typeof window === "undefined" || typeof document === "undefined") return
+
     const root = document.documentElement
 
     // Set CSS custom properties based on device capabilities
@@ -80,28 +107,35 @@ export class MobilePerformanceManager {
   }
 
   private async monitorBattery(): Promise<void> {
-    if ("getBattery" in navigator) {
-      try {
-        const battery = await (navigator as any).getBattery()
+    if (typeof navigator === "undefined" || !("getBattery" in navigator)) return
 
-        const updateBatteryMode = () => {
-          if (battery.level < 0.2 || !battery.charging) {
-            document.body.classList.add("battery-saving")
-          } else {
-            document.body.classList.remove("battery-saving")
-          }
+    try {
+      const battery = await (navigator as any).getBattery()
+
+      const updateBatteryMode = () => {
+        if (typeof document === "undefined") return
+
+        if (battery.level < 0.2 || !battery.charging) {
+          document.body.classList.add("battery-saving")
+        } else {
+          document.body.classList.remove("battery-saving")
         }
-
-        battery.addEventListener("levelchange", updateBatteryMode)
-        battery.addEventListener("chargingchange", updateBatteryMode)
-        updateBatteryMode()
-      } catch (error) {
-        console.log("Battery API not available")
       }
+
+      battery.addEventListener("levelchange", updateBatteryMode)
+      battery.addEventListener("chargingchange", updateBatteryMode)
+      updateBatteryMode()
+    } catch (error) {
+      console.log("Battery API not available")
     }
   }
 
   public measurePerformance(name: string, fn: () => void): void {
+    if (typeof performance === "undefined") {
+      fn()
+      return
+    }
+
     performance.mark(`${name}-start`)
     fn()
     performance.mark(`${name}-end`)
@@ -109,6 +143,8 @@ export class MobilePerformanceManager {
   }
 
   public preloadCriticalResources(): void {
+    if (typeof document === "undefined") return
+
     // Preload critical fonts
     const link = document.createElement("link")
     link.rel = "preload"
@@ -127,7 +163,11 @@ export class MobilePerformanceManager {
     })
   }
 
-  public enableIntersectionObserver(): IntersectionObserver {
+  public enableIntersectionObserver(): IntersectionObserver | null {
+    if (typeof window === "undefined" || !("IntersectionObserver" in window)) {
+      return null
+    }
+
     return new IntersectionObserver(
       (entries) => {
         entries.forEach((entry) => {
@@ -150,13 +190,28 @@ export class MobilePerformanceManager {
   }
 }
 
-// Export singleton instance
-export const mobilePerformanceManager = new MobilePerformanceManager()
+// Create a function to get the manager instance safely
+export function getMobilePerformanceManager(): MobilePerformanceManager {
+  // Always return a valid instance, even on server
+  return new MobilePerformanceManager()
+}
 
-// Auto-initialize on load
+// For backward compatibility - but don't use this directly
+// as it might be null during initialization
+let mobilePerformanceManager: MobilePerformanceManager | null = null
+
+// Initialize only on client side
 if (typeof window !== "undefined") {
+  // Create immediately but don't run optimizations yet
+  mobilePerformanceManager = new MobilePerformanceManager()
+
+  // Wait for load to run optimizations
   window.addEventListener("load", () => {
-    mobilePerformanceManager.optimizeForDevice()
-    mobilePerformanceManager.preloadCriticalResources()
+    if (mobilePerformanceManager) {
+      mobilePerformanceManager.optimizeForDevice()
+      mobilePerformanceManager.preloadCriticalResources()
+    }
   })
 }
+
+export { mobilePerformanceManager }

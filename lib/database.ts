@@ -2,10 +2,10 @@ import { neon } from "@neondatabase/serverless"
 
 // Environment variable validation with fallbacks
 const getDatabaseUrl = () => {
-  // Try multiple possible environment variable names
+  // Try multiple possible environment variable names in order of preference
   const possibleVars = [
     process.env.NEON_NEON_DATABASE_URL,
-    process.env.NEON_NEON_DATABASE_URL,
+    process.env.NEON_POSTGRES_URL,
     process.env.DATABASE_URL,
     process.env.POSTGRES_URL,
   ]
@@ -22,7 +22,7 @@ const getDatabaseUrl = () => {
     throw new Error(`
       Database URL not found. Please set one of the following environment variables:
       - NEON_DATABASE_URL
-      - NEON_NEON_DATABASE_URL  
+      - NEON_POSTGRES_URL  
       - DATABASE_URL
       - POSTGRES_URL
       
